@@ -1,0 +1,93 @@
+{% extends "layout/base.html" %}
+
+{% block title %}System Settings - Rays POS{% endblock %}
+
+{% block header_title %}Control <span class="text-primary">System Center</span>{% endblock %}
+
+{% block content %}
+<div class="animate__animated animate__fadeIn">
+    <!-- Alert Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }} border-0 card-premium mb-4 animate__animated animate__slideInDown">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row g-5">
+        <div class="col-lg-7">
+            <div class="card-premium p-4">
+                <h5 class="fw-bold mb-4">Establishment <span class="text-primary">Profile</span></h5>
+                <form action="{{ url_for('settings.update') }}" method="POST">
+                    <div class="row g-4">
+                        <div class="col-md-12">
+                            <label class="form-label text-muted small fw-bold">RESTAURANT NAME</label>
+                            <input type="text" name="restaurant_name" class="form-control bg-dark border-0 rounded-4 text-white" value="{{ settings.restaurant_name }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small fw-bold">TAX RATE (%)</label>
+                            <input type="number" name="vat_rate" class="form-control bg-dark border-0 rounded-4 text-white" value="{{ settings.vat_rate }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small fw-bold">DEFAULT CURRENCY</label>
+                            <input type="text" name="currency" class="form-control bg-dark border-0 rounded-4 text-white" value="{{ settings.currency }}">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label text-muted small fw-bold">PHYSICAL ADDRESS</label>
+                            <input type="text" name="address" class="form-control bg-dark border-0 rounded-4 text-white" value="{{ settings.address }}">
+                        </div>
+                        <div class="col-md-12">
+                            <label class="form-label text-muted small fw-bold">CONTACT PHONE</label>
+                            <input type="text" name="phone" class="form-control bg-dark border-0 rounded-4 text-white" value="{{ settings.phone }}">
+                        </div>
+                    </div>
+                    <div class="mt-5 pt-3">
+                        <button type="submit" class="btn btn-premium w-100 py-3">FORCE SYSTEM UPDATE</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card-premium p-4 mb-4">
+                <h5 class="fw-bold mb-4">Technical <span class="text-primary">Health</span></h5>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted small fw-bold uppercase">DATABASE CONNECTION</span>
+                        <span class="text-success small fw-bold">STABLE</span>
+                    </div>
+                    <div class="progress bg-white bg-opacity-5" style="height: 6px; border-radius: 10px;">
+                        <div class="progress-bar bg-success" style="width: 100%"></div>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted small fw-bold uppercase">SERVER RESPONSE</span>
+                        <span class="text-primary small fw-bold">FAST (12ms)</span>
+                    </div>
+                    <div class="progress bg-white bg-opacity-5" style="height: 6px; border-radius: 10px;">
+                        <div class="progress-bar bg-primary" style="width: 85%"></div>
+                    </div>
+                </div>
+                <div class="mb-0">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted small fw-bold uppercase">STORAGE USAGE</span>
+                        <span class="text-warning small fw-bold">OPTIMIZED</span>
+                    </div>
+                    <div class="progress bg-white bg-opacity-5" style="height: 6px; border-radius: 10px;">
+                        <div class="progress-bar bg-warning" style="width: 45%"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card-premium p-5 bg-primary bg-opacity-5 text-center">
+                <i class="fas fa-lock fa-4x text-primary mb-4 opacity-20"></i>
+                <h6 class="fw-bold text-white mb-2">Security Hardening</h6>
+                <p class="text-muted small mb-0">System updates are encrypted and logged for security auditing purposes.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

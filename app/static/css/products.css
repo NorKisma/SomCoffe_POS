@@ -1,0 +1,109 @@
+.inventory-table-card {
+        background: var(--bg-card);
+        border: 1px solid var(--border-glass);
+        border-radius: 30px;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+    .table thead th {
+        background: rgba(124, 58, 237, 0.03); /* Subtle purple tint */
+        border-bottom: 2px solid var(--border-glass);
+        padding: 1.5rem 1rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.75rem;
+        color: var(--text-muted);
+    }
+    .table tbody td {
+        padding: 1.25rem 1rem;
+        border-bottom: 1px solid var(--border-glass);
+        vertical-align: middle;
+    }
+    .product-name-heading {
+        font-weight: 800;
+        font-size: 1rem;
+        margin-bottom: 2px;
+        color: var(--text-main);
+    }
+    .product-sku {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        letter-spacing: 0.5px;
+    }
+    .category-badge {
+        padding: 8px 16px;
+        border-radius: 12px;
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        background: rgba(99, 102, 241, 0.08);
+        color: var(--primary);
+        border: 1px solid rgba(99, 102, 241, 0.1);
+    }
+    .category-badge img {
+        width: 16px;
+        height: 16px;
+        border-radius: 4px;
+        object-fit: cover;
+    }
+    .stock-indicator {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-width: 180px;
+    }
+    .status-badge {
+        font-size: 0.65rem;
+        font-weight: 900;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+    .status-badge i { font-size: 6px; }
+    
+    .price-text {
+        font-weight: 900;
+        font-size: 1.1rem;
+        color: var(--text-main);
+    }
+
+    .btn-action-group {
+        display: flex;
+        gap: 8px;
+        justify-content: flex-end;
+    }
+    .btn-action {
+        width: 36px;
+        height: 36px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s;
+        border: 1px solid var(--border-glass);
+        background: var(--bg-item);
+        color: var(--text-muted);
+    }
+    .btn-action:hover {
+        transform: scale(1.1);
+        border-color: var(--primary);
+        color: var(--primary);
+    }
+    .btn-action.delete:hover {
+        border-color: #ef4444;
+        color: #ef4444;
+    }
+
+    /* Modal Styling */
+    .modal-content-premium {
+        border-radius: 32px;
+        border: none;
+        background: var(--bg-card);
+        backdrop-filter: blur(20px);
+    }

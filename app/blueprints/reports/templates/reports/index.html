@@ -1,0 +1,92 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Analytics & Reports - Rays POS{% endblock %}
+
+{% block header_title %}System <span class="text-primary">Performance Intelligence</span>{% endblock %}
+
+{% block content %}
+<div class="animate__animated animate__fadeIn">
+    <!-- Quick Performance Summary -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card-premium p-4 d-flex align-items-center gap-4">
+                <div class="stat-icon-glow purple" style="width: 60px; height: 60px;">
+                    <i class="fas fa-dollar-sign fa-2x"></i>
+                </div>
+                <div>
+                    <h2 class="mb-0 fw-800 text-white">{{ sys_currency }} {{ "%.2f"|format(total_revenue) }}</h2>
+                    <p class="text-muted small mb-0 fw-bold uppercase tracking-wider">Total Gross Revenue</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-premium p-4 d-flex align-items-center gap-4">
+                <div class="stat-icon-glow blue" style="width: 60px; height: 60px;">
+                    <i class="fas fa-shopping-cart fa-2x"></i>
+                </div>
+                <div>
+                    <h2 class="mb-0 fw-800 text-white">{{ total_orders }}</h2>
+                    <p class="text-muted small mb-0 fw-bold uppercase tracking-wider">Direct Transaction Count</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card-premium p-4 d-flex align-items-center gap-4">
+                <div class="stat-icon-glow green" style="width: 60px; height: 60px;">
+                    <i class="fas fa-box-open fa-2x"></i>
+                </div>
+                <div>
+                    <h2 class="mb-0 fw-800 text-white">{{ total_products }}</h2>
+                    <p class="text-muted small mb-0 fw-bold uppercase tracking-wider">Active Menu Items</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Analytics Charts & Tables -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-8">
+            <div class="card-premium p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-bold mb-0">Revenue <span class="text-primary">Dynamics</span></h5>
+                    <button class="btn btn-sm btn-dark border-white border-opacity-5 text-muted px-4">WEEKLY AVERAGE</button>
+                </div>
+                <div style="height: 350px;">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card-premium p-4">
+                <h5 class="fw-bold mb-4">Revenue <span class="text-primary">By Status</span></h5>
+                {% for status, amount in revenue_by_status %}
+                <div class="mb-4">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-uppercase small fw-bold text-muted">{{ status }}</span>
+                        <span class="fw-800 text-white">{{ sys_currency }} {{ "%.2f"|format(amount) }}</span>
+                    </div>
+                    <div class="progress bg-white bg-opacity-5" style="height: 8px; border-radius: 10px;">
+                        {% set total = total_revenue if total_revenue > 0 else 1 %}
+                        {% set status_percent = (amount / total * 100) %}
+                        <div class="progress-bar {% if status == 'completed' %}bg-primary{% elif status == 'pending' %}bg-warning{% else %}bg-danger{% endif %}" 
+                             style="width: 0%;" 
+                             data-status-width="{{ status_percent }}"></div>
+                    </div>
+                </div>
+                {% endfor %}
+                <div class="mt-5 p-4 bg-white bg-opacity-5 rounded-4 text-center">
+                    <i class="fas fa-brain fa-3x text-primary mb-3 opacity-20"></i>
+                    <p class="small text-muted mb-0 lh-base">Intelligence analysis shows a 12% increase in average order value compared to last week.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,239 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Maamulka Users-ka - SomCoffe POS{% endblock %}
+
+{% block styles %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/users.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="animate__animated animate__fadeIn">
+
+    <!-- Header -->
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-900 mb-1">Maamulka <span class="text-primary">Users-ka</span></h2>
+            <p class="text-muted small mb-0">Halkan ka xakamee cidda geli karta nidaamka iyo heerka awoodooda.</p>
+        </div>
+        <div class="d-flex align-items-center gap-3">
+            <!-- Stat card -->
+            <div class="users-stat-card">
+                <div class="users-stat-icon"><i class="fas fa-users"></i></div>
+                <div>
+                    <div class="text-muted" style="font-size:.7rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;">Wadarta</div>
+                    <div class="fw-900" style="font-size:1.6rem;line-height:1;">{{ pagination.total }}</div>
+                </div>
+            </div>
+            <button class="btn btn-premium px-4 py-2 rounded-pill shadow-lg" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                <i class="fas fa-user-plus me-2"></i>CREATE NEW USER
+            </button>
+        </div>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 animate__animated animate__slideInDown">
+                <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>{{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Table Card -->
+    <div class="users-table-wrap">
+        <div class="table-responsive">
+            <table class="users-table">
+                <thead>
+                    <tr>
+                        <th style="padding-left:28px;">Isticmaalaha</th>
+                        <th class="d-none d-lg-table-cell">Emailka</th>
+                        <th>Awoodda</th>
+                        <th class="d-none d-md-table-cell">Xaaladda</th>
+                        <th style="text-align:right;padding-right:28px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr class="animate__animated animate__fadeIn">
+                        <td style="padding-left:28px;">
+                            <div class="d-flex align-items-center gap-3">
+                                {% if user.role == 'admin' %}
+                                <div class="user-avatar avatar-admin"><i class="fas fa-shield-alt"></i></div>
+                                {% elif user.role == 'manager' %}
+                                <div class="user-avatar avatar-manager"><i class="fas fa-user-tie"></i></div>
+                                {% else %}
+                                <div class="user-avatar avatar-staff"><i class="fas fa-user"></i></div>
+                                {% endif %}
+                                <div>
+                                    <div class="fw-800" style="color:var(--text-primary);font-size:.9rem;">{{ user.username }}</div>
+                                    <div class="text-muted" style="font-size:.73rem;">UID #{{ "%04d"|format(user.id) }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="d-none d-lg-table-cell">
+                            <span class="text-muted" style="font-size:.83rem;font-weight:600;">
+                                {{ user.email if user.email else '—' }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if user.role == 'admin' %}
+                            <span class="role-badge role-admin"><i class="fas fa-shield-alt"></i>Admin</span>
+                            {% elif user.role == 'manager' %}
+                            <span class="role-badge role-manager"><i class="fas fa-user-edit"></i>Manager</span>
+                            {% else %}
+                            <span class="role-badge role-staff"><i class="fas fa-cash-register"></i>Staff</span>
+                            {% endif %}
+                        </td>
+                        <td class="d-none d-md-table-cell">
+                            <span style="font-size:.82rem;font-weight:700;color:#10b981;">
+                                <span class="status-dot status-active"></span>Firfircoon
+                            </span>
+                        </td>
+                        <td style="padding-right:28px;">
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="btn-tbl" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}" title="Bedel">
+                                    <i class="fas fa-key fa-sm"></i>
+                                </button>
+                                {% if user.id != current_user.id %}
+                                <form action="{{ url_for('users.delete_user', id=user.id) }}" method="POST" onsubmit="return confirm('Ma hubtaa inaad tirtirto {{ user.username }}?')">
+                                    <button type="submit" class="btn-tbl danger" title="Tirtir">
+                                        <i class="fas fa-trash-alt fa-sm"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+
+                            <!-- Edit Modal -->
+                            <div class="modal fade" id="editUserModal{{ user.id }}" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content card-premium border-0 p-2">
+                                        <div class="modal-header border-0 pb-0">
+                                            <h4 class="fw-900 text-white">Bedel: <span class="text-primary">{{ user.username }}</span></h4>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <form action="{{ url_for('users.update_user', id=user.id) }}" method="POST">
+                                            <div class="modal-body p-4">
+                                                <div class="mb-4">
+                                                    <label class="form-label text-muted small fw-bold">EMAIL ADDRESS</label>
+                                                    <input type="email" name="email" class="form-control rounded-4 py-3" value="{{ user.email }}" style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
+                                                </div>
+                                                <div>
+                                                    <label class="form-label text-muted small fw-bold">ACCESS LEVEL</label>
+                                                    <select name="role" class="form-select rounded-4 py-3" style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
+                                                        <option value="staff"   {% if user.role=='staff'   %}selected{% endif %}>Staff / Cashier</option>
+                                                        <option value="manager" {% if user.role=='manager' %}selected{% endif %}>Shop Manager</option>
+                                                        <option value="admin"   {% if user.role=='admin'   %}selected{% endif %}>System Admin</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer border-0 p-4 pt-0">
+                                                <button type="submit" class="btn btn-premium w-100 py-3 rounded-4">UPDATE PERMISSIONS</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <i class="fas fa-users-slash fa-3x mb-3 d-block" style="color:var(--text-muted);opacity:.4;"></i>
+                            <p class="text-muted fw-700">Wali user la ma diiwaangelin</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        {% if pagination and pagination.pages > 1 %}
+        <div class="pag-wrap">
+            <div class="pag-info">
+                Muujinaya <strong>{{ (pagination.page - 1) * pagination.per_page + 1 }}</strong>
+                – <strong>{{ [pagination.page * pagination.per_page, pagination.total] | min }}</strong>
+                ka mid ah <strong>{{ pagination.total }}</strong> user
+            </div>
+            <nav class="pag-nav">
+                <!-- Prev -->
+                {% if pagination.has_prev %}
+                <a href="{{ url_for('users.index', page=pagination.prev_num) }}" class="pag-btn">
+                    <i class="fas fa-chevron-left fa-xs"></i>
+                </a>
+                {% else %}
+                <span class="pag-btn disabled"><i class="fas fa-chevron-left fa-xs"></i></span>
+                {% endif %}
+
+                <!-- Pages -->
+                {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if p %}
+                    <a href="{{ url_for('users.index', page=p) }}"
+                       class="pag-btn {{ 'active' if p == pagination.page else '' }}">{{ p }}</a>
+                    {% else %}
+                    <span class="pag-dots">…</span>
+                    {% endif %}
+                {% endfor %}
+
+                <!-- Next -->
+                {% if pagination.has_next %}
+                <a href="{{ url_for('users.index', page=pagination.next_num) }}" class="pag-btn">
+                    <i class="fas fa-chevron-right fa-xs"></i>
+                </a>
+                {% else %}
+                <span class="pag-btn disabled"><i class="fas fa-chevron-right fa-xs"></i></span>
+                {% endif %}
+            </nav>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div class="modal fade" id="addUserModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-premium border-0 p-2">
+            <div class="modal-header border-0 pb-0">
+                <h4 class="fw-900 text-white">Diiwaan-geli <span class="text-primary">User Cusub</span></h4>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{{ url_for('users.add_user') }}" method="POST">
+                <div class="modal-body p-4">
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold">USERNAME</label>
+                        <input type="text" name="username" class="form-control rounded-4 py-3"
+                               placeholder="e.g. ahmed_pos" required
+                               style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold">EMAIL ADDRESS</label>
+                        <input type="email" name="email" class="form-control rounded-4 py-3"
+                               placeholder="user@example.com"
+                               style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold">PASSWORD</label>
+                        <input type="password" name="password" class="form-control rounded-4 py-3"
+                               placeholder="••••••••" required
+                               style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
+                    </div>
+                    <div>
+                        <label class="form-label text-muted small fw-bold">AWOODDA (ROLE)</label>
+                        <select name="role" class="form-select rounded-4 py-3"
+                                style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
+                            <option value="staff">Staff / Cashier</option>
+                            <option value="manager">Shop Manager</option>
+                            <option value="admin">System Admin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="submit" class="btn btn-premium w-100 py-3 rounded-4 fs-5">KEYDI USER-KA</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

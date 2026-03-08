@@ -1,0 +1,86 @@
+.users-stat-card {
+        background: linear-gradient(135deg, rgba(99,102,241,0.12), rgba(139,92,246,0.08));
+        border: 1px solid rgba(99,102,241,0.2);
+        border-radius: 18px;
+        padding: 20px 28px;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .users-stat-icon {
+        width: 52px; height: 52px;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6);
+        border-radius: 14px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1.3rem; color: white;
+        box-shadow: 0 8px 20px rgba(99,102,241,0.35);
+    }
+
+    /* Table */
+    .users-table-wrap {
+        background: var(--bg-card);
+        border: 1px solid var(--border-glass);
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    }
+    .users-table { width: 100%; border-collapse: collapse; }
+    .users-table thead th {
+        background: rgba(99,102,241,0.06);
+        color: var(--text-muted);
+        font-size: 0.7rem;
+        font-weight: 900;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border-glass);
+        white-space: nowrap;
+    }
+    .users-table tbody tr {
+        border-bottom: 1px solid rgba(255,255,255,0.04);
+        transition: background 0.2s;
+    }
+    .users-table tbody tr:last-child { border-bottom: none; }
+    .users-table tbody tr:hover { background: rgba(99,102,241,0.05); }
+    .users-table td { padding: 16px 20px; vertical-align: middle; }
+
+    /* Avatar */
+    .user-avatar {
+        width: 44px; height: 44px;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 1rem; font-weight: 900;
+        flex-shrink: 0;
+    }
+    .avatar-admin   { background: rgba(239,68,68,0.12);   color: #ef4444; }
+    .avatar-manager { background: rgba(245,158,11,0.12);  color: #f59e0b; }
+    .avatar-staff   { background: rgba(99,102,241,0.12);  color: #6366f1; }
+
+    /* Role badges */
+    .role-badge {
+        display: inline-flex; align-items: center; gap: 5px;
+        font-size: 0.65rem; font-weight: 900;
+        letter-spacing: 1px; text-transform: uppercase;
+        padding: 5px 12px; border-radius: 50px;
+    }
+    .role-admin   { background: rgba(239,68,68,0.1);  color: #ef4444;  border: 1px solid rgba(239,68,68,0.25); }
+    .role-manager { background: rgba(245,158,11,0.1); color: #f59e0b;  border: 1px solid rgba(245,158,11,0.25); }
+    .role-staff   { background: rgba(99,102,241,0.1); color: #818cf8;  border: 1px solid rgba(99,102,241,0.25); }
+
+    /* Status */
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; margin-right: 6px; }
+    .status-active { background: #10b981; box-shadow: 0 0 6px #10b981; }
+
+    /* Action buttons */
+    .btn-tbl {
+        width: 36px; height: 36px;
+        border-radius: 10px;
+        display: flex; align-items: center; justify-content: center;
+        border: 1px solid var(--border-glass);
+        background: rgba(255,255,255,0.04);
+        color: var(--text-muted);
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+    .btn-tbl:hover { transform: scale(1.1); background: rgba(99,102,241,0.15); color: #818cf8; border-color: rgba(99,102,241,0.4); }
+    .btn-tbl.danger:hover { background: rgba(239,68,68,0.12); color: #ef4444; border-color: rgba(239,68,68,0.3); }
