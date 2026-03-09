@@ -1,18 +1,18 @@
 {% extends "layout/base.html" %}
 
-{% block title %}Order History - Rays POS{% endblock %}
+{% block title %}Taariikhda Dalabyada - Rays POS{% endblock %}
 
-{% block header_title %}Transactional <span class="text-primary">Order History</span>{% endblock %}
+{% block header_title %}Taariikhda <span class="text-primary">Dalabyada la Fuliyay</span>{% endblock %}
 
 {% block content %}
 <div class="animate__animated animate__fadeIn">
     <div class="row g-4 mb-5 align-items-center">
         <div class="col-md-6">
-            <h5 class="fw-bold mb-0">Processed Orders: <span class="text-primary">{{ orders|length }}</span></h5>
-            <p class="text-muted small mb-0">Review past transactions and order details</p>
+            <h5 class="fw-bold mb-0">Dalabyada: <span class="text-primary">{{ orders|length }}</span></h5>
+            <p class="text-muted small mb-0">Fiiri dalabyadii hore iyo tafaasiishooda</p>
         </div>
         <div class="col-md-6 text-md-end text-muted small">
-            <i class="fas fa-info-circle me-1"></i> Showing latest orders first
+            <i class="fas fa-info-circle me-1"></i> Kuwa dambe ayaa la muujinayaa horta
         </div>
     </div>
 
@@ -22,11 +22,11 @@
                 <thead>
                     <tr>
                         <th class="ps-4">ID</th>
-                        <th class="d-none d-md-table-cell">Table / Customer</th>
-                        <th class="d-none d-lg-table-cell">Date & Time</th>
-                        <th>Total</th>
-                        <th>Status</th>
-                        <th class="text-end pe-4">Actions</th>
+                        <th class="d-none d-md-table-cell">Miiska / Macmiilka</th>
+                        <th class="d-none d-lg-table-cell">Taariikhda & Waqtiga</th>
+                        <th>Lacagta</th>
+                        <th>Heerka</th>
+                        <th class="text-end pe-4">Waxqabadka</th>
                     </tr>
                 </thead>
                 <tbody class="border-top-0">
@@ -38,9 +38,9 @@
                         <td class="d-none d-md-table-cell">
                             <div class="d-flex align-items-center gap-2">
                                 <div class="badge bg-primary bg-opacity-10 text-primary rounded-pill">
-                                    <i class="fas fa-chair small me-1"></i> {{ order.table.number if order.table else 'Takeaway' }}
+                                    <i class="fas fa-chair small me-1"></i> {{ order.table.number if order.table else 'Lala tegayo' }}
                                 </div>
-                                <span class="text-muted small">{{ order.customer_name if order.customer_name else 'Guest' }}</span>
+                                <span class="text-muted small">{{ order.customer_name if order.customer_name else 'Macmiil' }}</span>
                             </div>
                         </td>
                         <td class="d-none d-lg-table-cell">
@@ -50,21 +50,21 @@
                         <td class="fw-800 text-primary">{{ sys_currency }} {{ "%.2f"|format(order.total_amount) }}</td>
                         <td>
                             {% if order.status == 'completed' %}
-                            <span class="badge bg-success bg-opacity-10 text-success py-2 px-3 rounded-pill text-uppercase" style="font-size: 0.6rem;">COMPLETED</span>
+                            <span class="badge bg-success bg-opacity-10 text-success py-2 px-3 rounded-pill text-uppercase" style="font-size: 0.6rem;">DHAMMAAD</span>
                             {% elif order.status == 'pending' %}
-                            <span class="badge bg-warning bg-opacity-10 text-warning py-2 px-3 rounded-pill text-uppercase" style="font-size: 0.6rem;">PENDING</span>
+                            <span class="badge bg-warning bg-opacity-10 text-warning py-2 px-3 rounded-pill text-uppercase" style="font-size: 0.6rem;">SUGITAAN</span>
                             {% else %}
-                            <span class="badge bg-danger bg-opacity-10 text-danger py-2 px-3 rounded-pill text-uppercase" style="font-size: 0.6rem;">CANCELLED</span>
+                            <span class="badge bg-danger bg-opacity-10 text-danger py-2 px-3 rounded-pill text-uppercase" style="font-size: 0.6rem;">LAA JIRAY</span>
                             {% endif %}
                         </td>
                         <td class="text-end pe-4">
-                            <button class="btn btn-sm btn-dark border-white border-opacity-5 text-muted px-3 mb-1 view-order-btn" title="View Details" data-id="{{ order.id }}">
+                            <button class="btn btn-sm btn-dark border-white border-opacity-5 text-muted px-3 mb-1 view-order-btn" title="Arag faahfaahinta" data-id="{{ order.id }}">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button class="btn btn-sm btn-dark border-white border-opacity-5 text-warning px-3 mb-1 edit-order-btn" title="Edit Order" data-id="{{ order.id }}" data-customer="{{ order.customer_name if order.customer_name else '' }}" data-status="{{ order.status }}">
+                            <button class="btn btn-sm btn-dark border-white border-opacity-5 text-warning px-3 mb-1 edit-order-btn" title="Wax ka bedel" data-id="{{ order.id }}" data-customer="{{ order.customer_name if order.customer_name else '' }}" data-status="{{ order.status }}">
                                 <i class="fas fa-edit"></i>
                             </button>
-                            <button class="btn btn-sm btn-dark border-white border-opacity-5 text-primary px-3 mb-1 print-order-btn" title="Print Invoice" data-id="{{ order.id }}">
+                            <button class="btn btn-sm btn-dark border-white border-opacity-5 text-primary px-3 mb-1 print-order-btn" title="Daabac rasiidka" data-id="{{ order.id }}">
                                 <i class="fas fa-print"></i>
                             </button>
                         </td>
@@ -73,7 +73,7 @@
                     <tr>
                         <td colspan="6" class="text-center py-5 text-muted">
                             <i class="fas fa-history fa-3x mb-3 opacity-10"></i>
-                            <p>No orders found in the database.</p>
+                            <p>Wax dalab ah looma helin database-ka.</p>
                         </td>
                     </tr>
                     {% endfor %}
@@ -88,7 +88,7 @@
         <div class="pag-info">
             Muujinaya <strong>{{ (pagination.page - 1) * pagination.per_page + 1 }}</strong> 
             – <strong>{{ [(pagination.page * pagination.per_page), pagination.total]|min }}</strong> 
-            ka mid ah <strong>{{ pagination.total }}</strong> order
+            ka mid ah <strong>{{ pagination.total }}</strong> dalab
         </div>
         <nav class="pag-nav">
             <!-- Prev -->
@@ -127,17 +127,17 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content card-premium border-0">
             <div class="modal-header border-bottom border-white border-opacity-10">
-                <h5 class="modal-title fw-bold">Order Details: <span class="text-primary" id="v_order_id"></span></h5>
+                <h5 class="modal-title fw-bold">Tafaasiisha Dalabka: <span class="text-primary" id="v_order_id"></span></h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
                 <div class="row mb-4">
                     <div class="col-6">
-                        <p class="text-muted small mb-1">Customer / Table</p>
+                        <p class="text-muted small mb-1">Macmiilka / Miiska</p>
                         <h6 class="fw-bold" id="v_customer_table"></h6>
                     </div>
                     <div class="col-6 text-end">
-                        <p class="text-muted small mb-1">Date & Time</p>
+                        <p class="text-muted small mb-1">Taariikhda & Waqtiga</p>
                         <h6 class="fw-bold" id="v_datetime"></h6>
                     </div>
                 </div>
@@ -146,10 +146,10 @@
                     <table class="table table-sm table-hover align-middle">
                         <thead class="text-muted small text-uppercase">
                             <tr>
-                                <th>Item</th>
-                                <th class="text-center">Qty</th>
-                                <th class="text-end">Price</th>
-                                <th class="text-end">Total</th>
+                                <th>Alaabta</th>
+                                <th class="text-center">Tirada</th>
+                                <th class="text-end">Qiimaha</th>
+                                <th class="text-end">Wadarta</th>
                             </tr>
                         </thead>
                         <tbody id="v_order_items" class="border-top-0">
@@ -157,7 +157,7 @@
                         </tbody>
                         <tfoot>
                             <tr>
-                                <td colspan="3" class="text-end fw-bold">Grand Total:</td>
+                                <td colspan="3" class="text-end fw-bold">Wadarta Guud:</td>
                                 <td class="text-end fw-bold text-primary" id="v_grand_total"></td>
                             </tr>
                         </tfoot>
@@ -165,7 +165,7 @@
                 </div>
             </div>
             <div class="modal-footer border-top border-white border-opacity-10 bg-dark bg-opacity-25">
-                <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Xir</button>
             </div>
         </div>
     </div>
@@ -176,27 +176,27 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content card-premium border-0">
             <div class="modal-header border-bottom border-white border-opacity-10">
-                <h5 class="modal-title fw-bold">Edit Order: <span class="text-primary" id="e_order_id_title"></span></h5>
+                <h5 class="modal-title fw-bold">Wax ka bedelka Dalabka: <span class="text-primary" id="e_order_id_title"></span></h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="editOrderForm" method="POST">
                 <div class="modal-body p-4">
                     <div class="mb-3">
-                        <label class="form-label text-muted small fw-bold">Customer Name</label>
-                        <input type="text" class="form-control form-control-premium" name="customer_name" id="e_customer_name" placeholder="Guest">
+                        <label class="form-label text-muted small fw-bold">Magaca Macmiilka</label>
+                        <input type="text" class="form-control form-control-premium" name="customer_name" id="e_customer_name" placeholder="Macmiil">
                     </div>
                     <div class="mb-4">
-                        <label class="form-label text-muted small fw-bold">Order Status</label>
+                        <label class="form-label text-muted small fw-bold">Heerka Dalabka (Status)</label>
                         <select class="form-select form-select-premium" name="status" id="e_status">
-                            <option value="pending">PENDING</option>
-                            <option value="completed">COMPLETED</option>
-                            <option value="cancelled">CANCELLED</option>
+                            <option value="pending">SUGITAAN</option>
+                            <option value="completed">DHAMMAAD</option>
+                            <option value="cancelled">LAA JIRAY</option>
                         </select>
                     </div>
                 </div>
                 <div class="modal-footer border-top border-white border-opacity-10 bg-dark bg-opacity-25">
-                    <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary rounded-pill px-4">Save Changes <i class="fas fa-save ms-2"></i></button>
+                    <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Ka Noqo</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Keydi Isbedelka <i class="fas fa-save ms-2"></i></button>
                 </div>
             </form>
         </div>
@@ -238,7 +238,7 @@
                 })
                 .catch(err => {
                     console.error(err);
-                    alert('Connection error while fetching details.');
+                    alert('Cillad baa dhacday marka la soo aqrinayay xogta.');
                 });
         });
 
@@ -248,7 +248,7 @@
             const status = $(this).data('status');
             
             $('#e_order_id_title').text('#' + String(id).padStart(6, '0'));
-            $('#e_customer_name').val(customer === 'None' || customer === '' ? 'Guest' : customer);
+            $('#e_customer_name').val(customer === 'None' || customer === '' ? 'Macmiil' : customer);
             $('#e_status').val(status);
             $('#editOrderForm').attr('action', `/orders/edit/${id}`);
             $('#editOrderModal').modal('show');
@@ -256,8 +256,7 @@
         
         $('.print-order-btn').on('click', function() {
             const id = $(this).data('id');
-            alert('Print Invoice endpoint not yet implemented for order ID: ' + id);
-            // Example: window.open(`/orders/print/${id}`, '_blank');
+            window.open(`/orders/print/${id}`, '_blank');
         });
     });
 </script>

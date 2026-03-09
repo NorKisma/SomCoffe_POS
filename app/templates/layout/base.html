@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,10 +15,13 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     {% block styles %}{% endblock %}
 </head>
+
 <body>
     <!-- Background Decoration -->
     <div class="blob" style="top: -100px; left: -100px;"></div>
-    <div class="blob" style="bottom: -100px; right: -100px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(16, 185, 129, 0.15));"></div>
+    <div class="blob"
+        style="bottom: -100px; right: -100px; background: linear-gradient(135deg, rgba(56, 189, 248, 0.15), rgba(16, 185, 129, 0.15));">
+    </div>
 
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
@@ -25,49 +29,65 @@
         <!-- Elite Sidebar -->
         <aside class="sidebar-premium" id="sidebar">
             <div class="mb-5 d-flex align-items-center gap-3 ps-2">
-                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg" style="width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary), var(--accent-purple)) !important;">
+                <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg"
+                    style="width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary), var(--accent-purple)) !important;">
                     <i class="fas fa-coffee text-white"></i>
                 </div>
                 <div>
                     <h5 class="mb-0 fw-800 tracking-tight text-white">{{ sys_name }}</h5>
-                    <span class="text-primary fw-bold" style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px;">Restaurant Elite v2.0</span>
+                    <span class="text-primary fw-bold"
+                        style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px;">Elite v2.0</span>
                 </div>
             </div>
 
             <nav class="flex-grow-1">
-                <a href="{{ url_for('dashboard.index') }}" class="nav-item-premium {% if request.endpoint == 'dashboard.index' %}active{% endif %}">
+                <a href="{{ url_for('dashboard.index') }}"
+                    class="nav-item-premium {% if request.endpoint == 'dashboard.index' %}active{% endif %}" data-label="Overview">
                     <i class="fas fa-chart-pie"></i>
                     <span>Overview</span>
                 </a>
-                <a href="{{ url_for('pos.index') }}" class="nav-item-premium {% if request.endpoint == 'pos.index' %}active{% endif %}">
+                <a href="{{ url_for('pos.index') }}"
+                    class="nav-item-premium {% if request.endpoint == 'pos.index' %}active{% endif %}" data-label="Sales Terminal">
                     <i class="fas fa-cash-register"></i>
                     <span>Sales Terminal</span>
                 </a>
-                <a href="{{ url_for('products.index') }}" class="nav-item-premium {% if request.endpoint == 'products.index' %}active{% endif %}">
+                <a href="{{ url_for('products.index') }}"
+                    class="nav-item-premium {% if request.endpoint == 'products.index' %}active{% endif %}" data-label="Inventory">
                     <i class="fas fa-box-open"></i>
                     <span>Inventory</span>
                 </a>
-                <a href="{{ url_for('orders.index') }}" class="nav-item-premium {% if request.endpoint == 'orders.index' %}active{% endif %}">
+                <a href="{{ url_for('orders.index') }}"
+                    class="nav-item-premium {% if request.endpoint == 'orders.index' %}active{% endif %}" data-label="Order History">
                     <i class="fas fa-history"></i>
                     <span>Order History</span>
                 </a>
-                <a href="{{ url_for('reports.index') }}" class="nav-item-premium {% if request.endpoint == 'reports.index' %}active{% endif %}">
+                <a href="{{ url_for('reports.index') }}"
+                    class="nav-item-premium {% if request.endpoint == 'reports.index' %}active{% endif %}" data-label="Analytics">
                     <i class="fas fa-file-invoice-dollar"></i>
                     <span>Analytics</span>
                 </a>
-                
+                <a href="{{ url_for('customers.index') }}"
+                    class="nav-item-premium {% if request.endpoint and request.endpoint.startswith('customers.') %}active{% endif %}" data-label="Macaamiisha">
+                    <i class="fas fa-users"></i>
+                    <span>Macaamiisha</span>
+                </a>
+
                 {% if current_user.role == 'admin' %}
-                <div class="px-3 py-2 text-muted fw-bold small text-uppercase mt-4 mb-2 tracking-wider opacity-50" style="font-size: 0.65rem;">Administration</div>
-                
-                <a href="{{ url_for('employees.index') }}" class="nav-item-premium {% if request.endpoint == 'employees.index' %}active{% endif %}">
+                <div class="px-3 py-2 text-muted fw-bold small text-uppercase mt-4 mb-2 tracking-wider opacity-50"
+                    style="font-size: 0.65rem;">Administration</div>
+
+                <a href="{{ url_for('employees.index') }}"
+                    class="nav-item-premium {% if request.endpoint == 'employees.index' %}active{% endif %}" data-label="Staff Directory">
                     <i class="fas fa-id-card"></i>
                     <span>Staff Directory</span>
                 </a>
-                <a href="{{ url_for('users.index') }}" class="nav-item-premium {% if request.endpoint == 'users.index' %}active{% endif %}">
+                <a href="{{ url_for('users.index') }}"
+                    class="nav-item-premium {% if request.endpoint == 'users.index' %}active{% endif %}" data-label="User Management">
                     <i class="fas fa-users-cog"></i>
                     <span>User Management</span>
                 </a>
-                <a href="{{ url_for('settings.index') }}" class="nav-item-premium {% if request.endpoint == 'settings.index' %}active{% endif %}">
+                <a href="{{ url_for('settings.index') }}"
+                    class="nav-item-premium {% if request.endpoint == 'settings.index' %}active{% endif %}" data-label="System Settings">
                     <i class="fas fa-cogs"></i>
                     <span>System Settings</span>
                 </a>
@@ -80,10 +100,12 @@
                         <i class="fas fa-user-shield text-primary"></i>
                     </div>
                     <div class="overflow-hidden">
-                        <p class="mb-0 fw-bold text-white text-truncate" style="font-size: 0.9rem;">{{ current_user.username }}</p>
+                        <p class="mb-0 fw-bold text-white text-truncate" style="font-size: 0.9rem;">{{
+                            current_user.username }}</p>
                         <p class="mb-0 text-muted" style="font-size: 0.75rem;">{{ current_user.role|capitalize }}</p>
                     </div>
-                    <a href="{{ url_for('auth.logout') }}" class="ms-auto text-muted hover-white" title="Sign Out Securely">
+                    <a href="{{ url_for('auth.logout') }}" class="ms-auto text-muted hover-white"
+                        title="Sign Out Securely">
                         <i class="fas fa-sign-out-alt"></i>
                     </a>
                 </div>
@@ -94,11 +116,15 @@
             <!-- Glass Header -->
             <header class="py-3 px-4 px-md-5 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center gap-3">
-                    <button id="mobileToggle" class="d-lg-none">
+                    <button id="mobileToggle" class="d-lg-none" style="background: var(--bg-item); border: 1px solid var(--border-glass); color: var(--text-main); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-bars"></i>
                     </button>
+                    <button id="desktopToggle" class="d-none d-lg-flex" style="background: var(--bg-item); border: 1px solid var(--border-glass); color: var(--text-main); width: 40px; height: 40px; border-radius: 10px; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s;">
+                        <i class="fas fa-bars-staggered"></i>
+                    </button>
                     <div>
-                        <h4 class="mb-0 fw-bold d-none d-sm-block">{% block header_title %}Welcome, <span class="text-primary">Master</span>{% endblock %}</h4>
+                        <h4 class="mb-0 fw-bold d-none d-sm-block">{% block header_title %}Welcome, <span
+                                class="text-primary">Master</span>{% endblock %}</h4>
                         <p class="mb-0 text-muted small d-none d-md-block" id="liveDate"></p>
                     </div>
                 </div>
@@ -108,7 +134,8 @@
                     </div>
                     <div class="position-relative">
                         <i class="far fa-bell text-muted fs-5 cursor-pointer"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.5rem; padding: 3px 5px;">4</span>
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
+                            style="font-size: 0.5rem; padding: 3px 5px;">4</span>
                     </div>
                     <div class="vr opacity-10"></div>
                     <button class="btn btn-premium btn-sm rounded-pill px-3">
@@ -150,7 +177,7 @@
         themeToggle.addEventListener('click', () => {
             const currentTheme = document.documentElement.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
+
             document.documentElement.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             updateThemeIcon(newTheme);
@@ -167,9 +194,26 @@
         // Sidebar Toggle
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
-        const toggleBtn = document.getElementById('mobileToggle');
+        const mobileToggle = document.getElementById('mobileToggle');
+        const desktopToggle = document.getElementById('desktopToggle');
 
-        toggleBtn.addEventListener('click', () => {
+        // Load sidebar state (Default to collapsed)
+        const savedState = localStorage.getItem('sidebarCollapsed');
+        const isCollapsed = savedState === null ? true : savedState === 'true';
+        
+        if (isCollapsed) {
+            sidebar.classList.add('collapsed');
+            if (savedState === null) {
+                localStorage.setItem('sidebarCollapsed', 'true');
+            }
+        }
+
+        desktopToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('collapsed');
+            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+        });
+
+        mobileToggle.addEventListener('click', () => {
             sidebar.classList.add('show');
             overlay.classList.add('show');
         });
@@ -181,4 +225,5 @@
     </script>
     {% block scripts %}{% endblock %}
 </body>
+
 </html>

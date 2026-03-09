@@ -6,6 +6,7 @@ $(document).ready(function() {
     const Terminal = window.Terminal = {
         cart: [],
         tableId: null,
+        customerId: null,
         _fromPayNow: false,   // set true when table modal opened via PAY NOW
 
         // ── Step 2: Add product to cart ──
@@ -44,10 +45,59 @@ $(document).ready(function() {
             if (!confirm('Ma hubtaa inaad masaxdo dhamaan cart-ka?')) return;
             this.cart = [];
             this.tableId = null;
+            this.customerId = null;
             this._fromPayNow = false;
             $('#miiskaLabel').text('Dooro Miiska');
+            $('#customerLabel').text('Macmiil');
             $('.table-option-card').removeClass('selected');
             this.render();
+        },
+
+        selectCustomer: function(id, name) {
+            this.customerId = parseInt(id);
+            const label = (this.customerId === 0) ? 'Macmiil' : name;
+            $('#customerLabel').html(label);
+            $('#customerModal').modal('hide');
+        },
+
+        quickAddCustomer: function() {
+            const name = $('#q_name').val().trim();
+            const phone = $('#q_phone').val().trim();
+            const self = this;
+
+            if (!name) return self.showToast('⚠ Fadlan geli magaca!', 'warning');
+
+            fetch('/pos/add_customer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone })
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.success) {
+                    self.showToast('✓ Macmiilka waa la keydiyay!', 'success');
+                    // Add to list UI
+                    const newHtml = `
+                    <div class="customer-option-item" data-id="${d.customer.id}" data-name="${d.customer.name}" style="padding: 12px; border-radius: 12px; cursor: pointer; margin-bottom: 5px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="fw-bold">${d.customer.name} ${d.customer.phone ? '('+d.customer.phone+')' : ''}</div>
+                    </div>`;
+                    $('.customer-list').prepend(newHtml);
+                    
+                    // Select him
+                    self.selectCustomer(d.customer.id, d.customer.name);
+                    
+                    // Reset form
+                    $('#q_name').val('');
+                    $('#q_phone').val('');
+                    $('#quickAddForm').hide();
+                } else {
+                    self.showToast('Cillad: ' + d.message, 'error');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                self.showToast('Server error during quick add.', 'error');
+            });
         },
 
         // ── Step 4: Table selected ──
@@ -76,6 +126,12 @@ $(document).ready(function() {
             }
             this.currentPaymentMethod = paymentMethod;
 
+            if (paymentMethod === 'Credit' && (this.customerId === null || this.customerId === 0)) {
+                this.showToast('⚠ Fadlan dooro macmiilka deynta loo qorayo!', 'warning');
+                $('#customerModal').modal('show');
+                return;
+            }
+
             if (this.tableId === null) {
                 this._fromPayNow = true;
                 $('#tableModal').modal('show');
@@ -93,6 +149,7 @@ $(document).ready(function() {
             const payload = {
                 items: self.cart.map(i => ({ id: i.id, qty: i.qty, price: i.price })),
                 table_id: self.tableId,
+                customer_id: self.customerId,
                 payment_method: paymentMethod || self.currentPaymentMethod
             };
 
@@ -108,9 +165,11 @@ $(document).ready(function() {
                     self.showToast('✓ Order waa la diray!', 'success');
                     self.cart = [];
                     self.tableId = null;
+                    self.customerId = null;
                     self._fromPayNow = false;
                     self.currentPaymentMethod = null;
                     $('#miiskaLabel').text('Dooro Miiska');
+                    $('#customerLabel').text('Macmiil');
                     $('.table-option-card').removeClass('selected');
                     self.render();
                     // Close mobile cart if open
@@ -240,6 +299,22 @@ $(document).ready(function() {
         // Visual ripple on card
         $el.addClass('active-press');
         setTimeout(() => $el.removeClass('active-press'), 180);
+    });
+
+    // ── Customer option click ──
+    $(document).on('click', '.customer-option-item', function() {
+        const id = $(this).data('id');
+        const name = $(this).data('name');
+        Terminal.selectCustomer(id, name);
+    });
+
+    // ── Customer search ──
+    $('#customerSearch').on('input', function() {
+        const query = $(this).val().toLowerCase().trim();
+        $('.customer-option-item').each(function() {
+            const name = $(this).data('name').toLowerCase();
+            $(this).toggle(name.includes(query));
+        });
     });
 
     // Initial render

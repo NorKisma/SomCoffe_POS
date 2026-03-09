@@ -1,0 +1,148 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Customer History - SomCoffe POS{% endblock %}
+
+{% block content %}
+<div class="animate__animated animate__fadeIn">
+    <!-- Header -->
+    <div class="mb-4 d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-3">
+            <a href="{{ url_for('customers.index') }}" class="btn btn-dark rounded-circle" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <h2 class="fw-900 mb-0">Taariikhda <span class="text-primary">{{ customer.name }}</span></h2>
+        </div>
+        <a href="{{ url_for('customers.edit', customer_id=customer.id) }}" class="btn btn-outline-primary rounded-pill px-4">
+            <i class="fas fa-edit me-2"></i>Bedel Xogta
+        </a>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 text-white" style="background-color: var(--bs-{{category}}); opacity: 0.9;">
+                <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>{{ message }}
+            </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <div class="row g-4 mb-4">
+        <!-- Customer Info Card -->
+        <div class="col-md-4">
+            <div class="card card-premium border-0 h-100 p-4">
+                <div class="text-center mb-4">
+                    <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                        {{ customer.name[:2] | upper }}
+                    </div>
+                    <h4 class="fw-bold mb-1">{{ customer.name }}</h4>
+                    <p class="text-muted small">Macmiil Diiwaangashan</p>
+                </div>
+                
+                <div class="d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-primary" style="width: 20px;"><i class="fas fa-phone"></i></div>
+                        <div>{{ customer.phone or '—' }}</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-primary" style="width: 20px;"><i class="fas fa-envelope"></i></div>
+                        <div>{{ customer.email or '—' }}</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="text-primary" style="width: 20px;"><i class="fas fa-map-marker-alt"></i></div>
+                        <div>{{ customer.address or '—' }}</div>
+                    </div>
+                    <div class="d-flex align-items-center gap-3 mt-3 pt-3" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                        <div class="text-warning" style="width: 20px;"><i class="fas fa-star"></i></div>
+                        <div>
+                            <span class="text-muted small d-block">Deynta La Ogolyahay</span>
+                            <span class="fw-bold">{{ sys_currency }}{{ "%.2f"|format(customer.credit_limit) }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Balance Card -->
+        <div class="col-md-8">
+            <div class="card card-premium border-0 h-100 p-4">
+                <h5 class="fw-bold text-muted mb-4">XISAAABTA (ACCOUNT SUMMARY)</h5>
+                
+                <div class="row g-4 h-100">
+                    <div class="col-sm-6 d-flex flex-column justify-content-center">
+                        <div class="p-4 rounded-4" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">
+                            <div class="text-danger mb-2"><i class="fas fa-file-invoice-dollar fa-2x"></i></div>
+                            <div class="text-muted small fw-bold mb-1">DEYNTA LAGU LEEYAHAY (OUTSTANDING)</div>
+                            <h2 class="fw-900 text-danger mb-0">{{ sys_currency }}{{ "%.2f"|format(balance) }}</h2>
+                        </div>
+                    </div>
+                    
+                    <div class="col-sm-6 d-flex flex-column justify-content-center">
+                        <div class="p-4 rounded-4" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
+                            <div class="text-success mb-2"><i class="fas fa-wallet fa-2x"></i></div>
+                            <div class="text-muted small fw-bold mb-1">DEYNTA HARTA (CREDIT AVAILABLE)</div>
+                            <h2 class="fw-900 {% if customer.credit_limit - balance < 0 %}text-danger{% else %}text-success{% endif %} mb-0">
+                                {{ sys_currency }}{{ "%.2f"|format(customer.credit_limit - balance) }}
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Orders History -->
+    <div class="card card-premium border-0 p-4 mt-4">
+        <h5 class="fw-bold mb-4"><i class="fas fa-history me-2 text-primary"></i>Taariikhda Dalabyada Kharaashaadka (Order History)</h5>
+        
+        <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0 align-middle">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Taariikhda</th>
+                        <th>Nooca</th>
+                        <th>Lacagta</th>
+                        <th>Bixinta</th>
+                        <th class="text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td><span class="fw-bold text-primary">#{{ "%04d"|format(order.id) }}</span></td>
+                        <td>{{ order.created_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                        <td>
+                            <span class="badge bg-secondary rounded-pill">{{ order.order_type }}</span>
+                        </td>
+                        <td class="fw-bold">{{ sys_currency }}{{ "%.2f"|format(order.total_amount) }}</td>
+                        <td>
+                            {% if order.payment_status == 'paid' %}
+                            <span class="badge bg-success rounded-pill px-3 py-2"><i class="fas fa-check-circle me-1"></i>Bixan</span>
+                            {% elif order.payment_status == 'partial' %}
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2"><i class="fas fa-adjust me-1"></i>Nus-Bixan</span>
+                            {% else %}
+                            <span class="badge bg-danger rounded-pill px-3 py-2"><i class="fas fa-times-circle me-1"></i>Deyn</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <a href="{{ url_for('orders.view_order', order_id=order.id) }}" class="btn btn-sm btn-info rounded-3">
+                                <i class="fas fa-file-invoice"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <i class="fas fa-shopping-basket fa-3x mb-3 d-block text-muted"></i>
+                            <p class="text-muted fw-bold">Wali lama diiwaangelin dalabkharaashad macmiilkan ah.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

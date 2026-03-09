@@ -33,3 +33,13 @@ def edit_order(id):
         flash(f'Error updating order: {str(e)}', 'danger')
         
     return redirect(url_for('orders.index'))
+
+@orders_bp.route('/print/<int:id>')
+@login_required
+def print_receipt(id):
+    try:
+        details = OrderService.get_order_details(id)
+        return render_template('orders/receipt.html', order=details)
+    except Exception as e:
+        flash(f'Error generating receipt: {str(e)}', 'danger')
+        return redirect(url_for('orders.index'))

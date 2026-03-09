@@ -1,7 +1,7 @@
 from app import create_app
 from app.extensions.db import db
 from app.models.category import Category
-from app.models.table import Table  # type: ignore
+from app.models.table import Table
 from app.models.product import Product
 from app.models.user import User
 from app.models.setting import Setting
@@ -34,14 +34,15 @@ with app.app_context():
         coffee_cat = Category.query.filter_by(name='Coffee').first()
         meal_cat = Category.query.filter_by(name='Meals').first()
         
-        prods = [
-            Product(name='Cappuccino', price=3.5, stock=50, category_id=coffee_cat.id),
-            Product(name='Espresso', price=2.0, stock=100, category_id=coffee_cat.id),
-            Product(name='Chicken Wrap', price=6.5, stock=20, category_id=meal_cat.id)
-        ]
-        db.session.add_all(prods)
-        db.session.commit()
-        print("Products seeded!")
+        if coffee_cat and meal_cat:
+            prods = [
+                Product(name='Cappuccino', price=3.5, stock=50, category_id=coffee_cat.id),
+                Product(name='Espresso', price=2.0, stock=100, category_id=coffee_cat.id),
+                Product(name='Chicken Wrap', price=6.5, stock=20, category_id=meal_cat.id)
+            ]
+            db.session.add_all(prods)
+            db.session.commit()
+            print("Products seeded!")
 
     # 4. Add Admin User
     if not User.query.filter_by(username='admin').first():

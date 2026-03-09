@@ -10,7 +10,7 @@
     --accent-green: #10b981;
 
     --bg-main: radial-gradient(circle at 20% 20%, #0f172a 0%, #020617 100%);
-    --bg-sidebar: #0f172a;
+    --bg-sidebar: #000000;
     --bg-card: rgba(30, 41, 59, 0.7);
     --bg-item: rgba(255, 255, 255, 0.03);
     --bg-header: rgba(15, 23, 42, 0.6);
@@ -194,13 +194,56 @@ body {
     width: 280px;
     height: 100vh;
     background: var(--bg-sidebar);
-    backdrop-filter: blur(20px);
     border-right: 1px solid var(--border-glass);
     display: flex;
     flex-direction: column;
     padding: 2rem 1.5rem;
     position: relative;
     z-index: 1000;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.sidebar-premium.collapsed {
+    width: 80px;
+    padding: 2rem 0.75rem;
+}
+
+.sidebar-premium.collapsed .nav-item-premium span,
+.sidebar-premium.collapsed .mb-5 > div:last-child,
+.sidebar-premium.collapsed .px-3.py-2.text-muted,
+.sidebar-premium.collapsed .mt-auto .overflow-hidden,
+.sidebar-premium.collapsed .mt-auto .ms-auto {
+    display: none !important;
+}
+
+.sidebar-premium.collapsed .nav-item-premium {
+    justify-content: center;
+    padding: 0.85rem;
+    position: relative;
+}
+
+.sidebar-premium.collapsed .nav-item-premium i {
+    font-size: 1.25rem;
+}
+
+.sidebar-premium.collapsed .nav-item-premium:hover::after {
+    content: attr(data-label);
+    position: absolute;
+    left: 100%;
+    margin-left: 15px;
+    background: #1e1b4b;
+    padding: 5px 12px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    z-index: 1001;
+    border: 1px solid var(--border-glass);
+    pointer-events: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.sidebar-premium.collapsed .mb-5 {
+    justify-content: center;
 }
 
 .nav-item-premium {

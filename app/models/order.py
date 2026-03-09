@@ -10,8 +10,11 @@ class Order(db.Model):
     order_type = db.Column(db.String(20), default='dine-in') # dine-in, takeaway
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
+    customer_id = db.Column(db.Integer, db.ForeignKey('customers.id'), nullable=True)
     table_id = db.Column(db.Integer, db.ForeignKey('tables.id'), nullable=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    payment_status = db.Column(db.String(20), default='paid') # paid, unpaid, partial
+
     
     items = db.relationship('OrderItem', backref='order', lazy=True, cascade="all, delete-orphan")
     payments = db.relationship('Payment', backref='order', lazy=True)

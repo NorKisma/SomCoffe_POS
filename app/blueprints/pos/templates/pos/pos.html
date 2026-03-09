@@ -14,7 +14,7 @@
     <div class="pos-categories-nav custom-scrollbar" id="posCatNav">
         <div class="nav-cat-item active" data-cat="__all__">
             <i class="fas fa-th-large"></i>
-            <span>All</span>
+            <span>Dhamaan</span>
         </div>
         {% for cat in categories %}
         <div class="nav-cat-item" data-cat="{{ cat.name }}">
@@ -26,6 +26,13 @@
             <span>{{ cat.name }}</span>
         </div>
         {% endfor %}
+        
+        <a href="{{ url_for('customers.index') }}" class="nav-item-link mt-auto" style="text-decoration: none;">
+            <div class="nav-cat-item" style="border-color: rgba(16, 185, 129, 0.3); color: #10b981;">
+                <i class="fas fa-users"></i>
+                <span>Macmiil</span>
+            </div>
+        </a>
     </div>
 
     <!-- Main Section -->
@@ -69,9 +76,15 @@
 
         <div class="invoice-header">
             <h5 class="fw-900 mb-1">{{ sys_name }}</h5>
-            <div class="table-selection-btn" onclick="$('#tableModal').modal('show')">
-                <i class="fas fa-chair text-primary"></i>
-                <span id="miiskaLabel" class="fw-800">Dooro Miiska</span>
+            <div class="d-flex gap-2">
+                <div class="table-selection-btn flex-grow-1" onclick="$('#tableModal').modal('show')">
+                    <i class="fas fa-chair text-primary"></i>
+                    <span id="miiskaLabel" class="fw-800">Dooro Miiska</span>
+                </div>
+                <div class="table-selection-btn flex-grow-1" onclick="$('#customerModal').modal('show')" style="border-color: rgba(16, 185, 129, 0.3);">
+                    <i class="fas fa-user text-success"></i>
+                    <span id="customerLabel" class="fw-800">Macmiil</span>
+                </div>
             </div>
         </div>
 
@@ -84,11 +97,11 @@
 
         <div class="invoice-footer">
             <div class="summary-line">
-                <span class="text-muted small">Subtotal</span>
+                <span class="text-muted small">Isku darka hoose</span>
                 <span id="vSubtotal">$0.00</span>
             </div>
             <div class="summary-line">
-                <span class="text-muted small">VAT ({{ Setting.get_val('vat_rate', '15') }}%)</span>
+                <span class="text-muted small">Canshuurta ({{ Setting.get_val('vat_rate', '15') }}%)</span>
                 <span id="vTax">$0.00</span>
             </div>
             <div class="total-line">
@@ -113,13 +126,13 @@
                     </button>
                 </div>
                 <div class="col-6">
-                    <button class="btn btn-outline-primary w-100 fw-bold py-2 payment-btn" onclick="Terminal.complete('Bank')">
-                        <i class="fas fa-university me-1"></i> Banks
+                    <button class="btn btn-outline-danger w-100 fw-bold py-2 payment-btn" onclick="Terminal.complete('Credit')">
+                        <i class="fas fa-hand-holding-usd me-1"></i> Deyn (Credit)
                     </button>
                 </div>
                 <div class="col-12 mt-2">
                     <button class="pay-now-btn pay-order-btn" onclick="Terminal.complete('Pending')" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); border: none;">
-                        ORDER ONLY (Pending) <i class="fas fa-clock ms-2"></i>
+                        DALAB KALIYA (Pending) <i class="fas fa-clock ms-2"></i>
                     </button>
                 </div>
             </div>
@@ -177,6 +190,58 @@
                         </div>
                     </div>
                     {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Customer Selection Modal -->
+<div class="modal fade" id="customerModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-xl" style="border-radius: 28px; background: linear-gradient(160deg, #1e1b4b, #0f172a); color: #fff; border: 1px solid rgba(255,255,255,0.08);">
+            <div class="modal-header border-0 px-4 pt-4 pb-2">
+                <div>
+                    <h4 class="fw-900 mb-0">Dooro <span style="color: #10b981;">Macmiilka</span></h4>
+                    <p class="mb-0 small" style="color: #94a3b8;">Xulo macmiilka dalabka iska leh</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="search-box mb-3" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px 15px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center;">
+                    <i class="fas fa-search text-muted me-2"></i>
+                    <input type="text" id="customerSearch" placeholder="Raadi macmiil..." style="background: transparent; border: none; color: white; width: 90%; outline: none;">
+                </div>
+                <div class="customer-list custom-scrollbar" style="max-height: 300px; overflow-y: auto;">
+                    <div class="customer-option-item" data-id="0" data-name="Walk-in Customer" style="padding: 12px; border-radius: 12px; cursor: pointer; margin-bottom: 5px; background: rgba(255,255,255,0.05);">
+                        <div class="fw-bold">Walk-in Customer</div>
+                        <div class="small text-muted">Macmiil aan diiwaangashanayn</div>
+                    </div>
+                    {% for c in customers %}
+                    <div class="customer-option-item" data-id="{{ c.id }}" data-name="{{ c.name }}" style="padding: 12px; border-radius: 12px; cursor: pointer; margin-bottom: 5px; border: 1px solid rgba(255,255,255,0.05);">
+                        <div class="fw-bold">{{ c.name }}</div>
+                        <div class="small text-muted">{{ c.phone if c.phone else 'No Phone' }}</div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="modal-footer border-0 p-4 pt-0 d-block">
+                <button type="button" class="btn btn-outline-success w-100 rounded-pill py-2 mb-3" onclick="$('#quickAddForm').slideToggle()">
+                    <i class="fas fa-user-plus me-1"></i> MACMIIL CUSUB (Quick Add)
+                </button>
+                
+                <div id="quickAddForm" style="display: none; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 18px; border: 1px solid rgba(16, 185, 129, 0.2);">
+                    <div class="mb-2">
+                        <label class="small text-muted mb-1">Magaca Macmiilka *</label>
+                        <input type="text" id="q_name" class="form-control form-control-sm" placeholder="Tusaale: Ahmed Ali" style="background: rgba(0,0,0,0.2) !important;">
+                    </div>
+                    <div class="mb-3">
+                        <label class="small text-muted mb-1">Lambarka Taleefanka</label>
+                        <input type="text" id="q_phone" class="form-control form-control-sm" placeholder="061xxxxxxx" style="background: rgba(0,0,0,0.2) !important;">
+                    </div>
+                    <button type="button" class="btn btn-success btn-sm w-100 rounded-pill" onclick="Terminal.quickAddCustomer()">
+                        <i class="fas fa-check me-1"></i> KEYDI MACMIILKA
+                    </button>
                 </div>
             </div>
         </div>

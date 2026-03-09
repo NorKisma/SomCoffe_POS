@@ -8,7 +8,7 @@ from datetime import datetime
 
 class POSService:
     @staticmethod
-    def create_order(items, table_id, user_id, payment_method='Pending'):
+    def create_order(items, table_id, user_id, payment_method='Pending', customer_id=None):
         if not items:
             raise ValueError("Cart is empty")
 
@@ -16,12 +16,17 @@ class POSService:
         vat_rate = float(Setting.get_val('vat_rate', '15')) / 100
         total_with_tax = subtotal * (1 + vat_rate)
         
-        status = 'completed' if payment_method and payment_method != 'Pending' else 'pending'
+        # Credit sale logic
+        is_credit = (payment_method == 'Credit')
+        status = 'completed' if (payment_method and payment_method not in ['Pending', 'Credit']) else 'pending'
+        payment_status = 'unpaid' if is_credit else ('paid' if status == 'completed' else 'unpaid')
         
         new_order = Order(
             table_id=table_id if table_id != 0 else None,
+            customer_id=customer_id if customer_id != 0 else None,
             total_amount=total_with_tax,
             status=status,
+            payment_status=payment_status,
             order_type='dine-in' if table_id != 0 else 'takeaway',
             user_id=user_id
         )

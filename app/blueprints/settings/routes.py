@@ -11,7 +11,7 @@ def index():
     # Fetch real settings from database
     settings = {
         'restaurant_name': Setting.get_val('restaurant_name', 'Rays POS & Restaurant'),
-        'vat_rate': Setting.get_val('vat_rate', '15'),
+        'vat_rate': Setting.get_val('vat_rate', '0'),
         'currency': Setting.get_val('currency', '$'),
         'address': Setting.get_val('address', 'Mogadishu, Somalia'),
         'phone': Setting.get_val('phone', '+252 61 0000000')

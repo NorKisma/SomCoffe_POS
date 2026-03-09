@@ -18,7 +18,7 @@ class OrderService:
         items = []
         for item in order.items:
             items.append({
-                'product_name': item.product.name if item.product else 'Unknown',
+                'product_name': item.product.name if item.product else 'Lama yaqaan',
                 'quantity': item.quantity,
                 'price': item.price_at_time,
                 'total': item.quantity * item.price_at_time
@@ -27,10 +27,11 @@ class OrderService:
         return {
             'id': order.id,
             'table': order.table.number if order.table else 'Takeaway',
-            'customer': order.customer_name or 'Guest',
+            'customer': order.customer_rel.name if order.customer_rel else (order.customer_name or 'Macmiil'),
             'date': order.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             'type': order.order_type,
             'status': order.status,
+            'payment_status': order.payment_status or 'paid',
             'total': order.total_amount,
             'items': items
         }

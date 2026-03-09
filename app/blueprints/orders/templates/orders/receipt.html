@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <title>Resitka Dalabka #{{ "%06d"|format(order.id) }}</title>
+    <style>
+        body {
+            font-family: 'Courier New', Courier, monospace;
+            width: 80mm;
+            margin: 0 auto;
+            padding: 5mm;
+            font-size: 12px;
+            color: #000;
+        }
+        .text-center { text-align: center; }
+        .text-right { text-align: right; }
+        .header { margin-bottom: 10px; border-bottom: 1px dashed #000; padding-bottom: 5px; }
+        .restaurant-name { font-size: 18px; font-weight: bold; text-transform: uppercase; }
+        .info-line { display: flex; justify-content: space-between; margin-bottom: 2px; }
+        .items-table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 10px; }
+        .items-table th { border-bottom: 1px solid #000; text-align: left; }
+        .items-table td { padding: 3px 0; }
+        .total-section { border-top: 1px dashed #000; padding-top: 5px; }
+        .grand-total { font-size: 16px; font-weight: bold; }
+        .footer { margin-top: 20px; border-top: 1px solid #000; padding-top: 5px; }
+
+        @media print {
+            @page { margin: 0; }
+            body { margin: 0; padding: 5mm; width: 80mm; }
+            .no-print { display: none; }
+        }
+        
+        .no-print-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="no-print">
+        <button class="no-print-btn" onclick="window.print()">DAABAC RESITKA (PRINT)</button>
+    </div>
+
+    <div class="header text-center">
+        <div class="restaurant-name">{{ sys_name }}</div>
+        <div>{{ sys_address }}</div>
+        <div>Tel: {{ sys_phone }}</div>
+    </div>
+
+    <div class="info-line">
+        <span>Order #:</span>
+        <span class="text-right">#{{ "%06d"|format(order.id) }}</span>
+    </div>
+    <div class="info-line">
+        <span>Taariikh:</span>
+        <span class="text-right">{{ order.date }}</span>
+    </div>
+    <div class="info-line">
+        <span>Mesaafada:</span>
+        <span class="text-right">{{ order.table }}</span>
+    </div>
+    <div class="info-line">
+        <span>Macmiilka:</span>
+        <span class="text-right">{{ order.customer }}</span>
+    </div>
+
+    <table class="items-table">
+        <thead>
+            <tr>
+                <th>Item</th>
+                <th class="text-center">Qty</th>
+                <th class="text-right">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in order.items %}
+            <tr>
+                <td>{{ item.product_name }}</td>
+                <td class="text-center">{{ item.quantity }}</td>
+                <td class="text-right">{{ sys_currency }}{{ "%.2f"|format(item.total) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="total-section">
+        <div class="info-line grand-total">
+            <span>ISKU DARK (TOTAL):</span>
+            <span class="text-right">{{ sys_currency }}{{ "%.2f"|format(order.total) }}</span>
+        </div>
+    </div>
+
+    <div class="footer text-center">
+        <div>MAHADSANID, SOO LAABO MAR KALE!</div>
+        <div style="font-size: 10px; margin-top: 5px;">Software by RaysPOS v2.0</div>
+    </div>
+
+    <script>
+        // Auto print and close or stay
+        window.onload = function() {
+            // Uncomment to auto-print
+            // window.print();
+        }
+    </script>
+</body>
+</html>
