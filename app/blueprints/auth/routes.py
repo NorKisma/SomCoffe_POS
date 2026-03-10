@@ -111,3 +111,10 @@ def reset_password():
             return redirect(url_for('auth.login'))
             
     return render_template('auth/reset_password.html')
+@auth_bp.route('/verify-pin', methods=['POST'])
+@login_required
+def verify_pin():
+    pin = request.form.get('pin')
+    if current_user.pin == pin:
+        return {'success': True}
+    return {'success': False, 'message': 'PIN-ka waa khalad!'}, 401

@@ -5,7 +5,7 @@
 {% block header_title %}Taariikhda <span class="text-primary">Dalabyada la Fuliyay</span>{% endblock %}
 
 {% block content %}
-<div class="animate__animated animate__fadeIn">
+<div class="p-3 p-md-5 animate__animated animate__fadeIn">
     <div class="row g-4 mb-5 align-items-center">
         <div class="col-md-6">
             <h5 class="fw-bold mb-0">Dalabyada: <span class="text-primary">{{ orders|length }}</span></h5>
@@ -16,12 +16,20 @@
         </div>
     </div>
 
-    <div class="card-premium p-0 overflow-hidden">
+    <!-- Table Section -->
+    <div class="table-glass-wrap animate__animated animate__fadeInUp">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 px-3">
+            <div>
+                <h3 class="fw-900 mb-1 text-gradient-primary">Taariikhda Dalabyada</h3>
+                <p class="text-muted small mb-0">Maamul oo la soco dhamaan dalabyadii dhacay.</p>
+            </div>
+        </div>
+
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table id="ordersTable" class="table align-middle w-100">
                 <thead>
                     <tr>
-                        <th class="ps-4">ID</th>
+                        <th>ID</th>
                         <th class="d-none d-md-table-cell">Miiska / Macmiilka</th>
                         <th class="d-none d-lg-table-cell">Taariikhda & Waqtiga</th>
                         <th>Lacagta</th>
@@ -33,40 +41,64 @@
                     {% for order in orders %}
                     <tr>
                         <td class="ps-4">
-                            <span class="fw-800 text-white">#{{ "%06d"|format(order.id) }}</span>
+                            <span class="fw-bold text-main" style="font-size: 0.95rem;">#{{ "%06d"|format(order.id)
+                                }}</span>
                         </td>
                         <td class="d-none d-md-table-cell">
                             <div class="d-flex align-items-center gap-2">
                                 <div class="badge bg-primary bg-opacity-10 text-primary rounded-pill">
-                                    <i class="fas fa-chair small me-1"></i> {{ order.table.number if order.table else 'Lala tegayo' }}
+                                    <i class="fas fa-chair small me-1"></i> {{ order.table.number if order.table else
+                                    'Lala tegayo' }}
                                 </div>
-                                <span class="text-muted small">{{ order.customer_name if order.customer_name else 'Macmiil' }}</span>
+                                <span class="text-muted small">{{ order.customer_name if order.customer_name else
+                                    'Macmiil' }}</span>
                             </div>
                         </td>
                         <td class="d-none d-lg-table-cell">
-                            <div class="text-white small fw-bold">{{ order.created_at.strftime('%H:%M') }}</div>
-                            <div class="text-muted" style="font-size: 0.7rem;">{{ order.created_at.strftime('%d %b, %Y') }}</div>
+                            <div class="fw-bold text-primary mb-0" style="font-size: 0.9rem;">{{
+                                order.created_at.strftime('%H:%M') }}</div>
+                            <div class="text-muted small">{{ order.created_at.strftime('%d %b, %Y') }}</div>
                         </td>
-                        <td class="fw-800 text-primary">{{ sys_currency }} {{ "%.2f"|format(order.total_amount) }}</td>
+                        <td class="fw-800 text-primary">{{ sys_currency }} <span class="order-amount">{{
+                                "%.2f"|format(order.total_amount) }}</span></td>
                         <td>
                             {% if order.status == 'completed' %}
-                            <span class="badge bg-success bg-opacity-10 text-success py-2 px-3 rounded-pill text-uppercase" style="font-size: 0.6rem;">DHAMMAAD</span>
+                            <span
+                                class="badge bg-success bg-opacity-10 text-success py-2 px-3 rounded-pill text-uppercase"
+                                style="font-size: 0.6rem;">DHAMMAAD</span>
                             {% elif order.status == 'pending' %}
-                            <span class="badge bg-warning bg-opacity-10 text-warning py-2 px-3 rounded-pill text-uppercase" style="font-size: 0.6rem;">SUGITAAN</span>
+                            <span
+                                class="badge bg-warning bg-opacity-10 text-warning py-2 px-3 rounded-pill text-uppercase"
+                                style="font-size: 0.6rem;">SUGITAAN</span>
                             {% else %}
-                            <span class="badge bg-danger bg-opacity-10 text-danger py-2 px-3 rounded-pill text-uppercase" style="font-size: 0.6rem;">LAA JIRAY</span>
+                            <span
+                                class="badge bg-danger bg-opacity-10 text-danger py-2 px-3 rounded-pill text-uppercase"
+                                style="font-size: 0.6rem;">LAA JIRAY</span>
                             {% endif %}
                         </td>
                         <td class="text-end pe-4">
-                            <button class="btn btn-sm btn-dark border-white border-opacity-5 text-muted px-3 mb-1 view-order-btn" title="Arag faahfaahinta" data-id="{{ order.id }}">
-                                <i class="fas fa-eye"></i>
-                            </button>
-                            <button class="btn btn-sm btn-dark border-white border-opacity-5 text-warning px-3 mb-1 edit-order-btn" title="Wax ka bedel" data-id="{{ order.id }}" data-customer="{{ order.customer_name if order.customer_name else '' }}" data-status="{{ order.status }}">
-                                <i class="fas fa-edit"></i>
-                            </button>
-                            <button class="btn btn-sm btn-dark border-white border-opacity-5 text-primary px-3 mb-1 print-order-btn" title="Daabac rasiidka" data-id="{{ order.id }}">
-                                <i class="fas fa-print"></i>
-                            </button>
+                            <div class="d-flex justify-content-end gap-1">
+                                <button class="btn btn-action view-order-btn" data-id="{{ order.id }}"
+                                    title="Fiiri dalabka" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5;">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                                <button class="btn btn-action edit-order-btn" data-id="{{ order.id }}"
+                                    data-customer="{{ order.customer_name }}" data-status="{{ order.status }}"
+                                    title="Wax ka badel" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-action print-order-btn" data-id="{{ order.id }}"
+                                    title="Print Resit" style="background: rgba(30, 41, 59, 0.1); color: #1e293b;">
+                                    <i class="fas fa-print"></i>
+                                </button>
+                                {% if order.status != 'cancelled' %}
+                                <a href="{{ url_for('pos.index') }}?append_order_id={{ order.id }}&table_id={{ order.table_id or 0 }}&table_num={{ order.table.number if order.table else 'TAKEAWAY' }}"
+                                    class="btn btn-action" title="Ku dar dalab kale (Reorder)"
+                                    style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                                {% endif %}
+                            </div>
                         </td>
                     </tr>
                     {% else %}
@@ -78,48 +110,18 @@
                     </tr>
                     {% endfor %}
                 </tbody>
+                <tfoot class="border-0">
+                    <tr class="border-0">
+                        <th colspan="3" class="text-end pe-4 py-4 fw-bold border-0 fs-5">WADARTA GUUD:</th>
+                        <th class="py-4 fw-900 text-primary border-0" id="table_grand_total"
+                            style="font-size: 1.6rem !important;">{{ sys_currency }} 0.00</th>
+                        <th colspan="2" class="border-0"></th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
 
-    <!-- Pagination -->
-    {% if pagination and pagination.pages > 1 %}
-    <div class="pag-wrap">
-        <div class="pag-info">
-            Muujinaya <strong>{{ (pagination.page - 1) * pagination.per_page + 1 }}</strong> 
-            – <strong>{{ [(pagination.page * pagination.per_page), pagination.total]|min }}</strong> 
-            ka mid ah <strong>{{ pagination.total }}</strong> dalab
-        </div>
-        <nav class="pag-nav">
-            <!-- Prev -->
-            {% if pagination.has_prev %}
-            <a href="{{ url_for('orders.index', page=pagination.prev_num) }}" class="pag-btn">
-                <i class="fas fa-chevron-left fa-xs"></i>
-            </a>
-            {% else %}
-            <span class="pag-btn disabled"><i class="fas fa-chevron-left fa-xs"></i></span>
-            {% endif %}
-
-            <!-- Pages -->
-            {% for page in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-                {% if page %}
-                    <a href="{{ url_for('orders.index', page=page) }}" class="pag-btn {{ 'active' if page == pagination.page else '' }}">{{ page }}</a>
-                {% else %}
-                    <span class="pag-dots">...</span>
-                {% endif %}
-            {% endfor %}
-
-            <!-- Next -->
-            {% if pagination.has_next %}
-            <a href="{{ url_for('orders.index', page=pagination.next_num) }}" class="pag-btn">
-                <i class="fas fa-chevron-right fa-xs"></i>
-            </a>
-            {% else %}
-            <span class="pag-btn disabled"><i class="fas fa-chevron-right fa-xs"></i></span>
-            {% endif %}
-        </nav>
-    </div>
-    {% endif %}
 </div>
 
 <!-- View Order Modal -->
@@ -127,45 +129,49 @@
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content card-premium border-0">
             <div class="modal-header border-bottom border-white border-opacity-10">
-                <h5 class="modal-title fw-bold">Tafaasiisha Dalabka: <span class="text-primary" id="v_order_id"></span></h5>
+                <h5 class="modal-title fw-bold">Tafaasiisha Dalabka: <span class="text-primary" id="v_order_id"></span>
+                </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
-            <div class="modal-body p-4">
-                <div class="row mb-4">
-                    <div class="col-6">
-                        <p class="text-muted small mb-1">Macmiilka / Miiska</p>
-                        <h6 class="fw-bold" id="v_customer_table"></h6>
+            <div class="modal-body p-0">
+                <div class="receipt-preview p-4"
+                    style="background: #fff; color: #333; font-family: 'Courier New', Courier, monospace;">
+                    <div class="text-center mb-4">
+                        <h4 class="fw-900 mb-0 text-dark">{{ sys_name }}</h4>
+                        <div class="small">Tafaasiisha Dalabka: <span id="v_order_id_full" class="fw-bold"></span></div>
+                        <div class="small" id="v_datetime"></div>
                     </div>
-                    <div class="col-6 text-end">
-                        <p class="text-muted small mb-1">Taariikhda & Waqtiga</p>
-                        <h6 class="fw-bold" id="v_datetime"></h6>
+
+                    <div class="d-flex justify-content-between mb-3 border-bottom pb-2 border-dark border-opacity-10">
+                        <div class="small text-uppercase fw-bold text-muted">Table / Macmiil</div>
+                        <div class="small fw-bold" id="v_customer_table"></div>
                     </div>
-                </div>
-                
-                <div class="table-responsive">
-                    <table class="table table-sm table-hover align-middle">
-                        <thead class="text-muted small text-uppercase">
-                            <tr>
+
+                    <table class="table table-sm table-borderless">
+                        <thead class="border-bottom border-dark border-opacity-10">
+                            <tr class="small text-uppercase">
                                 <th>Alaabta</th>
-                                <th class="text-center">Tirada</th>
-                                <th class="text-end">Qiimaha</th>
-                                <th class="text-end">Wadarta</th>
+                                <th class="text-center">Qty</th>
+                                <th class="text-end">Price</th>
+                                <th class="text-end">Total</th>
                             </tr>
                         </thead>
-                        <tbody id="v_order_items" class="border-top-0">
-                            <!-- Items inserted by JS -->
+                        <tbody id="v_order_items">
+                            <!-- Items via JS -->
                         </tbody>
-                        <tfoot>
-                            <tr>
-                                <td colspan="3" class="text-end fw-bold">Wadarta Guud:</td>
-                                <td class="text-end fw-bold text-primary" id="v_grand_total"></td>
-                            </tr>
-                        </tfoot>
                     </table>
+
+                    <div class="border-top border-dark pt-2 mt-3">
+                        <div class="d-flex justify-content-between">
+                            <span class="fw-bold">WADARTA GUUD:</span>
+                            <span class="fw-bold" id="v_grand_total"></span>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer border-top border-white border-opacity-10 bg-dark bg-opacity-25">
-                <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Xir</button>
+                <button type="button" class="btn btn-outline-light rounded-pill px-4"
+                    data-bs-dismiss="modal">Xir</button>
             </div>
         </div>
     </div>
@@ -176,14 +182,17 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content card-premium border-0">
             <div class="modal-header border-bottom border-white border-opacity-10">
-                <h5 class="modal-title fw-bold">Wax ka bedelka Dalabka: <span class="text-primary" id="e_order_id_title"></span></h5>
+                <h5 class="modal-title fw-bold">Wax ka bedelka Dalabka: <span class="text-primary"
+                        id="e_order_id_title"></span></h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form id="editOrderForm" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="modal-body p-4">
                     <div class="mb-3">
                         <label class="form-label text-muted small fw-bold">Magaca Macmiilka</label>
-                        <input type="text" class="form-control form-control-premium" name="customer_name" id="e_customer_name" placeholder="Macmiil">
+                        <input type="text" class="form-control form-control-premium" name="customer_name"
+                            id="e_customer_name" placeholder="Macmiil">
                     </div>
                     <div class="mb-4">
                         <label class="form-label text-muted small fw-bold">Heerka Dalabka (Status)</label>
@@ -195,8 +204,10 @@
                     </div>
                 </div>
                 <div class="modal-footer border-top border-white border-opacity-10 bg-dark bg-opacity-25">
-                    <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Ka Noqo</button>
-                    <button type="submit" class="btn btn-primary rounded-pill px-4">Keydi Isbedelka <i class="fas fa-save ms-2"></i></button>
+                    <button type="button" class="btn btn-outline-light rounded-pill px-4" data-bs-dismiss="modal">Ka
+                        Noqo</button>
+                    <button type="submit" class="btn btn-primary rounded-pill px-4">Keydi Isbedelka <i
+                            class="fas fa-save ms-2"></i></button>
                 </div>
             </form>
         </div>
@@ -207,54 +218,98 @@
 
 {% block scripts %}
 <script>
-    $(document).ready(function() {
-        $('.view-order-btn').on('click', function() {
+    $(document).ready(function () {
+        $('#ordersTable').DataTable({
+            responsive: true,
+            dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-4"fB>rt<"d-flex justify-content-between align-items-center mt-4"ip>',
+            buttons: [
+                { extend: 'print', text: '<i class="fas fa-print"></i> Daabac', className: 'dt-button' },
+                { extend: 'excel', text: '<i class="fas fa-file-excel"></i> Excel', className: 'dt-button' },
+                { extend: 'pdf', text: '<i class="fas fa-file-pdf"></i> PDF', className: 'dt-button' }
+            ],
+            order: [[0, 'desc']],
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Raadi dalab...",
+                lengthMenu: "_MENU_ dalab",
+                info: "Dalabyada: _START_ - _END_ ee _TOTAL_",
+                paginate: {
+                    next: '<i class="fas fa-chevron-right"></i>',
+                    previous: '<i class="fas fa-chevron-left"></i>'
+                }
+            },
+            columnDefs: [
+                { orderable: false, targets: 5 }
+            ],
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api();
+                var intVal = (i) => typeof i === 'string' ? i.replace(/[^\d.-]/g, '') * 1 : typeof i === 'number' ? i : 0;
+
+                // Total over this page
+                var pageTotal = api.column(3, { page: 'current' }).data().reduce(function (acc, val) {
+                    // Extract the number from the span with class 'order-amount'
+                    var tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = val;
+                    var amountText = tempDiv.querySelector('.order-amount') ? tempDiv.querySelector('.order-amount').textContent : '';
+                    var b = amountText || String(val).replace(/[^\d.-]/g, '');
+                    return acc + intVal(b);
+                }, 0);
+
+                // Update footer
+                $(api.column(3).footer()).html('{{ sys_currency }} ' + pageTotal.toFixed(2));
+            }
+        });
+
+        // View Order
+        $(document).on('click', '.view-order-btn', function () {
             const id = $(this).data('id');
             fetch(`/orders/view/${id}`)
                 .then(res => res.json())
                 .then(res => {
-                    if(res.success) {
+                    if (res.success) {
                         const data = res.data;
-                        $('#v_order_id').text('#' + String(data.id).padStart(6, '0'));
-                        $('#v_customer_table').html(`<i class="fas fa-chair text-primary me-2"></i>${data.table} &bull; ${data.customer}`);
+                        const paddedId = '#' + String(data.id).padStart(6, '0');
+                        $('#v_order_id').text(paddedId);
+                        $('#v_order_id_full').text(paddedId);
+                        $('#v_customer_table').html(`${data.table} — ${data.customer}`);
                         $('#v_datetime').text(data.date);
                         $('#v_grand_total').text('{{ sys_currency }} ' + data.total.toFixed(2));
-                        
+
                         let rows = '';
                         data.items.forEach(item => {
                             rows += `<tr>
-                                <td class="text-white">${item.product_name}</td>
-                                <td class="text-center">x${item.quantity}</td>
-                                <td class="text-end">{{ sys_currency }} ${item.price.toFixed(2)}</td>
-                                <td class="text-end fw-bold">{{ sys_currency }} ${item.total.toFixed(2)}</td>
+                                <td class="text-main fw-500">${item.product_name}</td>
+                                <td class="text-center text-main">x${item.quantity}</td>
+                                <td class="text-end text-main">${item.price.toFixed(2)}</td>
+                                <td class="text-end fw-bold text-primary">${item.total.toFixed(2)}</td>
                             </tr>`;
                         });
                         $('#v_order_items').html(rows);
-                        
+
                         $('#viewOrderModal').modal('show');
                     } else {
-                        alert('Error: ' + res.message);
+                        Swal.fire('Cillad', res.message, 'error');
                     }
                 })
                 .catch(err => {
                     console.error(err);
-                    alert('Cillad baa dhacday marka la soo aqrinayay xogta.');
+                    Swal.fire('Cillad', 'Ma suurtagelin in la helo xogta dalabka.', 'error');
                 });
         });
 
-        $('.edit-order-btn').on('click', function() {
+        $('.edit-order-btn').on('click', function () {
             const id = $(this).data('id');
             const customer = $(this).data('customer');
             const status = $(this).data('status');
-            
+
             $('#e_order_id_title').text('#' + String(id).padStart(6, '0'));
             $('#e_customer_name').val(customer === 'None' || customer === '' ? 'Macmiil' : customer);
             $('#e_status').val(status);
             $('#editOrderForm').attr('action', `/orders/edit/${id}`);
             $('#editOrderModal').modal('show');
         });
-        
-        $('.print-order-btn').on('click', function() {
+
+        $('.print-order-btn').on('click', function () {
             const id = $(this).data('id');
             window.open(`/orders/print/${id}`, '_blank');
         });

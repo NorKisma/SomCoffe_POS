@@ -1,0 +1,146 @@
+{% extends "layout/base.html" %}
+{% block title %}Cashier Dashboard — {{ sys_name }}{% endblock %}
+{% block header_title %}Cashier <span class="text-primary">Panel</span>{% endblock %}
+
+{% block content %}
+<div class="animate__animated animate__fadeIn">
+
+    <!-- Payment Method Breakdown -->
+    <div class="row g-3 g-md-4 mb-5">
+        <div class="col-6 col-md-3">
+            <div class="card-premium p-4 animate__animated animate__fadeInUp" style="animation-delay:.1s">
+                <div class="stat-icon-glow green mb-3"><i class="fas fa-money-bill-wave"></i></div>
+                <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">Cash</h6>
+                <h2 class="fw-800 mb-0 text-gradient-primary">{{ sys_currency }}{{ "{:,.2f}".format(cash) }}</h2>
+                <p class="text-muted mb-0" style="font-size:.7rem">Lacagta Caddaan</p>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card-premium p-4 animate__animated animate__fadeInUp" style="animation-delay:.2s">
+                <div class="stat-icon-glow blue mb-3"><i class="fas fa-mobile-alt"></i></div>
+                <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">EVC Plus</h6>
+                <h2 class="fw-800 mb-0 text-gradient-primary">{{ sys_currency }}{{ "{:,.2f}".format(evc) }}</h2>
+                <p class="text-muted mb-0" style="font-size:.7rem">Mobile Money</p>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card-premium p-4 animate__animated animate__fadeInUp" style="animation-delay:.3s">
+                <div class="stat-icon-glow purple mb-3"><i class="fas fa-sim-card"></i></div>
+                <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">eDahab</h6>
+                <h2 class="fw-800 mb-0 text-gradient-primary">{{ sys_currency }}{{ "{:,.2f}".format(edahab) }}</h2>
+                <p class="text-muted mb-0" style="font-size:.7rem">Mobile Money</p>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="card-premium p-4 animate__animated animate__fadeInUp" style="animation-delay:.4s">
+                <div class="stat-icon-glow" style="background:rgba(239,68,68,.12);color:#ef4444;"><i
+                        class="fas fa-hand-holding-usd"></i></div>
+                <h6 class="text-muted small text-uppercase fw-bold mb-1 mt-3" style="font-size:.65rem">Deynta</h6>
+                <h2 class="fw-800 mb-0" style="color:#ef4444">{{ sys_currency }}{{ "{:,.2f}".format(credit) }}</h2>
+                <p class="text-muted mb-0" style="font-size:.7rem">Credit / Deyn</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Total Today Banner -->
+    <div class="mb-5 animate__animated animate__fadeInUp" style="animation-delay:.5s">
+        <div class="card-premium p-4 p-md-5 text-center"
+            style="background: linear-gradient(135deg, rgba(79,70,229,.2), rgba(16,185,129,.15)); border: 1px solid rgba(79,70,229,.3);">
+            <p class="text-muted small text-uppercase fw-bold mb-2 tracking-widest"
+                style="font-size:.7rem; letter-spacing:.12rem">WADARTA GUUD MAANTA</p>
+            <h1 class="fw-900 text-gradient-primary mb-0" style="font-size: clamp(2.5rem, 6vw, 4rem)">
+                {{ sys_currency }}{{ "{:,.2f}".format(total_today) }}
+            </h1>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- Open POS -->
+        <div class="col-lg-4 animate__animated animate__fadeInLeft">
+            <div class="card-premium p-4 h-100">
+                <h5 class="fw-900 mb-4">Cashier <span class="text-gradient-primary">Shaqooyinka</span></h5>
+                <div class="d-grid gap-3 mb-4">
+                    <a href="{{ url_for('pos.index') }}" class="btn btn-premium py-3 rounded-4 fw-bold">
+                        <i class="fas fa-cash-register me-2"></i> Furan POS Terminal
+                    </a>
+                    <a href="{{ url_for('orders.index') }}" class="btn btn-outline-success py-3 rounded-4 fw-bold">
+                        <i class="fas fa-list-alt me-2"></i> Dhamee Dalabyada
+                    </a>
+                </div>
+
+                <!-- Open orders waiting to be closed -->
+                <h6 class="text-muted fw-bold text-uppercase mb-3" style="font-size:.65rem">Dalabada Furan ({{
+                    open_orders|length }})</h6>
+                {% for o in open_orders[:5] %}
+                <div class="d-flex justify-content-between align-items-center p-3 mb-2 rounded-4"
+                    style="background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.2)">
+                    <div>
+                        <div class="fw-800 text-white small">#{{ "%04d"|format(o.id) }}</div>
+                        <div class="text-muted" style="font-size:.7rem">{{ o.table.number if o.table else 'Takeaway' }}
+                        </div>
+                    </div>
+                    <span class="fw-900" style="color:#f59e0b">{{ sys_currency }}{{ "{:,.2f}".format(o.total_amount)
+                        }}</span>
+                </div>
+                {% else %}
+                <p class="text-muted small text-center">Dalabado furan ma jiraan.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Recent Payments -->
+        <div class="col-lg-8 animate__animated animate__fadeInRight">
+            <div class="card-premium p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h5 class="fw-900 mb-0">Lacag-bixintii <span class="text-gradient-primary">Dambe</span></h5>
+                    <i class="fas fa-circle-notch fa-spin text-primary"></i>
+                </div>
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="text-muted small fw-bold border-0" style="font-size:.7rem">DALAB #</th>
+                                <th class="text-muted small fw-bold border-0" style="font-size:.7rem">QAAB</th>
+                                <th class="text-muted small fw-bold border-0" style="font-size:.7rem">LACAG</th>
+                                <th class="text-muted small fw-bold border-0" style="font-size:.7rem">WAQTI</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in recent_payments %}
+                            <tr>
+                                <td class="py-3 fw-bold text-white">#{{ "%04d"|format(p.order_id) }}</td>
+                                <td>
+                                    {% if p.payment_method == 'Cash' %}
+                                    <span
+                                        class="badge bg-success bg-opacity-15 text-success rounded-pill px-3">Cash</span>
+                                    {% elif p.payment_method == 'EVC Plus' %}
+                                    <span class="badge bg-info bg-opacity-15 text-info rounded-pill px-3">EVC</span>
+                                    {% elif p.payment_method == 'eDahab' %}
+                                    <span
+                                        class="badge bg-primary bg-opacity-15 text-primary rounded-pill px-3">eDahab</span>
+                                    {% else %}
+                                    <span class="badge bg-danger bg-opacity-15 text-danger rounded-pill px-3">{{
+                                        p.payment_method }}</span>
+                                    {% endif %}
+                                </td>
+                                <td class="fw-800 text-gradient-primary">{{ sys_currency }}{{ "{:,.2f}".format(p.amount)
+                                    }}</td>
+                                <td class="text-muted" style="font-size:.75rem">{{ p.timestamp.strftime('%H:%M') }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="fas fa-inbox fa-2x mb-2 d-block opacity-20"></i>
+                                    Maanta wax lacag-bixin ah ma jirto wali.
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

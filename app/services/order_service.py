@@ -24,16 +24,21 @@ class OrderService:
                 'total': item.quantity * item.price_at_time
             })
             
+        user = order.user
+        
         return {
             'id': order.id,
             'table': order.table.number if order.table else 'Takeaway',
-            'customer': order.customer_rel.name if order.customer_rel else (order.customer_name or 'Macmiil'),
+            'customer': order.customer_rel.name if (hasattr(order, 'customer_rel') and order.customer_rel) else (order.customer_name or 'Macmiil'),
             'date': order.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             'type': order.order_type,
             'status': order.status,
             'payment_status': order.payment_status or 'paid',
             'total': order.total_amount,
-            'items': items
+            'items': items,
+            'served_by': user.username if user else 'Unknown',
+            'evc_number': user.evc_number if user else None,
+            'edahab_number': user.edahab_number if user else None
         }
 
     @staticmethod

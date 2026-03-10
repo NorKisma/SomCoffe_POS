@@ -9,46 +9,55 @@
     <!-- Top Stats Row -->
     <div class="row g-3 g-md-4 mb-5">
         <div class="col-6 col-md-3">
-            <div class="card-premium h-100 p-3 p-md-4">
+            <div class="card-premium h-100 p-3 p-md-4 animate__animated animate__fadeInUp"
+                style="animation-delay: 0.1s;">
                 <div class="stat-icon-glow purple mb-3 mb-md-4">
                     <i class="fas fa-coins"></i>
                 </div>
-                <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.6rem;">Lacagta (Revenue)</h6>
+                <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.65rem;">
+                    Lacagta (Revenue)</h6>
                 <div class="d-flex align-items-end flex-wrap gap-2">
-                    <h3 class="mb-0 fw-800">{{ sys_currency }}{{ "{:,.2f}".format(total_revenue) }}</h3>
+                    <h2 class="mb-0 fw-800 text-gradient-primary">{{ sys_currency }}{{ "{:,.2f}".format(total_revenue)
+                        }}</h2>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card-premium h-100 p-3 p-md-4">
+            <div class="card-premium h-100 p-3 p-md-4 animate__animated animate__fadeInUp"
+                style="animation-delay: 0.2s;">
                 <div class="stat-icon-glow blue mb-3 mb-md-4">
                     <i class="fas fa-shopping-cart"></i>
                 </div>
-                <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.6rem;">Dalabyada (Orders)</h6>
+                <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.65rem;">
+                    Dalabyada (Orders)</h6>
                 <div class="d-flex align-items-end flex-wrap gap-2">
-                    <h3 class="mb-0 fw-800">{{ total_orders }}</h3>
+                    <h2 class="mb-0 fw-800 text-gradient-primary">{{ total_orders }}</h2>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card-premium h-100 p-3 p-md-4">
+            <div class="card-premium h-100 p-3 p-md-4 animate__animated animate__fadeInUp"
+                style="animation-delay: 0.3s;">
                 <div class="stat-icon-glow green mb-3 mb-md-4">
                     <i class="fas fa-user-friends"></i>
                 </div>
-                <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.6rem;">Shaqaalaha (Staff)</h6>
+                <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.65rem;">
+                    Shaqaalaha (Staff)</h6>
                 <div class="d-flex align-items-end flex-wrap gap-2">
-                    <h3 class="mb-0 fw-800">{{ total_employees }}</h3>
+                    <h2 class="mb-0 fw-800 text-gradient-primary">{{ total_employees }}</h2>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card-premium h-100 p-3 p-md-4">
+            <div class="card-premium h-100 p-3 p-md-4 animate__animated animate__fadeInUp"
+                style="animation-delay: 0.4s;">
                 <div class="stat-icon-glow purple mb-3 mb-md-4">
                     <i class="fas fa-coffee"></i>
                 </div>
-                <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.6rem;">Ugu Iibinta Badan</h6>
+                <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.65rem;">Ugu
+                    Iibinta Badan</h6>
                 <div class="d-flex align-items-end flex-wrap gap-2">
-                    <h3 class="mb-0 fw-800 small">{{ peak_cat_name }}</h3>
+                    <h3 class="mb-0 fw-800 text-gradient-primary small">{{ peak_cat_name }}</h3>
                 </div>
             </div>
         </div>
@@ -56,11 +65,13 @@
 
     <div class="row g-5">
         <!-- Sales Chart -->
-        <div class="col-lg-8">
+        <div class="col-lg-8 animate__animated animate__fadeInLeft">
             <div class="card-premium h-100 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-5">
-                    <h5 class="fw-bold mb-0">Muuqaalka Iibka (Sales Performance)</h5>
-                    <div class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill">Last 7 Days</div>
+                    <h4 class="fw-900 mb-0">Muuqaalka <span class="text-gradient-primary">Iibka</span></h4>
+                    <div
+                        class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold border border-primary border-opacity-20">
+                        LAST 7 DAYS</div>
                 </div>
                 <div style="height: 350px;">
                     <canvas id="mainDashboardChart"></canvas>
@@ -69,38 +80,55 @@
         </div>
 
         <!-- Recent Activity Feed -->
-        <div class="col-lg-4">
+        <div class="col-lg-4 animate__animated animate__fadeInRight">
             <div class="card-premium h-100 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-5">
-                    <h5 class="fw-bold mb-0">Dalabyadii u Dambeeyay</h5>
-                    <i class="fas fa-sync text-primary animate-spin"></i>
+                    <h5 class="fw-900 mb-0">Live <span class="text-gradient-primary">Updates</span></h5>
+                    <i class="fas fa-circle-notch text-primary fa-spin"></i>
                 </div>
-                <div class="feed-container">
+                <div class="feed-container custom-scrollbar" style="max-height: 500px; overflow-y: auto;">
                     {% for order in recent_activity %}
-                    <div class="d-flex gap-3 mb-4 border-start border-primary border-opacity-25 ps-3 position-relative py-1">
-                        <div class="position-absolute start-0 top-0 bg-primary h-100" style="width: 2px; box-shadow: 0 0 10px var(--primary);"></div>
-                        <div class="avatar-mini bg-primary bg-opacity-10 text-primary rounded-circle p-2" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-{{ 'check' if order.status == 'completed' else 'clock' }}"></i>
+                    <div class="d-flex gap-3 mb-4 ps-3 position-relative py-2 hover-bg-light transition-all rounded-4">
+                        <div class="position-absolute start-0 top-0 h-100 rounded-pill"
+                            style="width: 4px; background: {% if order.status == 'completed' %}#10b981{% else %}#f59e0b{% endif %}; box-shadow: 0 0 10px {% if order.status == 'completed' %}#10b981{% else %}#f59e0b{% endif %};">
                         </div>
-                        <div>
-                            <p class="mb-0 fw-bold text-white small">Dalab #{{ "%04d"|format(order.id) }} {{ order.status|capitalize }}</p>
-                            <p class="mb-0 text-muted" style="font-size: 0.7rem;">{{ order.table.number if order.table else 'Takeaway' }} • {{ order.created_at.strftime('%H:%M') }}</p>
-                            <span class="badge bg-primary bg-opacity-10 text-primary mt-1" style="font-size: 0.6rem;">+ {{ sys_currency }}{{ "{:,.2f}".format(order.total_amount) }}</span>
+                        <div class="avatar-mini bg-white bg-opacity-5 text-main rounded-circle d-flex align-items-center justify-content-center shadow-lg"
+                            style="width: 44px; height: 44px; border: 1px solid var(--border-glass);">
+                            <i
+                                class="fas fa-{{ 'check text-success' if order.status == 'completed' else 'receipt text-warning' }}"></i>
+                        </div>
+                        <div class="flex-grow-1">
+                            <div class="d-flex justify-content-between">
+                                <p class="mb-0 fw-800 text-white small">Dalab #{{ "%04d"|format(order.id) }}</p>
+                                <span class="text-muted" style="font-size: 0.65rem;">{{
+                                    order.created_at.strftime('%H:%M') }}</span>
+                            </div>
+                            <p class="mb-1 text-muted" style="font-size: 0.7rem;">{{ order.table.number if order.table
+                                else 'Takeaway' }} • {{ order.status|capitalize }}</p>
+                            <span class="fw-900 text-gradient-primary" style="font-size: 0.85rem;">{{ sys_currency }}{{
+                                "{:,.2f}".format(order.total_amount) }}</span>
                         </div>
                     </div>
                     {% else %}
-                    <p class="text-muted small">Ma jiro wax dalab ah wali.</p>
+                    <div class="text-center py-5">
+                        <i class="fas fa-inbox fa-3x text-muted opacity-20 mb-3"></i>
+                        <p class="text-muted small">Wali wax xog ah ma jirto.</p>
+                    </div>
                     {% endfor %}
 
-                    <h6 class="text-muted fw-bold small text-uppercase mt-5 mb-3 tracking-wider" style="font-size: 0.65rem;">Inventory Alerts</h6>
+                    <h6 class="text-muted fw-bold small text-uppercase mt-5 mb-4 tracking-widest"
+                        style="font-size: 0.65rem;">Inventory Alerts</h6>
                     {% for p in low_stock_products %}
-                    <div class="d-flex gap-3 mb-3 border-start border-danger border-opacity-25 ps-3">
-                        <div class="avatar-mini bg-danger bg-opacity-10 text-danger rounded-circle p-2" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
-                            <i class="fas fa-exclamation-triangle small"></i>
+                    <div
+                        class="d-flex gap-3 mb-3 p-3 rounded-4 bg-danger bg-opacity-5 border border-danger border-opacity-10">
+                        <div class="avatar-mini bg-danger bg-opacity-10 text-danger rounded-circle d-flex align-items-center justify-content-center"
+                            style="width: 40px; height: 40px;">
+                            <i class="fas fa-exclamation-triangle"></i>
                         </div>
                         <div>
-                            <p class="mb-0 fw-bold text-white small" style="font-size: 0.75rem;">{{ p.name }} is low</p>
-                            <p class="mb-0 text-muted" style="font-size: 0.65rem;">Qty left: {{ p.stock }}</p>
+                            <p class="mb-0 fw-800 text-white small">{{ p.name }}</p>
+                            <p class="mb-0 text-danger small fw-bold" style="font-size: 0.7rem;">Only {{ p.stock }} left
+                                in stock!</p>
                         </div>
                     </div>
                     {% endfor %}
@@ -115,7 +143,7 @@
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         const ctx = document.getElementById('mainDashboardChart').getContext('2d');
         const gradient = ctx.createLinearGradient(0, 0, 0, 400);
         gradient.addColorStop(0, 'rgba(79, 70, 229, 0.4)');
@@ -125,38 +153,38 @@
             type: 'line',
             data: {
                 labels: {{ chart_days | tojson }},
-                datasets: [{
-                    label: 'Iibka (Revenue)',
-                    data: {{ chart_revenue | tojson }},
-                    borderColor: '#4f46e5',
-                    borderWidth: 4,
-                    pointBackgroundColor: '#fff',
-                    pointBorderColor: '#4f46e5',
-                    pointRadius: 6,
-                    pointHoverRadius: 8,
-                    fill: true,
-                    backgroundColor: gradient,
-                    tension: 0.4
+        datasets: [{
+            label: 'Iibka (Revenue)',
+            data: {{ chart_revenue | tojson }},
+        borderColor: '#4f46e5',
+        borderWidth: 4,
+        pointBackgroundColor: '#fff',
+        pointBorderColor: '#4f46e5',
+        pointRadius: 6,
+        pointHoverRadius: 8,
+        fill: true,
+        backgroundColor: gradient,
+        tension: 0.4
                 }]
             },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: { display: false }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
-                        ticks: { color: '#94a3b8', font: { weight: 'bold' } }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: { color: '#94a3b8', font: { weight: 'bold' } }
-                    }
-                }
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: { display: false }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
+                ticks: { color: '#94a3b8', font: { weight: 'bold' } }
+            },
+            x: {
+                grid: { display: false },
+                ticks: { color: '#94a3b8', font: { weight: 'bold' } }
             }
+        }
+    }
         });
     });
 </script>

@@ -19,3 +19,32 @@ def manager_required(f):
             return redirect(url_for('dashboard.index'))
         return f(*args, **kwargs)
     return decorated_function
+
+def cashier_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role not in ['admin', 'manager', 'cashier']:
+            flash('Cashier or higher access required.', 'danger')
+            return redirect(url_for('dashboard.index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def waiter_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if not current_user.is_authenticated or current_user.role not in ['admin', 'manager', 'cashier', 'waiter']:
+            flash('Staff access required.', 'danger')
+            return redirect(url_for('dashboard.index'))
+        return f(*args, **kwargs)
+    return decorated_function
+
+def roles_required(*roles):
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+            if not current_user.is_authenticated or current_user.role not in roles:
+                flash(f'Restricted access. Requires one of: {", ".join(roles)}', 'danger')
+                return redirect(url_for('dashboard.index'))
+            return f(*args, **kwargs)
+        return decorated_function
+    return decorator

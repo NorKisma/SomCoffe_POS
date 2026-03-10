@@ -16,17 +16,33 @@
             <i class="fas fa-th-large"></i>
             <span>Dhamaan</span>
         </div>
+
+        <!-- Mobile-only quick nav -->
+        <a href="{{ url_for('dashboard.index') }}" class="nav-item-link d-md-none" style="text-decoration: none;">
+            <div class="nav-cat-item" style="border-color: rgba(239, 68, 68, 0.3); color: #f87171;">
+                <i class="fas fa-arrow-left"></i>
+                <span>Back</span>
+            </div>
+        </a>
+        <a href="{{ url_for('orders.index') }}" class="nav-item-link d-md-none" style="text-decoration: none;">
+            <div class="nav-cat-item" style="border-color: rgba(99, 102, 241, 0.3); color: #818cf8;">
+                <i class="fas fa-history"></i>
+                <span>Orders</span>
+            </div>
+        </a>
         {% for cat in categories %}
         <div class="nav-cat-item" data-cat="{{ cat.name }}">
             {% if cat.image %}
-            <div style="width:24px; height:24px; margin-bottom:4px;"><img src="{{ url_for('static', filename='uploads/categories/' + cat.image) }}" style="width:100%; height:100%; object-fit:contain;"></div>
+            <div style="width:24px; height:24px; margin-bottom:4px;"><img
+                    src="{{ url_for('static', filename='uploads/categories/' + cat.image) }}"
+                    style="width:100%; height:100%; object-fit:contain;"></div>
             {% else %}
             <i class="fas fa-{{ cat.icon if cat.icon else 'coffee' }}"></i>
             {% endif %}
             <span>{{ cat.name }}</span>
         </div>
         {% endfor %}
-        
+
         <a href="{{ url_for('customers.index') }}" class="nav-item-link mt-auto" style="text-decoration: none;">
             <div class="nav-cat-item" style="border-color: rgba(16, 185, 129, 0.3); color: #10b981;">
                 <i class="fas fa-users"></i>
@@ -48,15 +64,14 @@
         <div class="pos-products-grid custom-scrollbar" id="megaProductGrid">
             {% for p in products %}
             <div class="product-item-wrapper animate__animated animate__fadeIn" data-cat="{{ p.category.name }}">
-                <div class="product-box product-item-btn" 
-                     data-id="{{ p.id }}" 
-                     data-name="{{ p.name }}" 
-                     data-price="{{ p.price }}">
+                <div class="product-box product-item-btn" data-id="{{ p.id }}" data-name="{{ p.name }}"
+                    data-price="{{ p.price }}">
                     <div class="product-image">
                         {% if p.image %}
                         <img src="{{ url_for('static', filename='uploads/products/' + p.image) }}">
                         {% else %}
-                        <i class="fas fa-{{ 'bolt text-warning' if p.is_service else (p.category.icon if p.category.icon else 'coffee') }}"></i>
+                        <i
+                            class="fas fa-{{ 'bolt text-warning' if p.is_service else (p.category.icon if p.category.icon else 'coffee') }}"></i>
                         {% endif %}
                     </div>
                     <div class="product-title text-truncate px-1">{{ p.name }}</div>
@@ -71,7 +86,8 @@
     <div class="pos-invoice-panel" id="invoicePanel">
         <div class="d-flex justify-content-between align-items-center d-md-none mb-3">
             <h5 class="fw-900 mb-0">RECEIPT</h5>
-            <button class="btn btn-sm btn-dark rounded-circle" onclick="toggleCart()"><i class="fas fa-times"></i></button>
+            <button class="btn btn-sm btn-dark rounded-circle" onclick="toggleCart()"><i
+                    class="fas fa-times"></i></button>
         </div>
 
         <div class="invoice-header">
@@ -81,7 +97,8 @@
                     <i class="fas fa-chair text-primary"></i>
                     <span id="miiskaLabel" class="fw-800">Dooro Miiska</span>
                 </div>
-                <div class="table-selection-btn flex-grow-1" onclick="$('#customerModal').modal('show')" style="border-color: rgba(16, 185, 129, 0.3);">
+                <div class="table-selection-btn flex-grow-1" onclick="$('#customerModal').modal('show')"
+                    style="border-color: rgba(16, 185, 129, 0.3);">
                     <i class="fas fa-user text-success"></i>
                     <span id="customerLabel" class="fw-800">Macmiil</span>
                 </div>
@@ -111,34 +128,45 @@
 
             <div class="row g-2 mt-2">
                 <div class="col-6">
-                    <button class="btn btn-outline-info w-100 fw-bold py-2 payment-btn" onclick="Terminal.complete('EVC Plus')">
+                    <button class="btn btn-outline-info w-100 fw-bold py-2 payment-btn"
+                        onclick="Terminal.complete('EVC Plus')">
                         <i class="fas fa-mobile-alt me-1"></i> EVC Plus
                     </button>
                 </div>
                 <div class="col-6">
-                    <button class="btn btn-outline-warning w-100 fw-bold py-2 payment-btn" onclick="Terminal.complete('eDahab')">
+                    <button class="btn btn-outline-warning w-100 fw-bold py-2 payment-btn"
+                        onclick="Terminal.complete('eDahab')">
                         <i class="fas fa-sim-card me-1"></i> eDahab
                     </button>
                 </div>
                 <div class="col-6">
-                    <button class="btn btn-outline-success w-100 fw-bold py-2 payment-btn" onclick="Terminal.complete('Cash')">
+                    <button class="btn btn-outline-success w-100 fw-bold py-2 payment-btn"
+                        onclick="Terminal.complete('Cash')">
                         <i class="fas fa-money-bill-wave me-1"></i> Cash
                     </button>
                 </div>
                 <div class="col-6">
-                    <button class="btn btn-outline-danger w-100 fw-bold py-2 payment-btn" onclick="Terminal.complete('Credit')">
+                    <button class="btn btn-outline-danger w-100 fw-bold py-2 payment-btn"
+                        onclick="Terminal.complete('Credit')">
                         <i class="fas fa-hand-holding-usd me-1"></i> Deyn (Credit)
                     </button>
                 </div>
-                <div class="col-12 mt-2">
-                    <button class="pay-now-btn pay-order-btn" onclick="Terminal.complete('Pending')" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); border: none;">
-                        DALAB KALIYA (Pending) <i class="fas fa-clock ms-2"></i>
+                <div class="col-6 mt-2">
+                    <button class="pay-now-btn pay-order-btn" onclick="Terminal.complete('Pending')"
+                        style="background: linear-gradient(135deg, #4f46e5, #7c3aed); border: none;">
+                        ORDER <i class="fas fa-clock ms-2"></i>
+                    </button>
+                </div>
+                <div class="col-6 mt-2">
+                    <button class="pay-now-btn" onclick="Terminal.openSplitModal()"
+                        style="background: linear-gradient(135deg, #10b981, #059669); border: none; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.35);">
+                        SPLIT <i class="fas fa-columns ms-2"></i>
                     </button>
                 </div>
             </div>
-            
+
             <div class="text-center mt-3">
-                <a href="javascript:void(0)" class="text-danger small fw-bold text-decoration-none" onclick="Terminal.clear()">
+                <a href="javascript:void(0)" class="clear-cart-link" onclick="Terminal.clear()">
                     <i class="fas fa-trash-alt me-1"></i> MASAX DHAMAAN
                 </a>
             </div>
@@ -155,7 +183,8 @@
 <!-- Table Selection Modal - Premium Dark Style -->
 <div class="modal fade" id="tableModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content border-0 shadow-xl" style="border-radius: 28px; background: linear-gradient(160deg, #1e1b4b, #0f172a); color: #fff; border: 1px solid rgba(255,255,255,0.08);">
+        <div class="modal-content border-0 shadow-xl"
+            style="border-radius: 28px; background: linear-gradient(160deg, #1e1b4b, #0f172a); color: #fff; border: 1px solid rgba(255,255,255,0.08);">
             <div class="modal-header border-0 px-4 pt-4 pb-2">
                 <div>
                     <h4 class="fw-900 mb-0">Dooro <span style="color: #a5b4fc;">Meesha</span></h4>
@@ -167,26 +196,16 @@
                 <div class="row g-3">
                     <!-- Takeaway -->
                     <div class="col-6 col-md-4">
-                        <div class="table-option-card"
-                             data-id="0"
-                             data-num="Takeaway"
-                             style="background: linear-gradient(135deg, rgba(99,102,241,0.2), rgba(139,92,246,0.2)); border: 2px solid rgba(99,102,241,0.4); border-radius: 20px; padding: 22px 12px; text-align: center; cursor: pointer; transition: all 0.25s;">
-                            <div style="width:52px;height:52px;background:rgba(99,102,241,0.25);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 12px;">
-                                <i class="fas fa-walking" style="font-size:1.5rem;color:#a5b4fc;"></i>
-                            </div>
-                            <div style="font-weight:900;font-size:0.9rem;color:#e0e7ff;letter-spacing:0.5px;">TAKEAWAY</div>
+                        <div class="table-option-card" data-id="0" data-num="Takeaway">
+                            <i class="fas fa-walking"></i>
+                            <div class="table-label">TAKEAWAY</div>
                         </div>
                     </div>
                     {% for table in tables %}
                     <div class="col-6 col-md-3">
-                        <div class="table-option-card"
-                             data-id="{{ table.id }}"
-                             data-num="{{ table.number }}"
-                             style="background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.08); border-radius: 18px; padding: 18px 10px; text-align: center; cursor: pointer; transition: all 0.25s;">
-                            <div style="width:44px;height:44px;background:rgba(255,255,255,0.07);border-radius:50%;display:flex;align-items:center;justify-content:center;margin:0 auto 10px;">
-                                <i class="fas fa-chair" style="font-size:1.1rem;color:#94a3b8;"></i>
-                            </div>
-                            <div style="font-weight:800;font-size:0.8rem;color:#cbd5e1;">TABLE {{ table.number }}</div>
+                        <div class="table-option-card" data-id="{{ table.id }}" data-num="{{ table.number }}">
+                            <i class="fas fa-chair"></i>
+                            <div class="table-label">{{ table.number }}</div>
                         </div>
                     </div>
                     {% endfor %}
@@ -199,7 +218,8 @@
 <!-- Customer Selection Modal -->
 <div class="modal fade" id="customerModal" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content border-0 shadow-xl" style="border-radius: 28px; background: linear-gradient(160deg, #1e1b4b, #0f172a); color: #fff; border: 1px solid rgba(255,255,255,0.08);">
+        <div class="modal-content border-0 shadow-xl"
+            style="border-radius: 28px; background: linear-gradient(160deg, #1e1b4b, #0f172a); color: #fff; border: 1px solid rgba(255,255,255,0.08);">
             <div class="modal-header border-0 px-4 pt-4 pb-2">
                 <div>
                     <h4 class="fw-900 mb-0">Dooro <span style="color: #10b981;">Macmiilka</span></h4>
@@ -208,17 +228,17 @@
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <div class="modal-body p-4">
-                <div class="search-box mb-3" style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 10px 15px; border: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center;">
+                <div class="search-box mb-3">
                     <i class="fas fa-search text-muted me-2"></i>
-                    <input type="text" id="customerSearch" placeholder="Raadi macmiil..." style="background: transparent; border: none; color: white; width: 90%; outline: none;">
+                    <input type="text" id="customerSearch" placeholder="Raadi macmiil...">
                 </div>
-                <div class="customer-list custom-scrollbar" style="max-height: 300px; overflow-y: auto;">
-                    <div class="customer-option-item" data-id="0" data-name="Walk-in Customer" style="padding: 12px; border-radius: 12px; cursor: pointer; margin-bottom: 5px; background: rgba(255,255,255,0.05);">
+                <div class="customer-list custom-scrollbar" style="max-height: 350px; overflow-y: auto;">
+                    <div class="customer-option-item" data-id="0" data-name="Walk-in Customer">
                         <div class="fw-bold">Walk-in Customer</div>
                         <div class="small text-muted">Macmiil aan diiwaangashanayn</div>
                     </div>
                     {% for c in customers %}
-                    <div class="customer-option-item" data-id="{{ c.id }}" data-name="{{ c.name }}" style="padding: 12px; border-radius: 12px; cursor: pointer; margin-bottom: 5px; border: 1px solid rgba(255,255,255,0.05);">
+                    <div class="customer-option-item" data-id="{{ c.id }}" data-name="{{ c.name }}">
                         <div class="fw-bold">{{ c.name }}</div>
                         <div class="small text-muted">{{ c.phone if c.phone else 'No Phone' }}</div>
                     </div>
@@ -226,20 +246,25 @@
                 </div>
             </div>
             <div class="modal-footer border-0 p-4 pt-0 d-block">
-                <button type="button" class="btn btn-outline-success w-100 rounded-pill py-2 mb-3" onclick="$('#quickAddForm').slideToggle()">
+                <button type="button" class="btn btn-outline-success w-100 rounded-pill py-2 mb-3"
+                    onclick="$('#quickAddForm').slideToggle()">
                     <i class="fas fa-user-plus me-1"></i> MACMIIL CUSUB (Quick Add)
                 </button>
-                
-                <div id="quickAddForm" style="display: none; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 18px; border: 1px solid rgba(16, 185, 129, 0.2);">
+
+                <div id="quickAddForm"
+                    style="display: none; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 18px; border: 1px solid rgba(16, 185, 129, 0.2);">
                     <div class="mb-2">
                         <label class="small text-muted mb-1">Magaca Macmiilka *</label>
-                        <input type="text" id="q_name" class="form-control form-control-sm" placeholder="Tusaale: Ahmed Ali" style="background: rgba(0,0,0,0.2) !important;">
+                        <input type="text" id="q_name" class="form-control form-control-sm"
+                            placeholder="Tusaale: Ahmed Ali" style="background: rgba(0,0,0,0.2) !important;">
                     </div>
                     <div class="mb-3">
                         <label class="small text-muted mb-1">Lambarka Taleefanka</label>
-                        <input type="text" id="q_phone" class="form-control form-control-sm" placeholder="061xxxxxxx" style="background: rgba(0,0,0,0.2) !important;">
+                        <input type="text" id="q_phone" class="form-control form-control-sm" placeholder="061xxxxxxx"
+                            style="background: rgba(0,0,0,0.2) !important;">
                     </div>
-                    <button type="button" class="btn btn-success btn-sm w-100 rounded-pill" onclick="Terminal.quickAddCustomer()">
+                    <button type="button" class="btn btn-success btn-sm w-100 rounded-pill"
+                        onclick="Terminal.quickAddCustomer()">
                         <i class="fas fa-check me-1"></i> KEYDI MACMIILKA
                     </button>
                 </div>
@@ -248,15 +273,131 @@
     </div>
 </div>
 
+<!-- Split Payment Modal -->
+<div class="modal fade" id="splitModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-xl"
+            style="border-radius: 28px; background: linear-gradient(160deg, #1e1b4b, #0f172a); color: #fff; border: 1px solid rgba(255,255,255,0.08);">
+            <div class="modal-header border-0 px-4 pt-4 pb-2">
+                <div>
+                    <h4 class="fw-900 mb-0">Split <span style="color: #10b981;">Payment</span></h4>
+                    <p class="mb-0 small" style="color: #94a3b8;">Qayb bixi qaybna Deyn ka dhig</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="mb-4 text-center">
+                    <div class="small text-muted mb-1 text-uppercase tracking-widest">Wadarta Guud</div>
+                    <div class="h2 fw-900 text-info" id="splitTotalLabel">$0.00</div>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-12">
+                        <label class="small text-muted mb-1 text-uppercase tracking-wider"
+                            style="font-size: 0.7rem;">Qaabka Lacag bixinta hordhaca ah</label>
+                        <select id="split_method" class="form-select border-0 text-white"
+                            style="background: rgba(255,255,255,0.05); border-radius: 12px; height: 50px;">
+                            <option value="Cash">Cash</option>
+                            <option value="EVC Plus">EVC Plus</option>
+                            <option value="eDahab">eDahab</option>
+                        </select>
+                    </div>
+                    <div class="col-6">
+                        <label class="small text-muted mb-1 text-uppercase tracking-wider"
+                            style="font-size: 0.7rem;">Lacagta Hada bixinayo</label>
+                        <div class="input-group"
+                            style="background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1);">
+                            <span class="input-group-text bg-transparent border-0 text-muted">$</span>
+                            <input type="number" id="split_paid"
+                                class="form-control bg-transparent border-0 text-white fw-bold" placeholder="0.00"
+                                step="0.01">
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <label class="small text-muted mb-1 text-uppercase tracking-wider"
+                            style="font-size: 0.7rem;">Haryada (Deyn)</label>
+                        <div class="input-group"
+                            style="background: rgba(255,255,255,0.05); border-radius: 12px; overflow: hidden; border: 1px solid rgba(251, 113, 113, 0.2);">
+                            <span class="input-group-text bg-transparent border-0 text-danger">$</span>
+                            <input type="number" id="split_credit"
+                                class="form-control bg-transparent border-0 text-danger fw-bold" placeholder="0.00"
+                                readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="alert alert-warning mt-3 border-0 rounded-4 py-2" id="splitWarning"
+                    style="display:none; font-size: 0.8rem; background: rgba(245, 158, 11, 0.1); color: #fbbf24;">
+                    <i class="fas fa-exclamation-triangle me-1"></i> Macmiilkana waa inuu diiwaangashan yahay!
+                </div>
+            </div>
+            <div class="modal-footer border-0 p-4 pt-0">
+                <button type="button" class="pay-now-btn w-100" onclick="Terminal.submitSplit()"
+                    style="background: linear-gradient(135deg, #10b981, #059669); border: none;">
+                    KEYDI DALABKA (SPLIT) <i class="fas fa-check-circle ms-2"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Lock Screen Overlay -->
+<div id="lockScreen" class="lock-screen-overlay" style="display: none;">
+    <div class="lock-content animate__animated animate__fadeInDown">
+        <div class="lock-avatar mb-4">
+            <div class="saas-avatar av-{{ current_user.role|lower }} mx-auto"
+                style="width: 80px; height: 80px; font-size: 2rem;">
+                {{ current_user.username[0]|upper }}
+            </div>
+        </div>
+        <h3 class="fw-900 mb-1">{{ current_user.username }}</h3>
+        <p class="text-muted mb-4 small">Terminal is Locked. Enter PIN to continue.</p>
+
+        <div class="pin-display mb-4" id="pinDisplay">••••</div>
+
+        <div class="pin-pad">
+            <div class="pin-row">
+                <button class="pin-btn" onclick="Terminal.pinPress(1)">1</button>
+                <button class="pin-btn" onclick="Terminal.pinPress(2)">2</button>
+                <button class="pin-btn" onclick="Terminal.pinPress(3)">3</button>
+            </div>
+            <div class="pin-row">
+                <button class="pin-btn" onclick="Terminal.pinPress(4)">4</button>
+                <button class="pin-btn" onclick="Terminal.pinPress(5)">5</button>
+                <button class="pin-btn" onclick="Terminal.pinPress(6)">6</button>
+            </div>
+            <div class="pin-row">
+                <button class="pin-btn" onclick="Terminal.pinPress(7)">7</button>
+                <button class="pin-btn" onclick="Terminal.pinPress(8)">8</button>
+                <button class="pin-btn" onclick="Terminal.pinPress(9)">9</button>
+            </div>
+            <div class="pin-row">
+                <button class="pin-btn text-danger" onclick="Terminal.pinClear()"><i
+                        class="fas fa-backspace"></i></button>
+                <button class="pin-btn" onclick="Terminal.pinPress(0)">0</button>
+                <button class="pin-btn text-success" onclick="Terminal.pinSubmit()"><i
+                        class="fas fa-check"></i></button>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ url_for('auth.logout') }}" class="text-muted small text-decoration-none">
+                <i class="fas fa-sign-out-alt me-1"></i> Switch User / Logout
+            </a>
+        </div>
+    </div>
+</div>
+
 {% endblock %}
+
 
 {% block scripts %}
 <script>
     window.POS_CONFIG = {
         currency: "{{ sys_currency }}",
-        vatRate: "{{ Setting.get_val('vat_rate', '15') }}"
+        vatRate: "{{ Setting.get_val('vat_rate', '15') }}",
+        sessionTimeout: parseInt("{{ Setting.get_val('session_timeout', '5') }}")
     };
 </script>
 <script src="{{ url_for('static', filename='js/pos.js') }}"></script>
 {% endblock %}
-

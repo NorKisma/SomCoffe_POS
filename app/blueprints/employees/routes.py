@@ -8,13 +8,10 @@ from app.extensions.db import db
 @employees_bp.route('/')
 @login_required
 def index():
-    page = request.args.get('page', 1, type=int)
-    pagination = Employee.query.paginate(page=page, per_page=10, error_out=False)
-    employees = pagination.items
-    
+    employees = Employee.query.all()
     # Also fetch users to link to (excluding those already linked)
     users = User.query.filter(~User.employee.has()).all()
-    return render_template('employees/index.html', employees=employees, users=users, pagination=pagination)
+    return render_template('employees/index.html', employees=employees, users=users)
 
 @employees_bp.route('/add', methods=['POST'])
 @login_required

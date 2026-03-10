@@ -7,3 +7,6 @@ mysql-connector-python
 pymysql
 cryptography
 flask-mail
+flask-babel
+flask-wtf
+flask-caching

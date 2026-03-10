@@ -17,10 +17,12 @@
             <p class="text-muted small mb-0">Habee oo la soco dhamaan alaabada iyo qeybaha.</p>
         </div>
         <div class="d-flex gap-3">
-            <button class="btn btn-outline-secondary px-4 py-2 border-glass rounded-pill fw-bold" data-bs-toggle="modal" data-bs-target="#manageCategoriesModal">
+            <button class="btn btn-outline-secondary px-4 py-2 border-glass rounded-pill fw-bold" data-bs-toggle="modal"
+                data-bs-target="#manageCategoriesModal">
                 <i class="fas fa-tags me-2"></i> CATEGORIES
             </button>
-            <button class="btn btn-premium px-4 py-2 rounded-pill shadow-lg" data-bs-toggle="modal" data-bs-target="#addProductModal">
+            <button class="btn btn-premium px-4 py-2 rounded-pill shadow-lg" data-bs-toggle="modal"
+                data-bs-target="#addProductModal">
                 <i class="fas fa-plus-circle me-2"></i> NEW PRODUCT
             </button>
         </div>
@@ -28,42 +30,42 @@
 
     <!-- Alert Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-                <div class="alert alert-{{ category }} border-0 card-premium mb-4 animate__animated animate__slideInDown shadow-sm">
-                    <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} me-2"></i>
-                    {{ message }}
-                </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} border-0 card-premium mb-4 animate__animated animate__slideInDown shadow-sm">
+        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} me-2"></i>
+        {{ message }}
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
-    <!-- Search & Filter Bar -->
+    <!-- Dynamic Filters (will be handled by DataTables) -->
     <div class="card-premium mb-4 p-3 border-glass shadow-sm">
-        <div class="row g-3 align-items-center">
-            <div class="col-md-4">
-                <div class="position-relative">
-                    <i class="fas fa-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
-                    <input type="text" id="inventorySearch" class="form-control rounded-pill ps-5 border-glass bg-white bg-opacity-5" placeholder="Raadi alaabta magaceeda...">
-                </div>
-            </div>
-            <div class="col-md-8">
-                <div class="d-flex flex-wrap gap-2 justify-content-md-end" id="categoryFilters">
-                    <button class="btn btn-sm btn-dark rounded-pill px-3 py-2 border-glass cat-filter-btn active" data-cat="all">DHAMAAN (ALL)</button>
-                    {% for cat in categories %}
-                    <button class="btn btn-sm btn-dark rounded-pill px-3 py-2 border-glass cat-filter-btn" data-cat="{{ cat.name }}">
-                        {{ cat.name }}
-                    </button>
-                    {% endfor %}
-                </div>
-            </div>
+        <div class="d-flex flex-wrap gap-2 justify-content-center" id="categoryFilters">
+            <button class="btn btn-sm btn-dark rounded-pill px-3 py-2 border-glass cat-filter-btn active"
+                data-cat="">DHAMAAN (ALL)</button>
+            {% for cat in categories %}
+            <button class="btn btn-sm btn-dark rounded-pill px-3 py-2 border-glass cat-filter-btn"
+                data-cat="{{ cat.name }}">
+                {{ cat.name }}
+            </button>
+            {% endfor %}
         </div>
     </div>
 
-    <!-- Inventory Table Card -->
-    <div class="inventory-table-card shadow-lg">
+    <!-- Table Section -->
+    <div class="table-glass-wrap animate__animated animate__fadeInUp shadow-2xl">
+        <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 px-3">
+            <div>
+                <h3 class="fw-900 mb-1 text-gradient-primary">Liiska Agabka Bakhaarka</h3>
+                <p class="text-muted small mb-0">Maamul oo la soco dhamaan agabka iyo qeybaha.</p>
+            </div>
+            <div id="dt-buttons-container"></div>
+        </div>
+
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0" id="inventoryTable">
+            <table class="table align-middle w-100" id="inventoryTable">
                 <thead>
                     <tr>
                         <th class="ps-5">Alaabta (Product)</th>
@@ -79,11 +81,14 @@
                     <tr class="inventory-row" data-cat="{{ p.category.name }}">
                         <td class="ps-5">
                             <div class="d-flex align-items-center">
-                                <div class="stat-icon-glow purple me-3" style="width: 50px; height: 50px; overflow: hidden; border-radius: 14px; background: rgba(139, 92, 246, 0.05); flex-shrink: 0;">
+                                <div class="stat-icon-glow purple me-3"
+                                    style="width: 50px; height: 50px; overflow: hidden; border-radius: 14px; background: rgba(139, 92, 246, 0.05); flex-shrink: 0;">
                                     {% if p.image %}
-                                    <img src="{{ url_for('static', filename='uploads/products/' + p.image) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                    <img src="{{ url_for('static', filename='uploads/products/' + p.image) }}"
+                                        style="width: 100%; height: 100%; object-fit: cover;">
                                     {% else %}
-                                    <i class="fas fa-{{ p.category.icon if p.category.icon else 'coffee' }} text-primary opacity-50" style="font-size: 1.2rem;"></i>
+                                    <i class="fas fa-{{ p.category.icon if p.category.icon else 'coffee' }} text-primary opacity-50"
+                                        style="font-size: 1.2rem;"></i>
                                     {% endif %}
                                 </div>
                                 <div>
@@ -104,91 +109,69 @@
                         </td>
                         <td class="d-none d-md-table-cell">
                             {% if p.is_service %}
-                            <span class="status-badge text-info"><i class="fas fa-bolt"></i> SERVICE (ADEEG)</span>
+                            <span class="fw-700 text-info"><span class="status-dot"
+                                    style="color:#0ea5e9;"></span>Service</span>
                             {% elif p.stock > 10 %}
-                            <span class="status-badge text-success"><i class="fas fa-circle"></i> JOOGTA</span>
+                            <span class="fw-700 text-success"><span
+                                    class="status-dot status-active"></span>Joogta</span>
                             {% elif p.stock > 0 %}
-                            <span class="status-badge text-warning"><i class="fas fa-circle"></i> LOW</span>
+                            <span class="fw-700 text-warning"><span class="status-dot"
+                                    style="color:#f59e0b;"></span>Low</span>
                             {% else %}
-                            <span class="status-badge text-danger"><i class="fas fa-circle"></i> OUT</span>
+                            <span class="fw-700 text-danger"><span class="status-dot status-inactive"></span>Out</span>
                             {% endif %}
                         </td>
                         <td>
-                            <span class="price-text">{{ sys_currency }}{{ "%.2f"|format(p.price) }}</span>
+                            <span class="price-text prod-price">{{ sys_currency }}{{ "%.2f"|format(p.price) }}</span>
                         </td>
                         <td class="d-none d-sm-table-cell">
                             {% if not p.is_service %}
                             <div class="stock-indicator">
-                                <div class="progress flex-grow-1 bg-white bg-opacity-10" style="height: 6px; border-radius: 10px;">
-                                    {% set stock_percent = (p.stock / 100 * 100) if p.stock < 100 else 100 %}
-                                    <div class="progress-bar {% if p.stock < 10 %}bg-warning{% else %}bg-primary{% endif %}" 
-                                         role="progressbar" 
-                                         style="width: 0%;" 
-                                         data-stock-width="{{ stock_percent }}"></div>
+                                <div class="progress flex-grow-1 bg-white bg-opacity-10"
+                                    style="height: 6px; border-radius: 10px;">
+                                    {% set stock_percent = (p.stock / 100 * 100) if p.stock < 100 else 100 %} <div
+                                        class="progress-bar {% if p.stock < 10 %}bg-warning{% else %}bg-primary{% endif %}"
+                                        role="progressbar" style="width: 0%;" data-stock-width="{{ stock_percent }}">
                                 </div>
-                                <span class="fw-800 small text-muted">{{ p.stock }}</span>
                             </div>
-                            {% else %}
-                            <span class="text-muted small fw-bold">UNLIMITED</span>
-                            {% endif %}
-                        </td>
-                        <td class="text-end pe-5">
-                            <div class="btn-action-group">
-                                <button class="btn-action" title="Edit">
-                                    <i class="fas fa-pen-nib"></i>
-                                </button>
-                                <form action="{{ url_for('products.delete_product', id=p.id) }}" method="POST" onsubmit="return confirm('Ma xaqiijinaysaa inaad tirtirto alaabtan?')">
-                                    <button type="submit" class="btn-action delete" title="Delete">
-                                        <i class="fas fa-trash-alt"></i>
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
+                            <span class="fw-800 small text-muted prod-stock">{{ p.stock }}</span>
         </div>
+        {% else %}
+        <span class="text-muted small fw-bold">UNLIMITED</span>
+        {% endif %}
+        </td>
+        <td class="text-end pe-5">
+            <div class="btn-action-group">
+                <button class="btn-action edit-product-btn" data-id="{{ p.id }}" data-name="{{ p.name }}"
+                    data-price="{{ p.price }}" data-stock="{{ p.stock }}" data-cat="{{ p.category_id }}"
+                    data-service="{{ '1' if p.is_service else '0' }}" title="Edit">
+                    <i class="fas fa-pen-nib"></i>
+                </button>
+                <form action="{{ url_for('products.delete_product', id=p.id) }}" method="POST"
+                    onsubmit="return confirm('Ma xaqiijinaysaa inaad tirtirto alaabtan?')">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="btn-action delete" title="Delete">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </form>
+            </div>
+        </td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr class="border-0">
+                <th colspan="3" class="text-end pe-4 py-4 fw-bold border-0 fs-5">WADARTA GUUD:</th>
+                <th class="py-4 fw-900 text-primary border-0" id="prod_total_price"
+                    style="font-size: 1.6rem !important;">{{ sys_currency }} 0.00</th>
+                <th class="py-4 fw-900 border-0 fs-5" id="prod_total_stock" style="color:var(--text-muted);">0</th>
+                <th class="border-0"></th>
+            </tr>
+        </tfoot>
+        </table>
     </div>
+</div>
 
-    <!-- Pagination -->
-    {% if pagination and pagination.pages > 1 %}
-    <div class="pag-wrap">
-        <div class="pag-info">
-            Muujinaya <strong>{{ (pagination.page - 1) * pagination.per_page + 1 }}</strong> 
-            – <strong>{{ [pagination.page * pagination.per_page, pagination.total] | min }}</strong> 
-            ka mid ah <strong>{{ pagination.total }}</strong> alaab
-        </div>
-        <nav class="pag-nav">
-            <!-- Prev -->
-            {% if pagination.has_prev %}
-            <a href="{{ url_for('products.index', page=pagination.prev_num) }}" class="pag-btn">
-                <i class="fas fa-chevron-left fa-xs"></i>
-            </a>
-            {% else %}
-            <span class="pag-btn disabled"><i class="fas fa-chevron-left fa-xs"></i></span>
-            {% endif %}
-
-            <!-- Pages -->
-            {% for page in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-                {% if page %}
-                    <a href="{{ url_for('products.index', page=page) }}" class="pag-btn {{ 'active' if page == pagination.page else '' }}">{{ page }}</a>
-                {% else %}
-                    <span class="pag-dots">...</span>
-                {% endif %}
-            {% endfor %}
-
-            <!-- Next -->
-            {% if pagination.has_next %}
-            <a href="{{ url_for('products.index', page=pagination.next_num) }}" class="pag-btn">
-                <i class="fas fa-chevron-right fa-xs"></i>
-            </a>
-            {% else %}
-            <span class="pag-btn disabled"><i class="fas fa-chevron-right fa-xs"></i></span>
-            {% endif %}
-        </nav>
-    </div>
-    {% endif %}
 </div>
 
 <!-- Add Product Modal -->
@@ -200,50 +183,63 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form action="{{ url_for('products.add_product') }}" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="modal-body p-4">
                     <div class="mb-4">
                         <label class="form-label text-muted small fw-bold tracking-wider">MAGACA ALAABTA</label>
-                        <input type="text" name="name" class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass" placeholder="e.g. Latte Macchiato" required>
+                        <input type="text" name="name"
+                            class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass"
+                            placeholder="e.g. Latte Macchiato" required>
                     </div>
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
                             <label class="form-label text-muted small fw-bold tracking-wider">QIIMAHA ($)</label>
-                            <input type="number" step="0.01" name="price" class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass" placeholder="0.00" required>
+                            <input type="number" step="0.01" name="price"
+                                class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass"
+                                placeholder="0.00" required>
                         </div>
                         <div class="col-md-6" id="stockInputGroup">
                             <label class="form-label text-muted small fw-bold tracking-wider">TIRADA (STOCK)</label>
-                            <input type="number" name="stock" class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass" placeholder="0" value="0">
+                            <input type="number" name="stock"
+                                class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass" placeholder="0"
+                                value="0">
                         </div>
                     </div>
-                    <div class="mb-4 d-flex align-items-center justify-content-between p-3 rounded-4 bg-white bg-opacity-5 border-glass">
+                    <div
+                        class="mb-4 d-flex align-items-center justify-content-between p-3 rounded-4 bg-white bg-opacity-5 border-glass">
                         <div>
                             <h6 class="mb-0 fw-bold">Waa Adeeg (Service)?</h6>
                             <small class="text-muted">Malaha wax dhaad ah (stock)</small>
                         </div>
                         <div class="form-check form-switch fs-4">
-                            <input class="form-check-input" type="checkbox" name="is_service" id="isServiceSwitch" onchange="toggleStockInput()">
+                            <input class="form-check-input" type="checkbox" name="is_service" id="isServiceSwitch"
+                                onchange="toggleStockInput()">
                         </div>
                     </div>
                     <div class="mb-4">
                         <label class="form-label text-muted small fw-bold tracking-wider">SAWIRKA (OPTIONAL)</label>
-                        <input type="file" name="image" class="form-control rounded-4 py-2 bg-white bg-opacity-5 border-glass" accept="image/*">
+                        <input type="file" name="image"
+                            class="form-control rounded-4 py-2 bg-white bg-opacity-5 border-glass" accept="image/*">
                     </div>
                     <div class="mb-0">
                         <label class="form-label text-muted small fw-bold tracking-wider">QEYBTA (CATEGORY)</label>
                         <div class="d-flex gap-2">
-                            <select name="category_id" class="form-select rounded-4 py-3 bg-white bg-opacity-5 border-glass flex-grow-1">
+                            <select name="category_id"
+                                class="form-select rounded-4 py-3 bg-white bg-opacity-5 border-glass flex-grow-1">
                                 {% for cat in categories %}
                                 <option value="{{ cat.id }}">{{ cat.name }}</option>
                                 {% endfor %}
                             </select>
-                            <button type="button" class="btn btn-dark rounded-4 px-3" data-bs-toggle="modal" data-bs-target="#manageCategoriesModal">
+                            <button type="button" class="btn btn-dark rounded-4 px-3" data-bs-toggle="modal"
+                                data-bs-target="#manageCategoriesModal">
                                 <i class="fas fa-plus"></i>
                             </button>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="submit" class="btn btn-premium w-100 py-3 rounded-4 fs-5 shadow-lg">KEYDI ALAABTA</button>
+                    <button type="submit" class="btn btn-premium w-100 py-3 rounded-4 fs-5 shadow-lg">KEYDI
+                        ALAABTA</button>
                 </div>
             </form>
         </div>
@@ -264,20 +260,29 @@
                     <div class="col-md-5">
                         <div class="p-4 rounded-4 bg-white bg-opacity-5 border-glass">
                             <h6 class="text-primary fw-900 mb-4 small tracking-widest uppercase">NEW CATEGORY</h6>
-                            <form action="{{ url_for('products.add_category') }}" method="POST" enctype="multipart/form-data">
+                            <form action="{{ url_for('products.add_category') }}" method="POST"
+                                enctype="multipart/form-data">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                 <div class="mb-4">
                                     <label class="form-label text-muted small fw-bold">MAGACA</label>
-                                    <input type="text" name="name" class="form-control bg-dark border-0 rounded-4 py-3 text-white" placeholder="e.g. Burgers" required>
+                                    <input type="text" name="name"
+                                        class="form-control bg-dark border-0 rounded-4 py-3 text-white"
+                                        placeholder="e.g. Burgers" required>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label text-muted small fw-bold">SAWIRKA (IMAGE)</label>
-                                    <input type="file" name="image" class="form-control bg-dark border-0 rounded-4 py-2 text-white" accept="image/*">
+                                    <input type="file" name="image"
+                                        class="form-control bg-dark border-0 rounded-4 py-2 text-white"
+                                        accept="image/*">
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label text-muted small fw-bold">ICON-KA (FALLBACK)</label>
-                                    <input type="text" name="icon" class="form-control bg-dark border-0 rounded-4 py-3 text-white" placeholder="burger, tag, etc." value="tag">
+                                    <input type="text" name="icon"
+                                        class="form-control bg-dark border-0 rounded-4 py-3 text-white"
+                                        placeholder="burger, tag, etc." value="tag">
                                 </div>
-                                <button type="submit" class="btn btn-premium w-100 py-3 rounded-4 shadow-lg">ABUUR CATEGORY</button>
+                                <button type="submit" class="btn btn-premium w-100 py-3 rounded-4 shadow-lg">ABUUR
+                                    CATEGORY</button>
                             </form>
                         </div>
                     </div>
@@ -285,20 +290,26 @@
                     <!-- Category List -->
                     <div class="col-md-7">
                         <h6 class="fw-900 mb-4 small tracking-widest uppercase">LIST-KA HADDA JIRA</h6>
-                        <div class="list-group list-group-flush custom-scrollbar pe-2" style="max-height: 400px; overflow-y: auto;">
+                        <div class="list-group list-group-flush custom-scrollbar pe-2"
+                            style="max-height: 400px; overflow-y: auto;">
                             {% for cat in categories %}
-                            <div class="list-group-item bg-transparent border-glass d-flex justify-content-between align-items-center p-3 mb-3 rounded-4 bg-white bg-opacity-5">
+                            <div
+                                class="list-group-item bg-transparent border-glass d-flex justify-content-between align-items-center p-3 mb-3 rounded-4 bg-white bg-opacity-5">
                                 <div class="d-flex align-items-center">
-                                    <div class="me-3" style="width: 48px; height: 48px; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center;">
+                                    <div class="me-3"
+                                        style="width: 48px; height: 48px; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center;">
                                         {% if cat.image %}
-                                        <img src="{{ url_for('static', filename='uploads/categories/' + cat.image) }}" style="width: 100%; height: 100%; object-fit: cover;">
+                                        <img src="{{ url_for('static', filename='uploads/categories/' + cat.image) }}"
+                                            style="width: 100%; height: 100%; object-fit: cover;">
                                         {% else %}
                                         <i class="fas fa-{{ cat.icon if cat.icon else 'tag' }} text-primary"></i>
                                         {% endif %}
                                     </div>
                                     <span class="fw-800 fs-5">{{ cat.name }}</span>
                                 </div>
-                                <form action="{{ url_for('products.delete_category', id=cat.id) }}" method="POST" onsubmit="return confirm('Ma hubtaa inaad tirtirto?')">
+                                <form action="{{ url_for('products.delete_category', id=cat.id) }}" method="POST"
+                                    onsubmit="return confirm('Ma hubtaa inaad tirtirto?')">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                                     <button type="submit" class="btn-action delete border-0 bg-transparent">
                                         <i class="fas fa-trash-alt text-danger"></i>
                                     </button>
@@ -309,6 +320,72 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Product Modal -->
+<div class="modal fade" id="editProductModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content modal-content-premium p-2">
+            <div class="modal-header border-0 pb-0">
+                <h4 class="fw-900 mb-0">Habee <span class="text-primary">Alaabta</span></h4>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="editProductForm" action="" method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-body p-4">
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold tracking-wider">MAGACA ALAABTA</label>
+                        <input type="text" name="name" id="edit_name"
+                            class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass"
+                            placeholder="e.g. Latte Macchiato" required>
+                    </div>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <label class="form-label text-muted small fw-bold tracking-wider">QIIMAHA ($)</label>
+                            <input type="number" step="0.01" name="price" id="edit_price"
+                                class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass"
+                                placeholder="0.00" required>
+                        </div>
+                        <div class="col-md-6" id="editStockInputGroup">
+                            <label class="form-label text-muted small fw-bold tracking-wider">TIRADA (STOCK)</label>
+                            <input type="number" name="stock" id="edit_stock"
+                                class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass" placeholder="0">
+                        </div>
+                    </div>
+                    <div
+                        class="mb-4 d-flex align-items-center justify-content-between p-3 rounded-4 bg-white bg-opacity-5 border-glass">
+                        <div>
+                            <h6 class="mb-0 fw-bold">Waa Adeeg (Service)?</h6>
+                            <small class="text-muted">Malaha wax dhaad ah (stock)</small>
+                        </div>
+                        <div class="form-check form-switch fs-4">
+                            <input class="form-check-input" type="checkbox" name="is_service" id="editIsServiceSwitch"
+                                onchange="toggleEditStockInput()">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold tracking-wider">SAWIRKA (HADDII AAD
+                            RABTO)</label>
+                        <input type="file" name="image"
+                            class="form-control rounded-4 py-2 bg-white bg-opacity-5 border-glass" accept="image/*">
+                    </div>
+                    <div class="mb-0">
+                        <label class="form-label text-muted small fw-bold tracking-wider">QEYBTA (CATEGORY)</label>
+                        <select name="category_id" id="edit_category_id"
+                            class="form-select rounded-4 py-3 bg-white bg-opacity-5 border-glass">
+                            {% for cat in categories %}
+                            <option value="{{ cat.id }}">{{ cat.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer border-0 p-4 pt-0">
+                    <button type="submit" class="btn btn-premium w-100 py-3 rounded-4 fs-5 shadow-lg">UPDATE
+                        ALAABTA</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

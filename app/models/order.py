@@ -1,4 +1,4 @@
-from app.extensions.db import db
+from app.extensions import db
 from datetime import datetime
 
 class Order(db.Model):
@@ -18,6 +18,7 @@ class Order(db.Model):
     
     items = db.relationship('OrderItem', backref='order', lazy=True, cascade="all, delete-orphan")
     payments = db.relationship('Payment', backref='order', lazy=True)
+    user = db.relationship('User', backref='orders', lazy=True)
 
     def __repr__(self):
         return f'<Order {self.id}>'

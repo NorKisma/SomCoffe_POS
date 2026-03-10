@@ -1,9 +1,7 @@
-from flask import Flask
+from flask import Flask, redirect, request as flask_request, flash, url_for
 from config import Config
-from app.extensions.db import db
-from app.extensions.login_manager import login_manager
-from app.extensions.mail import mail
-from flask_migrate import Migrate
+from .extensions import db, login_manager, mail, babel, migrate, csrf
+
 
 def create_app(config_class=Config):
     app = Flask(__name__)
@@ -13,18 +11,21 @@ def create_app(config_class=Config):
     db.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
-    migrate = Migrate(app, db)  # noqa: F841
+    babel.init_app(app)
+    migrate.init_app(app, db)
+    csrf.init_app(app)
 
-    from app.models.user import User
-    from app.models.category import Category
-    from app.models.product import Product
-    from app.models.table import Table
-    from app.models.order import Order
-    from app.models.order_item import OrderItem
-    from app.models.payment import Payment
-    from app.models.setting import Setting
-    from app.models.employee import Employee
-    from app.models.customer import Customer
+    from .models.user import User
+    from .models.category import Category
+    from .models.product import Product
+    from .models.table import Table
+    from .models.order import Order
+    from .models.order_item import OrderItem
+    from .models.payment import Payment
+    from .models.setting import Setting
+    from .models.employee import Employee
+    from .models.customer import Customer
+    from .models.expense import Expense
 
     @login_manager.user_loader
     def load_user(user_id):
@@ -32,24 +33,45 @@ def create_app(config_class=Config):
 
     @app.context_processor
     def inject_settings():
-        return {
-            'sys_name': Setting.get_val('restaurant_name', 'Rays POS'),
-            'sys_address': Setting.get_val('address', 'Mogadishu, Somalia'),
-            'sys_currency': Setting.get_val('currency', '$'),
-            'Setting': Setting
-        }
+        try:
+            return {
+                'sys_name': Setting.get_val('restaurant_name', 'Rays POS'),
+                'sys_address': Setting.get_val('address', 'Mogadishu, Somalia'),
+                'sys_phone': Setting.get_val('phone', '+252 61XXXXXXX'),
+                'sys_currency': Setting.get_val('currency', '$'),
+                'Setting': Setting
+            }
+        except Exception:
+            return {
+                'sys_name': 'Rays POS',
+                'sys_address': 'Mogadishu, Somalia',
+                'sys_phone': '+252 61XXXXXXX',
+                'sys_currency': '$',
+                'Setting': Setting
+            }
+
+    # CSRF error handler — redirect back with a user-friendly flash message
+    from flask_wtf.csrf import CSRFError
+
+    @app.errorhandler(CSRFError)
+    def handle_csrf_error(e):
+        flash('Waqtiga xiriirkaagu wuu dhacay. Dib u isku day. (Session expired — please try again)', 'warning')
+        referrer = flask_request.referrer or url_for('auth.login')
+        return redirect(referrer)
 
     # Register blueprints
-    from app.blueprints.auth import auth_bp
-    from app.blueprints.dashboard import dashboard_bp
-    from app.blueprints.pos import pos_bp
-    from app.blueprints.products import products_bp
-    from app.blueprints.orders import orders_bp
-    from app.blueprints.reports import reports_bp
-    from app.blueprints.users import users_bp
-    from app.blueprints.settings import settings_bp
-    from app.blueprints.employees import employees_bp
-    from app.blueprints.customers import customers_bp
+    from .blueprints.auth import auth_bp
+    from .blueprints.dashboard import dashboard_bp
+    from .blueprints.pos import pos_bp
+    from .blueprints.products import products_bp
+    from .blueprints.orders import orders_bp
+    from .blueprints.reports import reports_bp
+    from .blueprints.users import users_bp
+    from .blueprints.settings import settings_bp
+    from .blueprints.employees import employees_bp
+    from .blueprints.customers import customers_bp
+    from .blueprints.kitchen import kitchen_bp
+    from .blueprints.expenses import expenses_bp
 
     app.register_blueprint(auth_bp, url_prefix='/auth')
     app.register_blueprint(dashboard_bp, url_prefix='/')
@@ -61,5 +83,7 @@ def create_app(config_class=Config):
     app.register_blueprint(settings_bp, url_prefix='/settings')
     app.register_blueprint(employees_bp, url_prefix='/employees')
     app.register_blueprint(customers_bp, url_prefix='/customers')
+    app.register_blueprint(kitchen_bp, url_prefix='/kitchen')
+    app.register_blueprint(expenses_bp, url_prefix='/expenses')
 
     return app

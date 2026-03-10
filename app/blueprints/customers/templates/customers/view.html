@@ -7,25 +7,29 @@
     <!-- Header -->
     <div class="mb-4 d-flex align-items-center justify-content-between">
         <div class="d-flex align-items-center gap-3">
-            <a href="{{ url_for('customers.index') }}" class="btn btn-dark rounded-circle" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+            <a href="{{ url_for('customers.index') }}" class="btn btn-dark rounded-circle"
+                style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
                 <i class="fas fa-arrow-left"></i>
             </a>
             <h2 class="fw-900 mb-0">Taariikhda <span class="text-primary">{{ customer.name }}</span></h2>
         </div>
-        <a href="{{ url_for('customers.edit', customer_id=customer.id) }}" class="btn btn-outline-primary rounded-pill px-4">
+        <a href="{{ url_for('customers.edit', customer_id=customer.id) }}"
+            class="btn btn-outline-primary rounded-pill px-4">
             <i class="fas fa-edit me-2"></i>Bedel Xogta
         </a>
     </div>
 
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 text-white" style="background-color: var(--bs-{{category}}); opacity: 0.9;">
-                <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>{{ message }}
-            </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 text-white"
+        style="background-color: var(--bs-{{category}}); opacity: 0.9;">
+        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>{{ message
+        }}
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
     <div class="row g-4 mb-4">
@@ -33,13 +37,14 @@
         <div class="col-md-4">
             <div class="card card-premium border-0 h-100 p-4">
                 <div class="text-center mb-4">
-                    <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                    <div class="avatar bg-primary text-white rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3"
+                        style="width: 80px; height: 80px; font-size: 2rem;">
                         {{ customer.name[:2] | upper }}
                     </div>
                     <h4 class="fw-bold mb-1">{{ customer.name }}</h4>
                     <p class="text-muted small">Macmiil Diiwaangashan</p>
                 </div>
-                
+
                 <div class="d-flex flex-column gap-3">
                     <div class="d-flex align-items-center gap-3">
                         <div class="text-primary" style="width: 20px;"><i class="fas fa-phone"></i></div>
@@ -53,7 +58,8 @@
                         <div class="text-primary" style="width: 20px;"><i class="fas fa-map-marker-alt"></i></div>
                         <div>{{ customer.address or '—' }}</div>
                     </div>
-                    <div class="d-flex align-items-center gap-3 mt-3 pt-3" style="border-top: 1px solid rgba(255,255,255,0.1);">
+                    <div class="d-flex align-items-center gap-3 mt-3 pt-3"
+                        style="border-top: 1px solid rgba(255,255,255,0.1);">
                         <div class="text-warning" style="width: 20px;"><i class="fas fa-star"></i></div>
                         <div>
                             <span class="text-muted small d-block">Deynta La Ogolyahay</span>
@@ -68,21 +74,24 @@
         <div class="col-md-8">
             <div class="card card-premium border-0 h-100 p-4">
                 <h5 class="fw-bold text-muted mb-4">XISAAABTA (ACCOUNT SUMMARY)</h5>
-                
+
                 <div class="row g-4 h-100">
                     <div class="col-sm-6 d-flex flex-column justify-content-center">
-                        <div class="p-4 rounded-4" style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">
+                        <div class="p-4 rounded-4"
+                            style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.2);">
                             <div class="text-danger mb-2"><i class="fas fa-file-invoice-dollar fa-2x"></i></div>
                             <div class="text-muted small fw-bold mb-1">DEYNTA LAGU LEEYAHAY (OUTSTANDING)</div>
                             <h2 class="fw-900 text-danger mb-0">{{ sys_currency }}{{ "%.2f"|format(balance) }}</h2>
                         </div>
                     </div>
-                    
+
                     <div class="col-sm-6 d-flex flex-column justify-content-center">
-                        <div class="p-4 rounded-4" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
+                        <div class="p-4 rounded-4"
+                            style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2);">
                             <div class="text-success mb-2"><i class="fas fa-wallet fa-2x"></i></div>
                             <div class="text-muted small fw-bold mb-1">DEYNTA HARTA (CREDIT AVAILABLE)</div>
-                            <h2 class="fw-900 {% if customer.credit_limit - balance < 0 %}text-danger{% else %}text-success{% endif %} mb-0">
+                            <h2
+                                class="fw-900 {% if customer.credit_limit - balance < 0 %}text-danger{% else %}text-success{% endif %} mb-0">
                                 {{ sys_currency }}{{ "%.2f"|format(customer.credit_limit - balance) }}
                             </h2>
                         </div>
@@ -94,10 +103,11 @@
 
     <!-- Orders History -->
     <div class="card card-premium border-0 p-4 mt-4">
-        <h5 class="fw-bold mb-4"><i class="fas fa-history me-2 text-primary"></i>Taariikhda Dalabyada Kharaashaadka (Order History)</h5>
-        
+        <h5 class="fw-bold mb-4"><i class="fas fa-history me-2 text-primary"></i>Taariikhda Dalabyada Kharaashaadka
+            (Order History)</h5>
+
         <div class="table-responsive">
-            <table class="table table-dark table-hover mb-0 align-middle">
+            <table id="customerOrdersTable" class="table table-hover mb-0 align-middle w-100">
                 <thead>
                     <tr>
                         <th>Order ID</th>
@@ -116,20 +126,24 @@
                         <td>
                             <span class="badge bg-secondary rounded-pill">{{ order.order_type }}</span>
                         </td>
-                        <td class="fw-bold">{{ sys_currency }}{{ "%.2f"|format(order.total_amount) }}</td>
+                        <td class="fw-bold">{{ sys_currency }}<span class="order-amount">{{
+                                "%.2f"|format(order.total_amount) }}</span></td>
                         <td>
                             {% if order.payment_status == 'paid' %}
-                            <span class="badge bg-success rounded-pill px-3 py-2"><i class="fas fa-check-circle me-1"></i>Bixan</span>
+                            <span class="badge bg-success rounded-pill px-3 py-2"><i
+                                    class="fas fa-check-circle me-1"></i>Bixan</span>
                             {% elif order.payment_status == 'partial' %}
-                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2"><i class="fas fa-adjust me-1"></i>Nus-Bixan</span>
+                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2"><i
+                                    class="fas fa-adjust me-1"></i>Nus-Bixan</span>
                             {% else %}
-                            <span class="badge bg-danger rounded-pill px-3 py-2"><i class="fas fa-times-circle me-1"></i>Deyn</span>
+                            <span class="badge bg-danger rounded-pill px-3 py-2"><i
+                                    class="fas fa-times-circle me-1"></i>Deyn</span>
                             {% endif %}
                         </td>
                         <td class="text-end">
-                            <a href="{{ url_for('orders.view_order', order_id=order.id) }}" class="btn btn-sm btn-info rounded-3">
-                                <i class="fas fa-file-invoice"></i> View
-                            </a>
+                            <button class="btn btn-sm btn-info rounded-3 view-order-btn" data-id="{{ order.id }}">
+                                <i class="fas fa-eye"></i> View
+                            </button>
                         </td>
                     </tr>
                     {% else %}
@@ -141,8 +155,138 @@
                     </tr>
                     {% endfor %}
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="3" class="text-end ps-4 py-3 fw-bold border-0">WADARTA GUUD (TOTAL):</th>
+                        <th class="py-3 fw-900 text-primary fs-5 border-0" id="order_grand_total">{{ sys_currency }}
+                            0.00</th>
+                        <th colspan="2" class="border-0"></th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
 </div>
+
+<!-- View Order Modal -->
+<div class="modal fade" id="viewOrderModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content card-premium border-0" style="background: #1e293b; color: white;">
+            <div class="modal-header border-bottom border-white border-opacity-10">
+                <h5 class="modal-title fw-bold">Tafaasiisha Dalabka: <span class="text-primary" id="v_order_id"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="row mb-4">
+                    <div class="col-6">
+                        <p class="text-muted small mb-1">Macmiilka / Miiska</p>
+                        <h6 class="fw-bold" id="v_customer_table"></h6>
+                    </div>
+                    <div class="col-6 text-end">
+                        <p class="text-muted small mb-1">Taariikhda & Waqtiga</p>
+                        <h6 class="fw-bold" id="v_datetime"></h6>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table table-sm table-dark table-hover align-middle">
+                        <thead class="text-muted small text-uppercase">
+                            <tr>
+                                <th>Alaabta</th>
+                                <th class="text-center">Tirada</th>
+                                <th class="text-end">Qiimaha</th>
+                                <th class="text-end">Wadarta</th>
+                            </tr>
+                        </thead>
+                        <tbody id="v_order_items" class="border-top-0">
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-end fw-bold">Wadarta Guud:</td>
+                                <td class="text-end fw-bold text-primary" id="v_grand_total"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer border-top border-white border-opacity-10 bg-dark bg-opacity-25">
+                <button type="button" class="btn btn-outline-light rounded-pill px-4"
+                    data-bs-dismiss="modal">Xir</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    $(document).ready(function () {
+        $('#customerOrdersTable').DataTable({
+            responsive: true,
+            dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-3"Bf>rt<"d-flex justify-content-between align-items-center mt-3"ip>',
+            buttons: [
+                { extend: 'print', text: '<i class="fas fa-print me-2"></i> Daabac', className: 'btn btn-sm btn-outline-primary rounded-pill px-3 shadow-none' },
+                { extend: 'excel', text: '<i class="fas fa-file-excel me-2"></i> Excel', className: 'btn btn-sm btn-outline-success rounded-pill px-3 shadow-none' },
+                { extend: 'pdf', text: '<i class="fas fa-file-pdf me-2"></i> PDF', className: 'btn btn-sm btn-outline-danger rounded-pill px-3 shadow-none' }
+            ],
+            order: [[0, 'desc']],
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Raadi dalab...",
+                lengthMenu: "_MENU_ dalab",
+                info: "Waxaad arkaysaa _START_ ilaa _END_ ka mid ah _TOTAL_ dalab",
+                paginate: {
+                    next: '<i class="fas fa-chevron-right"></i>',
+                    previous: '<i class="fas fa-chevron-left"></i>'
+                }
+            },
+            footerCallback: function (row, data, start, end, display) {
+                var api = this.api();
+                var intVal = (i) => typeof i === 'string' ? i.replace(/[^\d.-]/g, '') * 1 : typeof i === 'number' ? i : 0;
+
+                // Total over this page
+                var pageTotal = api.column(3, { page: 'current' }).data().reduce(function (acc, val) {
+                    var tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = val;
+                    var amountText = tempDiv.querySelector('.order-amount') ? tempDiv.querySelector('.order-amount').textContent : '';
+                    var b = amountText || String(val).replace(/[^\d.-]/g, '');
+                    return acc + intVal(b);
+                }, 0);
+
+                // Update footer
+                $(api.column(3).footer()).html('{{ sys_currency }} ' + pageTotal.toFixed(2));
+            }
+        });
+
+        $(document).on('click', '.view-order-btn', function () {
+            const id = $(this).data('id');
+            fetch(`/orders/view/${id}`)
+                .then(res => res.json())
+                .then(res => {
+                    if (res.success) {
+                        const data = res.data;
+                        $('#v_order_id').text('#' + String(data.id).padStart(6, '0'));
+                        $('#v_customer_table').html(`<i class="fas fa-chair text-primary me-2"></i>${data.table} &bull; ${data.customer}`);
+                        $('#v_datetime').text(data.date);
+                        $('#v_grand_total').text('{{ sys_currency }} ' + data.total.toFixed(2));
+
+                        let rows = '';
+                        data.items.forEach(item => {
+                            rows += `<tr>
+                            <td>${item.product_name}</td>
+                            <td class="text-center">x${item.quantity}</td>
+                            <td class="text-end">{{ sys_currency }} ${item.price.toFixed(2)}</td>
+                            <td class="text-end fw-bold">{{ sys_currency }} ${item.total.toFixed(2)}</td>
+                        </tr>`;
+                        });
+                        $('#v_order_items').html(rows);
+                        $('#viewOrderModal').modal('show');
+                    } else {
+                        Swal.fire('Error', res.message, 'error');
+                    }
+                });
+        });
+    });
+</script>
 {% endblock %}

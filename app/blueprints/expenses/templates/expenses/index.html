@@ -1,0 +1,441 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Expenses - {{ sys_name }}{% endblock %}
+
+{% block styles %}
+<!-- SweetAlert2 -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+<!-- Datatables SaaS Style -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<style>
+    :root {
+        --saas-primary: #6366f1;
+        --saas-primary-soft: #e0e7ff;
+        --saas-danger: #ef4444;
+        --saas-danger-soft: #fee2e2;
+        --saas-success: #10b981;
+        --saas-success-soft: #d1fae5;
+        --saas-warning: #f59e0b;
+        --saas-warning-soft: #fef3c7;
+        --saas-surface: #ffffff;
+        --saas-border: #eaff;
+        --saas-text: #1f2937;
+        --saas-text-muted: #6b7280;
+    }
+
+    [data-theme="dark"] {
+        --saas-surface: #1e1e2d;
+        --saas-border: #2b2b40;
+        --saas-text: #e2e8f0;
+        --saas-text-muted: #94a3b8;
+        --saas-primary-soft: rgba(99, 102, 241, 0.15);
+        --saas-danger-soft: rgba(239, 68, 68, 0.15);
+        --saas-success-soft: rgba(16, 185, 129, 0.15);
+        --saas-warning-soft: rgba(245, 158, 11, 0.15);
+    }
+
+    /* Page Header */
+    .saas-header {
+        background: var(--saas-surface);
+        border-bottom: 1px solid var(--saas-border);
+        padding: 24px 32px;
+        margin: -24px -24px 24px -24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .saas-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--saas-text);
+        letter-spacing: -0.02em;
+        margin: 0;
+    }
+
+    .saas-sub {
+        color: var(--saas-text-muted);
+        font-size: 0.9rem;
+        margin-top: 4px;
+    }
+
+    /* Table Card */
+    .saas-card {
+        background: var(--saas-surface);
+        border: 1px solid var(--saas-border);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
+    }
+
+    .saas-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--saas-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .saas-table th {
+        background: var(--saas-surface);
+        color: var(--saas-text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--saas-border);
+    }
+
+    .saas-table td {
+        background: var(--saas-surface);
+        color: var(--saas-text);
+        padding: 16px 24px;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--saas-border);
+    }
+
+    .saas-table tbody tr:hover td {
+        background: rgba(99, 102, 241, 0.02);
+    }
+
+    .saas-action-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid var(--saas-border);
+        background: transparent;
+        color: var(--saas-text-muted);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .saas-action-btn:hover {
+        background: var(--saas-primary-soft);
+        color: var(--saas-primary);
+        border-color: var(--saas-primary-soft);
+    }
+
+    .saas-action-btn.delete:hover {
+        background: var(--saas-danger-soft);
+        color: var(--saas-danger);
+        border-color: var(--saas-danger-soft);
+    }
+
+    /* Buttons */
+    .btn-saas {
+        background: var(--saas-primary);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-saas:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        color: white;
+    }
+
+    /* Modal Styling */
+    .modal-content.saas-modal {
+        background: var(--saas-surface);
+        border: 1px solid var(--saas-border);
+        border-radius: 16px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .saas-modal-header {
+        padding: 24px;
+        border-bottom: 1px solid var(--saas-border);
+    }
+
+    .saas-modal-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--saas-text);
+        margin: 0;
+    }
+
+    .saas-modal-body {
+        padding: 24px;
+    }
+
+    .saas-modal-footer {
+        padding: 16px 24px;
+        background: rgba(0, 0, 0, 0.02);
+        border-top: 1px solid var(--saas-border);
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+    }
+
+    /* Inputs */
+    .saas-input {
+        background: transparent !important;
+        border: 1px solid var(--saas-border);
+        color: var(--saas-text);
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+    }
+
+    .saas-input:focus {
+        border-color: var(--saas-primary);
+        box-shadow: 0 0 0 3px var(--saas-primary-soft);
+        outline: none;
+    }
+
+    .saas-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--saas-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="animate__animated animate__fadeIn">
+
+    <!-- Header -->
+    <div class="saas-header">
+        <div>
+            <h1 class="saas-title">Expenses Management</h1>
+            <p class="saas-sub">Track and manage business expenses</p>
+        </div>
+        <div>
+            <button class="btn-saas" data-bs-toggle="modal" data-bs-target="#addExpenseModal">
+                <i class="fas fa-plus me-2"></i> Add Expense
+            </button>
+        </div>
+    </div>
+
+    <!-- Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="mb-4">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show border-0 rounded-3 shadow-sm" role="alert">
+            <div class="d-flex align-items-center">
+                {% if category == 'success' %}
+                <i class="fas fa-check-circle fs-4 me-3"></i>
+                {% else %}
+                <i class="fas fa-exclamation-triangle fs-4 me-3"></i>
+                {% endif %}
+                <span class="fw-500">{{ message }}</span>
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Expenses Table -->
+    <div class="saas-card">
+        <div class="saas-card-header d-flex justify-content-between align-items-center">
+            <h5 class="saas-title" style="font-size:1.1rem">All Expenses</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table saas-table m-0" id="expensesTable" width="100%">
+                <thead>
+                    <tr>
+                        <th width="15%">Date</th>
+                        <th width="35%">Description</th>
+                        <th width="15%">Category</th>
+                        <th width="15%" class="text-end">Amount</th>
+                        <th width="10%">User</th>
+                        <th width="10%" class="text-end" style="padding-right: 24px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td class="fw-bold">{{ expense.date }}</td>
+                        <td>{{ expense.description }}</td>
+                        <td>
+                            <span class="badge bg-secondary bg-opacity-20 text-secondary border-0 px-2 rounded-pill">
+                                {{ expense.category or 'General' }}
+                            </span>
+                        </td>
+                        <td class="text-end fw-bold text-danger">
+                            ${{ "%.2f"|format(expense.amount) }}
+                        </td>
+                        <td class="text-muted small">
+                            {{ expense.user.username if expense.user else 'System' }}
+                        </td>
+                        <td class="text-end" style="padding-right: 24px;">
+                            <div class="d-flex gap-2 justify-content-end">
+                                <button class="saas-action-btn" data-bs-toggle="modal"
+                                    data-bs-target="#editExpenseModal{{ expense.id }}" title="Edit">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <button class="saas-action-btn delete" onclick="confirmDelete({{ expense.id }})"
+                                    title="Delete">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <form id="delete-form-{{ expense.id }}"
+                                    action="{{ url_for('expenses.delete_expense', id=expense.id) }}" method="POST"
+                                    class="d-none">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Add Expense -->
+<div class="modal fade" id="addExpenseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content saas-modal border-0">
+            <div class="saas-modal-header d-flex justify-content-between align-items-center">
+                <h5 class="saas-modal-title">New Expense</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('expenses.add_expense') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="saas-modal-body">
+                    <div class="mb-4">
+                        <label class="saas-label">Description</label>
+                        <input type="text" name="description" class="form-control saas-input"
+                            placeholder="e.g. Office supplies" required>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label class="saas-label">Amount ($)</label>
+                            <input type="number" step="0.01" name="amount" class="form-control saas-input"
+                                placeholder="0.00" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="saas-label">Date</label>
+                            <input type="date" name="date" class="form-control saas-input">
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="saas-label">Category</label>
+                        <select name="category" class="form-select saas-input">
+                            <option value="Supplies">Supplies</option>
+                            <option value="Maintenance">Maintenance</option>
+                            <option value="Bills">Bills</option>
+                            <option value="Salary">Salary</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="saas-modal-footer d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light rounded-3 fw-bold px-4"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-saas px-4">Save Expense</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% for expense in expenses %}
+<!-- Modal Edit Expense -->
+<div class="modal fade" id="editExpenseModal{{ expense.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content saas-modal border-0">
+            <div class="saas-modal-header d-flex justify-content-between align-items-center">
+                <h5 class="saas-modal-title">Edit Expense</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('expenses.edit_expense', id=expense.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="saas-modal-body">
+                    <div class="mb-4">
+                        <label class="saas-label">Description</label>
+                        <input type="text" name="description" class="form-control saas-input"
+                            value="{{ expense.description }}" required>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label class="saas-label">Amount ($)</label>
+                            <input type="number" step="0.01" name="amount" class="form-control saas-input"
+                                value="{{ '%.2f'|format(expense.amount) }}" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="saas-label">Date</label>
+                            <input type="date" name="date" class="form-control saas-input" value="{{ expense.date }}">
+                        </div>
+                    </div>
+                    <div class="mb-2">
+                        <label class="saas-label">Category</label>
+                        <select name="category" class="form-select saas-input">
+                            <option value="Supplies" {% if expense.category=='Supplies' %}selected{% endif %}>Supplies
+                            </option>
+                            <option value="Maintenance" {% if expense.category=='Maintenance' %}selected{% endif %}>
+                                Maintenance</option>
+                            <option value="Bills" {% if expense.category=='Bills' %}selected{% endif %}>Bills</option>
+                            <option value="Salary" {% if expense.category=='Salary' %}selected{% endif %}>Salary
+                            </option>
+                            <option value="Other" {% if expense.category=='Other' %}selected{% endif %}>Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="saas-modal-footer d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light rounded-3 fw-bold px-4"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-saas px-4">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#expensesTable').DataTable({
+            "order": [[0, "desc"]],
+            "pageLength": 10,
+            "dom": '<"row align-items-center mb-4"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 text-md-end"f>>rt<"row align-items-center mt-4"<"col-sm-12 col-md-5"i><"col-sm-12 col-md-7"p>>',
+            "language": {
+                "search": "_INPUT_",
+                "searchPlaceholder": "Search expenses...",
+                "lengthMenu": "Show _MENU_ entries"
+            }
+        });
+    });
+
+    function confirmDelete(id) {
+        Swal.fire({
+            title: 'Ma hubtaa?',
+            text: "Kharashkaan si rasmi ah ayaa loo tirtirayaa!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Haa, tirtir!',
+            cancelButtonText: 'Jooji',
+            customClass: {
+                popup: 'saas-modal border-0',
+                confirmButton: 'btn btn-danger px-4 rounded-3',
+                cancelButton: 'btn btn-light px-4 rounded-3 text-dark'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById(`delete-form-${id}`).submit();
+            }
+        });
+    }
+</script>
+{% endblock %}

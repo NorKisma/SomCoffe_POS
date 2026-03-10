@@ -3,237 +3,604 @@
 {% block title %}Maamulka Users-ka - SomCoffe POS{% endblock %}
 
 {% block styles %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/users.css') }}">
+<!-- SweetAlert2 -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.min.css" rel="stylesheet">
+<!-- Datatables SaaS Style -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
+<style>
+    :root {
+        --saas-primary: #6366f1;
+        --saas-primary-soft: #e0e7ff;
+        --saas-danger: #ef4444;
+        --saas-danger-soft: #fee2e2;
+        --saas-success: #10b981;
+        --saas-success-soft: #d1fae5;
+        --saas-warning: #f59e0b;
+        --saas-warning-soft: #fef3c7;
+        --saas-surface: #ffffff;
+        --saas-border: #eaff;
+        --saas-text: #1f2937;
+        --saas-text-muted: #6b7280;
+    }
+
+    [data-theme="dark"] {
+        --saas-surface: #1e1e2d;
+        --saas-border: #2b2b40;
+        --saas-text: #e2e8f0;
+        --saas-text-muted: #94a3b8;
+        --saas-primary-soft: rgba(99, 102, 241, 0.15);
+        --saas-danger-soft: rgba(239, 68, 68, 0.15);
+        --saas-success-soft: rgba(16, 185, 129, 0.15);
+        --saas-warning-soft: rgba(245, 158, 11, 0.15);
+    }
+
+    /* Page Header */
+    .saas-header {
+        background: var(--saas-surface);
+        border-bottom: 1px solid var(--saas-border);
+        padding: 24px 32px;
+        margin: -24px -24px 24px -24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .saas-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--saas-text);
+        letter-spacing: -0.02em;
+        margin: 0;
+    }
+
+    .saas-sub {
+        color: var(--saas-text-muted);
+        font-size: 0.9rem;
+        margin-top: 4px;
+    }
+
+    /* Table Card */
+    .saas-card {
+        background: var(--saas-surface);
+        border: 1px solid var(--saas-border);
+        border-radius: 12px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+        overflow: hidden;
+    }
+
+    .saas-card-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid var(--saas-border);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .saas-table th {
+        background: var(--saas-surface);
+        color: var(--saas-text-muted);
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+        letter-spacing: 0.05em;
+        padding: 16px 24px;
+        border-bottom: 1px solid var(--saas-border);
+    }
+
+    .saas-table td {
+        background: var(--saas-surface);
+        color: var(--saas-text);
+        padding: 16px 24px;
+        vertical-align: middle;
+        border-bottom: 1px solid var(--saas-border);
+    }
+
+    .saas-table tbody tr:hover td {
+        background: rgba(99, 102, 241, 0.02);
+    }
+
+    /* Avatars */
+    .saas-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: white;
+    }
+
+    /* Role Badges */
+    .saas-badge {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        letter-spacing: 0.025em;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    .badge-admin {
+        background: var(--saas-danger-soft);
+        color: var(--saas-danger);
+    }
+
+    .badge-manager {
+        background: var(--saas-primary-soft);
+        color: var(--saas-primary);
+    }
+
+    .badge-cashier {
+        background: var(--saas-success-soft);
+        color: var(--saas-success);
+    }
+
+    .badge-waiter {
+        background: var(--saas-warning-soft);
+        color: var(--saas-warning);
+    }
+
+    /* Avatar Colors matching roles */
+    .av-admin {
+        background: linear-gradient(135deg, #ef4444, #b91c1c);
+    }
+
+    .av-manager {
+        background: linear-gradient(135deg, #6366f1, #4338ca);
+    }
+
+    .av-cashier {
+        background: linear-gradient(135deg, #10b981, #047857);
+    }
+
+    .av-waiter {
+        background: linear-gradient(135deg, #f59e0b, #b45309);
+    }
+
+    /* Action Buttons */
+    .saas-action-btn {
+        width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        border: 1px solid var(--saas-border);
+        background: transparent;
+        color: var(--saas-text-muted);
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
+    }
+
+    .saas-action-btn:hover {
+        background: var(--saas-primary-soft);
+        color: var(--saas-primary);
+        border-color: var(--saas-primary-soft);
+    }
+
+    .saas-action-btn.delete:hover {
+        background: var(--saas-danger-soft);
+        color: var(--saas-danger);
+        border-color: var(--saas-danger-soft);
+    }
+
+    /* Buttons */
+    .btn-saas {
+        background: var(--saas-primary);
+        color: white;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        border: none;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-saas:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        color: white;
+    }
+
+    /* Modal Styling */
+    .modal-content.saas-modal {
+        background: var(--saas-surface);
+        border: 1px solid var(--saas-border);
+        border-radius: 16px;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    }
+
+    .saas-modal-header {
+        padding: 24px;
+        border-bottom: 1px solid var(--saas-border);
+    }
+
+    .saas-modal-title {
+        font-weight: 700;
+        font-size: 1.25rem;
+        color: var(--saas-text);
+        margin: 0;
+    }
+
+    .saas-modal-body {
+        padding: 24px;
+    }
+
+    .saas-modal-footer {
+        padding: 16px 24px;
+        background: rgba(0, 0, 0, 0.02);
+        border-top: 1px solid var(--saas-border);
+        border-bottom-left-radius: 16px;
+        border-bottom-right-radius: 16px;
+    }
+
+    /* Inputs */
+    .saas-input {
+        background: transparent !important;
+        border: 1px solid var(--saas-border);
+        color: var(--saas-text);
+        border-radius: 8px;
+        padding: 12px 16px;
+        font-size: 0.95rem;
+        transition: all 0.2s;
+    }
+
+    .saas-input:focus {
+        border-color: var(--saas-primary);
+        box-shadow: 0 0 0 3px var(--saas-primary-soft);
+        outline: none;
+    }
+
+    .saas-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--saas-text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 8px;
+    }
+
+    /* Status Toggle */
+    .form-switch .form-check-input {
+        width: 2.5em;
+        height: 1.25em;
+        background-color: var(--saas-border);
+        border: none;
+        cursor: pointer;
+    }
+
+    .form-switch .form-check-input:checked {
+        background-color: var(--saas-success);
+    }
+
+    /* Datatables Overrides */
+    .dataTables_wrapper .dataTables_filter input {
+        border: 1px solid var(--saas-border);
+        border-radius: 8px;
+        padding: 8px 16px;
+        background: transparent;
+        color: var(--saas-text);
+    }
+</style>
 {% endblock %}
 
 {% block content %}
 <div class="animate__animated animate__fadeIn">
 
     <!-- Header -->
-    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+    <div class="saas-header">
         <div>
-            <h2 class="fw-900 mb-1">Maamulka <span class="text-primary">Users-ka</span></h2>
-            <p class="text-muted small mb-0">Halkan ka xakamee cidda geli karta nidaamka iyo heerka awoodooda.</p>
+            <h1 class="saas-title">User Management</h1>
+            <p class="saas-sub">Manage system access, roles, and profiles</p>
         </div>
-        <div class="d-flex align-items-center gap-3">
-            <!-- Stat card -->
-            <div class="users-stat-card">
-                <div class="users-stat-icon"><i class="fas fa-users"></i></div>
-                <div>
-                    <div class="text-muted" style="font-size:.7rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;">Wadarta</div>
-                    <div class="fw-900" style="font-size:1.6rem;line-height:1;">{{ pagination.total }}</div>
-                </div>
-            </div>
-            <button class="btn btn-premium px-4 py-2 rounded-pill shadow-lg" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                <i class="fas fa-user-plus me-2"></i>CREATE NEW USER
+        <div>
+            <button class="btn-saas" data-bs-toggle="modal" data-bs-target="#addUserModal">
+                <i class="fas fa-user-plus me-2"></i> Add New User
             </button>
         </div>
     </div>
 
-    <!-- Flash Messages -->
+    <!-- Status Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 animate__animated animate__slideInDown">
-                <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>{{ message }}
-            </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} rounded-3 shadow-sm mb-4 border-0 d-flex align-items-center">
+        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} me-3 fs-5"></i>
+        <div>{{ message }}</div>
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
-    <!-- Table Card -->
-    <div class="users-table-wrap">
+    <!-- Data Card -->
+    <div class="saas-card">
         <div class="table-responsive">
-            <table class="users-table">
+            <table id="usersTable" class="table saas-table w-100 mb-0 pointer-cursor">
                 <thead>
                     <tr>
-                        <th style="padding-left:28px;">Isticmaalaha</th>
-                        <th class="d-none d-lg-table-cell">Emailka</th>
-                        <th>Awoodda</th>
-                        <th class="d-none d-md-table-cell">Xaaladda</th>
-                        <th style="text-align:right;padding-right:28px;">Actions</th>
+                        <th style="padding-left: 24px;">User Profile</th>
+                        <th>Email Address</th>
+                        <th>Role / Access</th>
+                        <th>Status</th>
+                        <th class="text-end" style="padding-right: 24px;">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     {% for user in users %}
-                    <tr class="animate__animated animate__fadeIn">
-                        <td style="padding-left:28px;">
+                    <tr>
+                        <td style="padding-left: 24px;">
                             <div class="d-flex align-items-center gap-3">
-                                {% if user.role == 'admin' %}
-                                <div class="user-avatar avatar-admin"><i class="fas fa-shield-alt"></i></div>
-                                {% elif user.role == 'manager' %}
-                                <div class="user-avatar avatar-manager"><i class="fas fa-user-tie"></i></div>
-                                {% else %}
-                                <div class="user-avatar avatar-staff"><i class="fas fa-user"></i></div>
-                                {% endif %}
-                                <div>
-                                    <div class="fw-800" style="color:var(--text-primary);font-size:.9rem;">{{ user.username }}</div>
-                                    <div class="text-muted" style="font-size:.73rem;">UID #{{ "%04d"|format(user.id) }}</div>
+                                <div class="saas-avatar av-{{ user.role|lower }}">
+                                    {{ user.username[0]|upper }}
                                 </div>
-                            </div>
-                        </td>
-                        <td class="d-none d-lg-table-cell">
-                            <span class="text-muted" style="font-size:.83rem;font-weight:600;">
-                                {{ user.email if user.email else '—' }}
-                            </span>
-                        </td>
-                        <td>
-                            {% if user.role == 'admin' %}
-                            <span class="role-badge role-admin"><i class="fas fa-shield-alt"></i>Admin</span>
-                            {% elif user.role == 'manager' %}
-                            <span class="role-badge role-manager"><i class="fas fa-user-edit"></i>Manager</span>
-                            {% else %}
-                            <span class="role-badge role-staff"><i class="fas fa-cash-register"></i>Staff</span>
-                            {% endif %}
-                        </td>
-                        <td class="d-none d-md-table-cell">
-                            <span style="font-size:.82rem;font-weight:700;color:#10b981;">
-                                <span class="status-dot status-active"></span>Firfircoon
-                            </span>
-                        </td>
-                        <td style="padding-right:28px;">
-                            <div class="d-flex gap-2 justify-content-end">
-                                <button class="btn-tbl" data-bs-toggle="modal" data-bs-target="#editUserModal{{ user.id }}" title="Bedel">
-                                    <i class="fas fa-key fa-sm"></i>
-                                </button>
-                                {% if user.id != current_user.id %}
-                                <form action="{{ url_for('users.delete_user', id=user.id) }}" method="POST" onsubmit="return confirm('Ma hubtaa inaad tirtirto {{ user.username }}?')">
-                                    <button type="submit" class="btn-tbl danger" title="Tirtir">
-                                        <i class="fas fa-trash-alt fa-sm"></i>
-                                    </button>
-                                </form>
-                                {% endif %}
-                            </div>
-
-                            <!-- Edit Modal -->
-                            <div class="modal fade" id="editUserModal{{ user.id }}" tabindex="-1">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content card-premium border-0 p-2">
-                                        <div class="modal-header border-0 pb-0">
-                                            <h4 class="fw-900 text-white">Bedel: <span class="text-primary">{{ user.username }}</span></h4>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-                                        </div>
-                                        <form action="{{ url_for('users.update_user', id=user.id) }}" method="POST">
-                                            <div class="modal-body p-4">
-                                                <div class="mb-4">
-                                                    <label class="form-label text-muted small fw-bold">EMAIL ADDRESS</label>
-                                                    <input type="email" name="email" class="form-control rounded-4 py-3" value="{{ user.email }}" style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
-                                                </div>
-                                                <div>
-                                                    <label class="form-label text-muted small fw-bold">ACCESS LEVEL</label>
-                                                    <select name="role" class="form-select rounded-4 py-3" style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
-                                                        <option value="staff"   {% if user.role=='staff'   %}selected{% endif %}>Staff / Cashier</option>
-                                                        <option value="manager" {% if user.role=='manager' %}selected{% endif %}>Shop Manager</option>
-                                                        <option value="admin"   {% if user.role=='admin'   %}selected{% endif %}>System Admin</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer border-0 p-4 pt-0">
-                                                <button type="submit" class="btn btn-premium w-100 py-3 rounded-4">UPDATE PERMISSIONS</button>
-                                            </div>
-                                        </form>
+                                <div>
+                                    <div class="fw-bold" style="color: var(--saas-text); font-size: 0.95rem;">
+                                        {{ user.username }}
+                                    </div>
+                                    <div style="color: var(--saas-text-muted); font-size: 0.75rem; font-weight: 500;">
+                                        ID: #{{ "%04d"|format(user.id) }}
                                     </div>
                                 </div>
                             </div>
                         </td>
-                    </tr>
-                    {% else %}
-                    <tr>
-                        <td colspan="5" class="text-center py-5">
-                            <i class="fas fa-users-slash fa-3x mb-3 d-block" style="color:var(--text-muted);opacity:.4;"></i>
-                            <p class="text-muted fw-700">Wali user la ma diiwaangelin</p>
+                        <td>
+                            <span style="color: var(--saas-text-muted); font-weight: 500; font-size: 0.9rem;">
+                                {{ user.email if user.email else 'N/A' }}
+                            </span>
+                        </td>
+                        <td>
+                            <span class="saas-badge badge-{{ user.role|lower }}">
+                                {% if user.role == 'admin' %}<i class="fas fa-shield-alt"></i>
+                                {% elif user.role == 'manager' %}<i class="fas fa-user-tie"></i>
+                                {% elif user.role == 'cashier' %}<i class="fas fa-cash-register"></i>
+                                {% else %}<i class="fas fa-concierge-bell"></i>{% endif %}
+                                {{ user.role|capitalize }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center gap-2">
+                                <div class="form-check form-switch m-0 p-0">
+                                    <input class="form-check-input ms-0" type="checkbox" role="switch" checked disabled>
+                                </div>
+                                <span
+                                    class="badge bg-success bg-opacity-10 text-success border-0 rounded-pill px-2">Active</span>
+                            </div>
+                        </td>
+                        <td class="text-end" style="padding-right: 24px;">
+                            <div class="d-flex gap-2 justify-content-end">
+                                <!-- Edit Button -->
+                                <button class="saas-action-btn" data-bs-toggle="modal"
+                                    data-bs-target="#editUserModal{{ user.id }}" title="Edit User">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+
+                                <!-- Delete Button (AJAX/SweetAlert trigger) -->
+                                {% if user.id != current_user.id and current_user.is_admin %}
+                                <button class="saas-action-btn delete"
+                                    onclick="confirmDelete({{ user.id }}, '{{ user.username }}')" title="Delete User">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                                <!-- Hidden form for actual deletion -->
+                                <form id="delete-form-{{ user.id }}"
+                                    action="{{ url_for('users.delete_user', id=user.id) }}" method="POST"
+                                    class="d-none">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                </form>
+                                {% endif %}
+                            </div>
+
                         </td>
                     </tr>
+
+
                     {% endfor %}
                 </tbody>
             </table>
         </div>
-
-        <!-- Pagination -->
-        {% if pagination and pagination.pages > 1 %}
-        <div class="pag-wrap">
-            <div class="pag-info">
-                Muujinaya <strong>{{ (pagination.page - 1) * pagination.per_page + 1 }}</strong>
-                – <strong>{{ [pagination.page * pagination.per_page, pagination.total] | min }}</strong>
-                ka mid ah <strong>{{ pagination.total }}</strong> user
-            </div>
-            <nav class="pag-nav">
-                <!-- Prev -->
-                {% if pagination.has_prev %}
-                <a href="{{ url_for('users.index', page=pagination.prev_num) }}" class="pag-btn">
-                    <i class="fas fa-chevron-left fa-xs"></i>
-                </a>
-                {% else %}
-                <span class="pag-btn disabled"><i class="fas fa-chevron-left fa-xs"></i></span>
-                {% endif %}
-
-                <!-- Pages -->
-                {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-                    {% if p %}
-                    <a href="{{ url_for('users.index', page=p) }}"
-                       class="pag-btn {{ 'active' if p == pagination.page else '' }}">{{ p }}</a>
-                    {% else %}
-                    <span class="pag-dots">…</span>
-                    {% endif %}
-                {% endfor %}
-
-                <!-- Next -->
-                {% if pagination.has_next %}
-                <a href="{{ url_for('users.index', page=pagination.next_num) }}" class="pag-btn">
-                    <i class="fas fa-chevron-right fa-xs"></i>
-                </a>
-                {% else %}
-                <span class="pag-btn disabled"><i class="fas fa-chevron-right fa-xs"></i></span>
-                {% endif %}
-            </nav>
-        </div>
-        {% endif %}
     </div>
 </div>
 
-<!-- Add User Modal -->
-<div class="modal fade" id="addUserModal" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content card-premium border-0 p-2">
-            <div class="modal-header border-0 pb-0">
-                <h4 class="fw-900 text-white">Diiwaan-geli <span class="text-primary">User Cusub</span></h4>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+{% for user in users %}
+<!-- Modal Edit for {{ user.username }} -->
+<div class="modal fade" id="editUserModal{{ user.id }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered text-start">
+        <div class="modal-content saas-modal border-0">
+            <div class="saas-modal-header d-flex justify-content-between align-items-center">
+                <h5 class="saas-modal-title">Edit User Profile</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form action="{{ url_for('users.add_user') }}" method="POST">
-                <div class="modal-body p-4">
+            <form action="{{ url_for('users.update_user', id=user.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="saas-modal-body">
                     <div class="mb-4">
-                        <label class="form-label text-muted small fw-bold">USERNAME</label>
-                        <input type="text" name="username" class="form-control rounded-4 py-3"
-                               placeholder="e.g. ahmed_pos" required
-                               style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
+                        <label class="saas-label">Username</label>
+                        <input type="text" name="username" class="form-control saas-input" value="{{ user.username }}"
+                            required>
                     </div>
                     <div class="mb-4">
-                        <label class="form-label text-muted small fw-bold">EMAIL ADDRESS</label>
-                        <input type="email" name="email" class="form-control rounded-4 py-3"
-                               placeholder="user@example.com"
-                               style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
+                        <label class="saas-label">Email Address</label>
+                        <input type="email" name="email" class="form-control saas-input" value="{{ user.email }}">
                     </div>
                     <div class="mb-4">
-                        <label class="form-label text-muted small fw-bold">PASSWORD</label>
-                        <input type="password" name="password" class="form-control rounded-4 py-3"
-                               placeholder="••••••••" required
-                               style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
-                    </div>
-                    <div>
-                        <label class="form-label text-muted small fw-bold">AWOODDA (ROLE)</label>
-                        <select name="role" class="form-select rounded-4 py-3"
-                                style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);">
-                            <option value="staff">Staff / Cashier</option>
-                            <option value="manager">Shop Manager</option>
-                            <option value="admin">System Admin</option>
+                        <label class="saas-label">Role / Access Level</label>
+                        <select name="role" class="form-select saas-input">
+                            <option value="waiter" {% if user.role=='waiter' %}selected{% endif %}>🍽️ Waiter (Orders
+                                Only)</option>
+                            <option value="cashier" {% if user.role=='cashier' %}selected{% endif %}>💰 Cashier
+                                (Payments)</option>
+                            <option value="manager" {% if user.role=='manager' %}selected{% endif %}>👔 Manager (Full
+                                Access)</option>
+                            {% if current_user.is_admin %}
+                            <option value="admin" {% if user.role=='admin' %}selected{% endif %}>🛡️ Admin (System Wide)
+                            </option>
+                            {% endif %}
                         </select>
                     </div>
+                    <div class="mb-4">
+                        <label class="saas-label">Change Password (Optional)</label>
+                        <input type="password" name="password" class="form-control saas-input"
+                            placeholder="Enter new password">
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="saas-label">EVC Plus Number</label>
+                            <input type="text" name="evc_number" class="form-control saas-input"
+                                value="{{ user.evc_number or '' }}" placeholder="25261XXXXXXX">
+                        </div>
+                        <div class="col-md-6 mt-3 mt-md-0">
+                            <label class="saas-label">eDahab Number</label>
+                            <input type="text" name="edahab_number" class="form-control saas-input"
+                                value="{{ user.edahab_number or '' }}" placeholder="25262XXXXXXX">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="saas-label">Staff PIN Access (4-6 digits)</label>
+                        <input type="text" name="pin" class="form-control saas-input" value="{{ user.pin or '' }}"
+                            placeholder="e.g. 1234" maxlength="6">
+                        <small class="text-muted">Used for quick terminal access.</small>
+                    </div>
                 </div>
-                <div class="modal-footer border-0 p-4 pt-0">
-                    <button type="submit" class="btn btn-premium w-100 py-3 rounded-4 fs-5">KEYDI USER-KA</button>
+                <div class="saas-modal-footer d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light rounded-3 fw-bold px-4"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-saas px-4">Save Changes</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
+{% endfor %}
+
+<!-- Modal Add User -->
+<div class="modal fade" id="addUserModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content saas-modal border-0">
+            <div class="saas-modal-header d-flex justify-content-between align-items-center">
+                <h5 class="saas-modal-title">Create New User</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="{{ url_for('users.add_user') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="saas-modal-body">
+                    <div class="mb-4">
+                        <label class="saas-label">Username</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-transparent border-end-0 saas-input"
+                                style="border-right:none;"><i class="fas fa-at text-muted"></i></span>
+                            <input type="text" name="username" class="form-control saas-input border-start-0 ps-0"
+                                placeholder="johndoe" required>
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="saas-label">Email Address</label>
+                        <input type="email" name="email" class="form-control saas-input"
+                            placeholder="john@somcoffe.com">
+                    </div>
+                    <div class="mb-4">
+                        <label class="saas-label">Password</label>
+                        <input type="password" name="password" class="form-control saas-input" placeholder="••••••••"
+                            required>
+                    </div>
+                    <div class="mb-4">
+                        <label class="saas-label">Role Assignment</label>
+                        <select name="role" class="form-select saas-input">
+                            <option value="waiter" selected>🍽️ Waiter (Orders Only)</option>
+                            <option value="cashier">💰 Cashier (Payments)</option>
+                            <option value="manager">👔 Manager (Full Access)</option>
+                            {% if current_user.is_admin %}
+                            <option value="admin">🛡️ Admin (System Wide)</option>
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label class="saas-label">EVC Plus Number</label>
+                            <input type="text" name="evc_number" class="form-control saas-input"
+                                placeholder="25261XXXXXXX">
+                        </div>
+                        <div class="col-md-6 mt-3 mt-md-0">
+                            <label class="saas-label">eDahab Number</label>
+                            <input type="text" name="edahab_number" class="form-control saas-input"
+                                placeholder="25262XXXXXXX">
+                        </div>
+                    </div>
+                    <div class="mb-4">
+                        <label class="saas-label">Staff PIN Access (4-6 digits)</label>
+                        <input type="text" name="pin" class="form-control saas-input" placeholder="e.g. 1234"
+                            maxlength="6">
+                        <small class="text-muted">Used for quick terminal access.</small>
+                    </div>
+                </div>
+                <div class="saas-modal-footer d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-light rounded-3 fw-bold px-4"
+                        data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-saas px-4">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.32/dist/sweetalert2.all.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#usersTable').DataTable({
+            responsive: true,
+            dom: '<"d-flex flex-wrap justify-content-between align-items-center p-4 border-bottom"fB>rt<"d-flex justify-content-between align-items-center p-4"ip>',
+            buttons: [
+                { extend: 'print', text: '<i class="fas fa-print me-1"></i> Print', className: 'btn btn-light btn-sm rounded-3 fw-bold px-3 border shadow-sm' },
+                { extend: 'excel', text: '<i class="fas fa-file-excel me-1"></i> Excel', className: 'btn btn-light btn-sm rounded-3 fw-bold px-3 border shadow-sm mx-2' },
+                { extend: 'pdf', text: '<i class="fas fa-file-pdf me-1"></i> PDF', className: 'btn btn-light btn-sm rounded-3 fw-bold px-3 border shadow-sm' }
+            ],
+            pageLength: 10,
+            language: {
+                search: "",
+                searchPlaceholder: "Search users...",
+                info: "<span class='text-muted fs-7'>Showing _START_ to _END_ of _TOTAL_ users</span>",
+                paginate: {
+                    next: 'Next <i class="fas fa-chevron-right ms-1"></i>',
+                    previous: '<i class="fas fa-chevron-left me-1"></i> Prev'
+                }
+            },
+            columnDefs: [
+                { orderable: false, targets: [4] }
+            ]
+        });
+
+        // Clean Datatable styling to match SaaS
+        $('.dataTables_filter input').addClass('saas-input w-250px').removeClass('form-control-sm');
+        $('.dt-buttons .btn').removeClass('btn-secondary');
+    });
+
+    // SweetAlert Delete Confirmation
+    function confirmDelete(userId, username) {
+        Swal.fire({
+            title: 'Delete User?',
+            text: `This will permanently delete the account for "${username}". You cannot undo this action.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, delete user!',
+            background: document.documentElement.getAttribute('data-theme') === 'dark' ? '#1e1e2d' : '#fff',
+            color: document.documentElement.getAttribute('data-theme') === 'dark' ? '#e2e8f0' : '#1f2937',
+            customClass: {
+                popup: 'rounded-4 border shadow-lg',
+                confirmButton: 'rounded-3 fw-bold px-4 py-2',
+                cancelButton: 'rounded-3 fw-bold px-4 py-2'
+            }
+        }).then((result) => {
+            if (result.isConfirmed) {
+                document.getElementById('delete-form-' + userId).submit();
+            }
+        })
+    }
+</script>
 {% endblock %}

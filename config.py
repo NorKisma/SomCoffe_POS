@@ -49,4 +49,17 @@ class Config:
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     MAIL_DEFAULT_SENDER = os.environ.get('MAIL_USERNAME')
     
+    # Babel Settings
+    LANGUAGES = ['so', 'en']
+    BABEL_DEFAULT_LOCALE = 'so'
+
+    # CSRF Settings
+    WTF_CSRF_ENABLED = True
+    WTF_CSRF_SSL_STRICT = False       # Allow CSRF over plain HTTP in development
+    WTF_CSRF_TIME_LIMIT = None        # No token expiry — avoids 400 on slow loads
+
+    # Session Settings
+    SESSION_COOKIE_SAMESITE = 'Lax'   # Ensure session cookie sent on form POST
+    SESSION_COOKIE_HTTPONLY = True
+
     DEBUG = True

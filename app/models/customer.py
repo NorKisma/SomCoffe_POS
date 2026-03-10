@@ -1,4 +1,4 @@
-from app.extensions.db import db
+from app.extensions import db
 from datetime import datetime
 
 class Customer(db.Model):

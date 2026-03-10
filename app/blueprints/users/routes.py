@@ -1,17 +1,16 @@
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from app.utils.decorators import admin_required
+from app.utils.decorators import admin_required, manager_required
 from . import users_bp
 from app.services.user_service import UserService
 
 @users_bp.route('/')
 @login_required
-@admin_required
+@manager_required
 def index():
-    page = request.args.get('page', 1, type=int)
-    pagination = UserService.get_paginated_users(page=page, per_page=10)
-    users = pagination.items
-    return render_template('users/index.html', users=users, pagination=pagination)
+    from app.models.user import User
+    users = User.query.all()
+    return render_template('users/index.html', users=users)
 
 @users_bp.route('/add', methods=['POST'])
 @login_required
@@ -21,8 +20,11 @@ def add_user():
     email = request.form.get('email')
     password = request.form.get('password')
     role = request.form.get('role', 'staff')
+    evc_number = request.form.get('evc_number')
+    edahab_number = request.form.get('edahab_number')
+    pin = request.form.get('pin')
     
-    _, error = UserService.create_user(username, email, password, role)
+    _, error = UserService.create_user(username, email, password, role, evc_number, edahab_number, pin)
     if error:
         flash(error, 'danger')
     else:
@@ -44,12 +46,21 @@ def delete_user(id):
 
 @users_bp.route('/update/<int:id>', methods=['POST'])
 @login_required
-@admin_required
+@manager_required
 def update_user(id):
+    username = request.form.get('username')
     email = request.form.get('email')
     role = request.form.get('role')
+    password = request.form.get('password')
+    evc_number = request.form.get('evc_number')
+    edahab_number = request.form.get('edahab_number')
+    pin = request.form.get('pin')
     
-    UserService.update_user(id, email, role)
+    user, error = UserService.update_user(id, username, email, role, password, evc_number, edahab_number, pin)
     
-    flash('User updated!', 'success')
+    if error:
+        flash(error, 'danger')
+    else:
+        flash('User updated successfully!', 'success')
+        
     return redirect(url_for('users.index'))

@@ -22,6 +22,30 @@ class ProductService:
         return new_product
 
     @staticmethod
+    def update_product(product_id, name, price, category_id, stock, is_service, file=None):
+        product = Product.query.get_or_404(product_id)
+        product.name = name
+        product.price = price
+        product.category_id = category_id
+        product.stock = stock
+        product.is_service = is_service
+        
+        if file and file.filename != '' and ProductService.allowed_file(file.filename):
+            # Delete old image if exists
+            if product.image:
+                try:
+                    os.remove(os.path.join(current_app.config['UPLOAD_FOLDER'], 'products', product.image))
+                except:
+                    pass
+            
+            image_filename = secure_filename(file.filename)
+            file.save(os.path.join(current_app.config['UPLOAD_FOLDER'], 'products', image_filename))
+            product.image = image_filename
+            
+        db.session.commit()
+        return product
+
+    @staticmethod
     def delete_product(product_id):
         product = Product.query.get_or_404(product_id)
         if product.image:

@@ -1,18 +1,26 @@
 from flask import render_template, request, jsonify, flash, redirect, url_for
-from flask_login import login_required
+from flask_login import login_required, current_user
 from . import orders_bp
 from app.services.order_service import OrderService
+from app.extensions import db
+
+from app.utils.decorators import waiter_required, manager_required, cashier_required
 
 @orders_bp.route('/')
 @login_required
+@waiter_required
 def index():
-    page = request.args.get('page', 1, type=int)
-    pagination = OrderService.get_paginated_orders(page=page, per_page=10)
-    orders = pagination.items
-    return render_template('orders/index.html', orders=orders, pagination=pagination)
+    from app.models.order import Order
+    # Filter orders: waiters only see their own orders. Cashiers/Managers/Admins see all.
+    if current_user.role == 'waiter':
+        orders = Order.query.filter_by(user_id=current_user.id).order_by(Order.created_at.desc()).all()
+    else:
+        orders = Order.query.order_by(Order.created_at.desc()).all()
+    return render_template('orders/index.html', orders=orders)
 
 @orders_bp.route('/view/<int:id>', methods=['GET'])
 @login_required
+@waiter_required
 def view_order(id):
     try:
         details = OrderService.get_order_details(id)
@@ -22,6 +30,7 @@ def view_order(id):
 
 @orders_bp.route('/edit/<int:id>', methods=['POST'])
 @login_required
+@manager_required
 def edit_order(id):
     status = request.form.get('status')
     customer_name = request.form.get('customer_name')
@@ -36,8 +45,15 @@ def edit_order(id):
 
 @orders_bp.route('/print/<int:id>')
 @login_required
+@waiter_required
 def print_receipt(id):
     try:
+        from app.models.order import Order
+        order_exists = db.session.get(Order, id)
+        if not order_exists:
+            flash(f'Cillad: Dalabka lama helin (Order #{id} not found in database).', 'danger')
+            return redirect(url_for('orders.index'))
+            
         details = OrderService.get_order_details(id)
         return render_template('orders/receipt.html', order=details)
     except Exception as e:

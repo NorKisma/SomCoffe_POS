@@ -1,3 +1,9 @@
+import sys
+import os
+
+# Add the project directory to sys.path so 'app' can be found
+sys.path.append(os.path.abspath(os.path.dirname(__file__)))
+
 from app import create_app
 from app.extensions.db import db
 from app.models.category import Category
@@ -5,7 +11,7 @@ from app.models.table import Table
 from app.models.product import Product
 from app.models.user import User
 from app.models.setting import Setting
-
+from app.models.customer import Customer
 app = create_app()
 
 with app.app_context():

@@ -9,11 +9,9 @@ from app.services.category_service import CategoryService
 
 @products_bp.route('/')
 def index():
-    page = request.args.get('page', 1, type=int)
-    pagination = Product.query.paginate(page=page, per_page=10, error_out=False)
-    products = pagination.items
+    products = Product.query.all()
     categories = Category.query.all()
-    return render_template('products/products.html', products=products, categories=categories, pagination=pagination)
+    return render_template('products/products.html', products=products, categories=categories)
 
 @products_bp.route('/add', methods=['POST'])
 def add_product():
@@ -27,6 +25,20 @@ def add_product():
     ProductService.create_product(name, price, category_id, stock, is_service, file)
     
     flash(f'Alaabta {name} si guul leh ayaa loogu daray!', 'success')
+    return redirect(url_for('products.index'))
+
+@products_bp.route('/edit/<int:id>', methods=['POST'])
+def edit_product(id):
+    name = request.form.get('name')
+    price = float(request.form.get('price'))
+    category_id = int(request.form.get('category_id'))
+    stock = int(request.form.get('stock', 0))
+    is_service = True if request.form.get('is_service') else False
+    file = request.files.get('image')
+    
+    ProductService.update_product(id, name, price, category_id, stock, is_service, file)
+    
+    flash(f'Alaabta {name} si guul leh ayaa loo beddelay!', 'success')
     return redirect(url_for('products.index'))
 
 @products_bp.route('/delete/<int:id>', methods=['POST'])

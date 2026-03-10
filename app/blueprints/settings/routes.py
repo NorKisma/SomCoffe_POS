@@ -14,7 +14,9 @@ def index():
         'vat_rate': Setting.get_val('vat_rate', '0'),
         'currency': Setting.get_val('currency', '$'),
         'address': Setting.get_val('address', 'Mogadishu, Somalia'),
-        'phone': Setting.get_val('phone', '+252 61 0000000')
+        'phone': Setting.get_val('phone', '+252 61 0000000'),
+        'auto_logout': Setting.get_val('auto_logout', 'OFF'),
+        'session_timeout': Setting.get_val('session_timeout', '5')
     }
     return render_template('settings/index.html', settings=settings)
 
@@ -22,7 +24,7 @@ def index():
 @login_required
 @admin_required
 def update():
-    keys = ['restaurant_name', 'vat_rate', 'currency', 'address', 'phone']
+    keys = ['restaurant_name', 'vat_rate', 'currency', 'address', 'phone', 'auto_logout', 'session_timeout']
     for key in keys:
         val = request.form.get(key)
         if val is not None:

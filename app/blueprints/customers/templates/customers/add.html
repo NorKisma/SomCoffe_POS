@@ -6,7 +6,8 @@
 <div class="animate__animated animate__fadeIn max-w-lg mx-auto" style="max-width: 600px;">
     <!-- Header -->
     <div class="mb-4 d-flex align-items-center gap-3">
-        <a href="{{ url_for('customers.index') }}" class="btn btn-dark rounded-circle" style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
+        <a href="{{ url_for('customers.index') }}" class="btn btn-dark rounded-circle"
+            style="width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;">
             <i class="fas fa-arrow-left"></i>
         </a>
         <h2 class="fw-900 mb-0">Diiwaangeli <span class="text-primary">Macmiil</span></h2>
@@ -14,53 +15,60 @@
 
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-            <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 text-white" style="background-color: var(--bs-{{category}}); opacity: 0.9;">
-                <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>{{ message }}
-            </div>
-            {% endfor %}
-        {% endif %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 text-white"
+        style="background-color: var(--bs-{{category}}); opacity: 0.9;">
+        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>{{ message
+        }}
+    </div>
+    {% endfor %}
+    {% endif %}
     {% endwith %}
 
     <div class="card card-premium border-0">
         <div class="card-body p-4 p-md-5">
             <form method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="mb-4">
-                    <label class="form-label text-muted small fw-bold">MAGACA MACMIILKA <span class="text-danger">*</span></label>
+                    <label class="form-label text-muted small fw-bold">MAGACA MACMIILKA <span
+                            class="text-danger">*</span></label>
                     <input type="text" name="name" class="form-control rounded-4 py-3" required
-                           style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);"
-                           placeholder="Ex: Ahmed Yasin">
+                        style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);"
+                        placeholder="Ex: Ahmed Yasin">
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label text-muted small fw-bold">TELEFOONKA</label>
                     <input type="tel" name="phone" class="form-control rounded-4 py-3"
-                           style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);"
-                           placeholder="Ex: 61xxxxxxx">
+                        style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);"
+                        placeholder="Ex: 61xxxxxxx">
                 </div>
-                
+
                 <div class="mb-4">
                     <label class="form-label text-muted small fw-bold">EMAIL ADDRESS</label>
                     <input type="email" name="email" class="form-control rounded-4 py-3"
-                           style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);"
-                           placeholder="Ex: ahmed@example.com">
+                        style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);"
+                        placeholder="Ex: ahmed@example.com">
                 </div>
 
                 <div class="mb-4">
                     <label class="form-label text-muted small fw-bold">CIWAANKA</label>
                     <textarea name="address" class="form-control rounded-4 py-3" rows="2"
-                              style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);"
-                              placeholder="Ex: Maka Al-Mukarama, Mogadishu"></textarea>
+                        style="background:rgba(255,255,255,0.05);border:1px solid var(--border-glass);color:var(--text-primary);"
+                        placeholder="Ex: Maka Al-Mukarama, Mogadishu"></textarea>
                 </div>
 
                 <div class="mb-5">
                     <label class="form-label text-muted small fw-bold">DEYNTA LA OGGOLYAHAY (CREDIT LIMIT)</label>
                     <div class="input-group">
-                        <span class="input-group-text rounded-start-4 border-0" style="background:rgba(255,255,255,0.1); color:var(--text-primary);">{{ sys_currency }}</span>
-                        <input type="number" step="0.01" min="0" name="credit_limit" class="form-control rounded-end-4 py-3 border-0"
-                               style="background:rgba(255,255,255,0.05);color:var(--text-primary);"
-                               placeholder="0.00" value="0.00">
+                        <span class="input-group-text rounded-start-4 border-0"
+                            style="background:rgba(255,255,255,0.1); color:var(--text-primary);">{{ sys_currency
+                            }}</span>
+                        <input type="number" step="0.01" min="0" name="credit_limit"
+                            class="form-control rounded-end-4 py-3 border-0"
+                            style="background:rgba(255,255,255,0.05);color:var(--text-primary);" placeholder="0.00"
+                            value="0.00">
                     </div>
                 </div>
 

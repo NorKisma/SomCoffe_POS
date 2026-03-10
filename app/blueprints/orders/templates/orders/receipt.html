@@ -1,112 +1,379 @@
 <!DOCTYPE html>
 <html lang="so">
+
 <head>
     <meta charset="UTF-8">
     <title>Resitka Dalabka #{{ "%06d"|format(order.id) }}</title>
     <style>
+        :root {
+            --print-width: 80mm;
+        }
+
         body {
             font-family: 'Courier New', Courier, monospace;
-            width: 80mm;
-            margin: 0 auto;
-            padding: 5mm;
-            font-size: 12px;
-            color: #000;
+            background: #f1f5f9;
+            margin: 0;
+            padding: 20px;
         }
-        .text-center { text-align: center; }
-        .text-right { text-align: right; }
-        .header { margin-bottom: 10px; border-bottom: 1px dashed #000; padding-bottom: 5px; }
-        .restaurant-name { font-size: 18px; font-weight: bold; text-transform: uppercase; }
-        .info-line { display: flex; justify-content: space-between; margin-bottom: 2px; }
-        .items-table { width: 100%; border-collapse: collapse; margin-top: 10px; margin-bottom: 10px; }
-        .items-table th { border-bottom: 1px solid #000; text-align: left; }
-        .items-table td { padding: 3px 0; }
-        .total-section { border-top: 1px dashed #000; padding-top: 5px; }
-        .grand-total { font-size: 16px; font-weight: bold; }
-        .footer { margin-top: 20px; border-top: 1px solid #000; padding-top: 5px; }
 
-        @media print {
-            @page { margin: 0; }
-            body { margin: 0; padding: 5mm; width: 80mm; }
-            .no-print { display: none; }
+        /* Control Bar - Hidden on print */
+        .control-bar {
+            max-width: var(--print-width);
+            margin: 0 auto 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
         }
-        
-        .no-print-btn {
+
+        .btn-group {
+            display: flex;
+            gap: 5px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #e2e8f0;
+            background: white;
+            cursor: pointer;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .btn.active {
             background: #4f46e5;
             color: white;
+            border-color: #4f46e5;
+        }
+
+        .btn-print {
+            background: #10b981;
+            color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 20px;
+            padding: 12px;
+            font-size: 14px;
+        }
+
+        /* Receipt Canvas */
+        #print-area {
+            width: var(--print-width);
+            margin: 0 auto;
+            background: white;
+            padding: 5mm;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .receipt-container {
             width: 100%;
+            color: #000;
+            font-size: 12px;
+            margin-bottom: 30px;
+            page-break-after: always;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-right {
+            text-align: right;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        .header {
+            margin-bottom: 10px;
+            border-bottom: 2px dashed #000;
+            padding-bottom: 5px;
+        }
+
+        .restaurant-name {
+            font-size: 18px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .info-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 10px 0;
+        }
+
+        .items-table th {
+            border-bottom: 1px solid #000;
+            text-align: left;
+            padding-bottom: 5px;
+        }
+
+        .items-table td {
+            padding: 5px 0;
+            vertical-align: top;
+        }
+
+        .total-section {
+            border-top: 2px dashed #000;
+            padding-top: 8px;
+            margin-top: 10px;
+        }
+
+        .grand-total {
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .footer {
+            margin-top: 15px;
+            border-top: 1px solid #000;
+            padding-top: 10px;
+            font-size: 10px;
+        }
+
+        /* Kitchen Mode Overrides */
+        .kitchen-receipt {
+            font-size: 16px;
+        }
+
+        .kitchen-receipt .restaurant-name,
+        .kitchen-receipt .footer,
+        .kitchen-receipt .price-col,
+        .kitchen-receipt .total-col,
+        .kitchen-receipt .total-section,
+        .kitchen-receipt .payment-info {
+            display: none;
+        }
+
+        .kitchen-receipt .info-line {
+            font-size: 18px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 5px;
+        }
+
+        .kitchen-receipt .qty-col {
+            font-size: 24px;
+            font-weight: 900;
+            background: #000;
+            color: #fff;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .kitchen-receipt .kitchen-label {
+            display: block !important;
+            background: #000;
+            color: #fff;
+            padding: 10px;
+            text-align: center;
+            font-weight: 900;
+            margin-bottom: 15px;
+        }
+
+        .kitchen-label {
+            display: none;
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .control-bar {
+                display: none;
+            }
+
+            #print-area {
+                box-shadow: none;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+            }
+
+            @page {
+                margin: 0;
+                size: 80mm auto;
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="no-print">
-        <button class="no-print-btn" onclick="window.print()">DAABAC RESITKA (PRINT)</button>
+
+    <div class="control-bar">
+        <label class="bold small">1. Nooca Rasiidka:</label>
+        <div class="btn-group">
+            <button class="btn active" onclick="setMode('customer', this)">Macaamiilka (Sales)</button>
+            <button class="btn" onclick="setMode('kitchen', this)">Jikada (Kitchen)</button>
+            <button class="btn" onclick="setMode('dual', this)">Labada Rasiid</button>
+        </div>
+
+        <label class="bold small">2. Inta Koobi:</label>
+        <div class="btn-group">
+            <button class="btn active" onclick="setCopies(1, this)">1 Copy</button>
+            <button class="btn" onclick="setCopies(2, this)">2 Copies</button>
+            <button class="btn" onclick="setCopies(3, this)">3 Copies</button>
+        </div>
+
+        <button class="btn btn-print" onclick="window.print()">
+            <i class="fas fa-print"></i> DAABAC HADDA (PRINT)
+        </button>
     </div>
 
-    <div class="header text-center">
-        <div class="restaurant-name">{{ sys_name }}</div>
-        <div>{{ sys_address }}</div>
-        <div>Tel: {{ sys_phone }}</div>
-    </div>
+    <div id="print-area">
+        <div id="receipt-payload">
+            <!-- This block will be repeated by JS based on copies selection -->
+            <div class="receipt-container">
+                <div class="kitchen-label">DALABKA JIKADA (KITCHEN COPY)</div>
 
-    <div class="info-line">
-        <span>Order #:</span>
-        <span class="text-right">#{{ "%06d"|format(order.id) }}</span>
-    </div>
-    <div class="info-line">
-        <span>Taariikh:</span>
-        <span class="text-right">{{ order.date }}</span>
-    </div>
-    <div class="info-line">
-        <span>Mesaafada:</span>
-        <span class="text-right">{{ order.table }}</span>
-    </div>
-    <div class="info-line">
-        <span>Macmiilka:</span>
-        <span class="text-right">{{ order.customer }}</span>
-    </div>
+                <div class="header text-center">
+                    <div class="restaurant-name">{{ sys_name }}</div>
+                    <div>{{ sys_address }}</div>
+                    <div>Tel: {{ sys_phone }}</div>
+                </div>
 
-    <table class="items-table">
-        <thead>
-            <tr>
-                <th>Item</th>
-                <th class="text-center">Qty</th>
-                <th class="text-right">Total</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in order.items %}
-            <tr>
-                <td>{{ item.product_name }}</td>
-                <td class="text-center">{{ item.quantity }}</td>
-                <td class="text-right">{{ sys_currency }}{{ "%.2f"|format(item.total) }}</td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                <div class="info-line">
+                    <span class="bold">Order #:</span>
+                    <span class="text-right bold">#{{ "%06d"|format(order.id) }}</span>
+                </div>
+                <div class="info-line">
+                    <span>Taariikh:</span>
+                    <span class="text-right">{{ order.date }}</span>
+                </div>
+                <div class="info-line">
+                    <span class="bold">Miiska:</span>
+                    <span class="text-right bold" style="font-size: 1.2em;">{{ order.table }}</span>
+                </div>
+                <div class="info-line">
+                    <span>Macmiilka:</span>
+                    <span class="text-right">{{ order.customer }}</span>
+                </div>
+                <div class="info-line">
+                    <span>Adeegaha (Staff):</span>
+                    <span class="text-right">{{ order.served_by }}</span>
+                </div>
 
-    <div class="total-section">
-        <div class="info-line grand-total">
-            <span>ISKU DARK (TOTAL):</span>
-            <span class="text-right">{{ sys_currency }}{{ "%.2f"|format(order.total) }}</span>
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Alaabta</th>
+                            <th class="text-center">Tiro</th>
+                            <th class="text-right price-col">Qiimo</th>
+                            <th class="text-right total-col">Wadar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order['items'] %}
+                        <tr>
+                            <td class="bold">{{ item.product_name }}</td>
+                            <td class="text-center"><span class="qty-col">{{ item.quantity }}</span></td>
+                            <td class="text-right price-col">{{ sys_currency }}{{ "%.2f"|format(item.price) }}</td>
+                            <td class="text-right total-col bold">{{ sys_currency }}{{ "%.2f"|format(item.total) }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div class="total-section">
+                    <div class="info-line grand-total">
+                        <span>WADARTA (TOTAL):</span>
+                        <span class="text-right">{{ sys_currency }}{{ "%.2f"|format(order.total) }}</span>
+                    </div>
+                    <div class="info-line" style="font-size: 0.8em; margin-top: 5px;">
+                        <span>Payment Status:</span>
+                        <span class="text-right bold">{{ order.payment_status | upper }}</span>
+                    </div>
+                </div>
+
+                <div class="payment-info" style="margin-top: 15px; text-align: left;">
+                    {% if order.evc_number %}
+                    <div style="margin-bottom: 8px; font-size: 15px;" class="bold">
+                        EVC Plus: *789*{{ order.evc_number }}*{{ "%.2f"|format(order.total) }}#
+                    </div>
+                    {% endif %}
+                    {% if order.edahab_number %}
+                    <div style="font-size: 15px;" class="bold">
+                        eDahab: {{ order.edahab_number }}
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="footer text-center"
+                    style="margin-top: 15px; border-top: 2px dashed #000; padding-top: 10px;">
+                    <div class="bold">SHARAF AYEY NOO TAHAY INAAD NALA JOOGTO, MAHADSANID!</div>
+                    <div style="margin-top: 5px;">Software by RaysTech center(RTC) v2.0</div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="footer text-center">
-        <div>MAHADSANID, SOO LAABO MAR KALE!</div>
-        <div style="font-size: 10px; margin-top: 5px;">Software by RaysPOS v2.0</div>
-    </div>
-
     <script>
-        // Auto print and close or stay
-        window.onload = function() {
-            // Uncomment to auto-print
-            // window.print();
+        let currentCopies = 1;
+        const originalContent = document.getElementById('receipt-payload').innerHTML;
+
+        function setMode(mode, btn) {
+            btn.parentElement.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            const payload = document.getElementById('receipt-payload');
+            if (mode === 'kitchen') {
+                payload.innerHTML = originalContent;
+                payload.querySelector('.receipt-container').classList.add('kitchen-receipt');
+            } else if (mode === 'dual') {
+                generateDualReceipt();
+            } else {
+                payload.innerHTML = originalContent;
+            }
+        }
+
+        function setCopies(n, btn) {
+            btn.parentElement.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            currentCopies = n;
+            let finalHtml = '';
+            for (let i = 0; i < n; i++) {
+                finalHtml += originalContent;
+            }
+            document.getElementById('receipt-payload').innerHTML = finalHtml;
+        }
+
+        function generateDualReceipt() {
+            // Container 1: Customer
+            let customerHtml = originalContent;
+
+            // Container 2: Kitchen
+            let kitchenDiv = document.createElement('div');
+            kitchenDiv.innerHTML = originalContent;
+            let container = kitchenDiv.querySelector('.receipt-container');
+            container.classList.add('kitchen-receipt');
+            container.style.pageBreakBefore = 'always';
+
+            document.getElementById('receipt-payload').innerHTML = customerHtml + kitchenDiv.innerHTML;
+        }
+
+        // Auto Dual-Receipt generation logic
+        window.onload = function () {
+            // Default is Macaamiilka (Customer)
+            // generateDualReceipt(); 
+
+            // Auto trigger print dialog
+            setTimeout(() => {
+                window.print();
+            }, 500);
         }
     </script>
 </body>
+
 </html>

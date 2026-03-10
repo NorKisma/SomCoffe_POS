@@ -1,0 +1,250 @@
+{% extends "layout/base.html" %}
+
+{% block title %}Kitchen Display System (KDS){% endblock %}
+
+{% block styles %}
+<style>
+    :root {
+        --kds-bg: #0f172a;
+        --kds-card: #1e293b;
+        --kds-text: #f8fafc;
+        --kds-accent: #38bdf8;
+        --kds-success: #10b981;
+        --kds-warning: #f59e0b;
+        --kds-danger: #ef4444;
+    }
+
+    body {
+        background-color: var(--kds-bg) !important;
+        color: var(--kds-text);
+    }
+
+    .kds-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 1.5rem;
+        padding: 1rem;
+    }
+
+    .kds-card {
+        background: var(--kds-card);
+        border-radius: 20px;
+        border: 2px solid rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        animation: fadeIn 0.3s ease;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .kds-header {
+        padding: 1.25rem;
+        background: rgba(255, 255, 255, 0.03);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .kds-table-num {
+        font-size: 1.5rem;
+        font-weight: 900;
+        color: var(--kds-accent);
+    }
+
+    .kds-order-id {
+        font-size: 0.8rem;
+        font-weight: 600;
+        opacity: 0.6;
+        letter-spacing: 1px;
+    }
+
+    .kds-time {
+        font-weight: 800;
+        font-size: 1.1rem;
+        color: var(--kds-warning);
+    }
+
+    .kds-body {
+        flex-grow: 1;
+        padding: 1.25rem;
+    }
+
+    .kds-item {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1rem;
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    .kds-qty {
+        background: var(--kds-accent);
+        color: #000;
+        min-width: 32px;
+        height: 32px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 12px;
+        font-weight: 900;
+        flex-shrink: 0;
+    }
+
+    .kds-footer {
+        padding: 1rem;
+    }
+
+    .btn-complete {
+        width: 100%;
+        background: linear-gradient(135deg, #10b981, #059669);
+        color: white;
+        border: none;
+        padding: 1rem;
+        border-radius: 14px;
+        font-weight: 900;
+        text-transform: uppercase;
+        letter-spacing: 1.5px;
+        transition: all 0.2s;
+        box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+    }
+
+    .btn-complete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
+        filter: brightness(1.1);
+    }
+
+    .kds-timer-badge {
+        font-size: 0.7rem;
+        padding: 4px 10px;
+        border-radius: 50px;
+        background: rgba(255, 255, 255, 0.1);
+        margin-top: 5px;
+        display: inline-block;
+    }
+
+    .warning-blink {
+        animation: warningBlink 1s infinite alternate;
+        color: var(--kds-danger) !important;
+    }
+
+    @keyframes warningBlink {
+        from {
+            opacity: 1;
+        }
+
+        to {
+            opacity: 0.5;
+        }
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+{% endblock %}
+
+{% block header_title %}
+KITCHEN <span class="text-primary">DISPLAY</span>
+<span class="badge bg-dark ms-2 border border-white border-opacity-10" id="orderCount">0 Orders</span>
+{% endblock %}
+
+{% block content %}
+<div class="kds-container" id="kdsGrid">
+    <!-- Orders will be injected by JS -->
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function fetchOrders() {
+        fetch('{{ url_for("kitchen.get_pending_api") }}')
+            .then(r => r.json())
+            .then(data => {
+                const $grid = $('#kdsGrid');
+                const $count = $('#orderCount');
+                $count.text(data.length + ' Orders');
+
+                // Quick dirty diff-less refresh
+                let html = '';
+                data.forEach(o => {
+                    const elapsed = o.elapsed;
+                    const timerClass = elapsed > 15 ? 'warning-blink' : '';
+
+                    let itemsHtml = '';
+                    o.items.forEach(i => {
+                        itemsHtml += `
+                            <div class="kds-item">
+                                <div class="kds-qty">${i.qty}</div>
+                                <div class="kds-name">${i.name}</div>
+                            </div>`;
+                    });
+
+                    html += `
+                        <div class="kds-card" id="order-${o.id}">
+                            <div class="kds-header">
+                                <div>
+                                    <div class="kds-table-num">${o.table}</div>
+                                    <div class="kds-order-id">#${String(o.id).padStart(6, '0')}</div>
+                                </div>
+                                <div class="text-end">
+                                    <div class="kds-time ${timerClass}">${o.time}</div>
+                                    <div class="kds-timer-badge">${elapsed} min ago</div>
+                                </div>
+                            </div>
+                            <div class="kds-body custom-scrollbar">
+                                ${itemsHtml}
+                            </div>
+                            <div class="kds-footer">
+                                <button class="btn-complete" onclick="markComplete(${o.id})">
+                                    <i class="fas fa-check-circle me-2"></i> DONE
+                                </button>
+                            </div>
+                        </div>`;
+                });
+
+                if (html === '') {
+                    html = `
+                        <div style="grid-column: 1/-1; text-align: center; margin-top: 100px; opacity: 0.3;">
+                            <i class="fas fa-utensils fa-5x mb-4"></i>
+                            <h2 class="fw-900">Maku jiro dalab sugaya</h2>
+                        </div>`;
+                }
+
+                $grid.html(html);
+            });
+    }
+
+    function markComplete(id) {
+        const $card = $(`#order-${id}`);
+        $card.fadeOut(300);
+
+        fetch(`/kitchen/complete/${id}`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token() }}'
+            }
+        }).then(r => r.json())
+            .then(d => {
+                if (!d.success) {
+                    alert('Error: ' + d.message);
+                    $card.fadeIn();
+                }
+            });
+    }
+
+    // Polling every 10 seconds
+    setInterval(fetchOrders, 10000);
+    fetchOrders(); // Initial
+</script>
+{% endblock %}
