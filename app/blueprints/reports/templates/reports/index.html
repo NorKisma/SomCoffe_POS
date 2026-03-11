@@ -1,8 +1,8 @@
 {% extends "layout/base.html" %}
 
-{% block title %}Analytics & Reports - Rays POS{% endblock %}
+{% block title %}Analytics & Warbixinada - SomCoffe POS{% endblock %}
 
-{% block header_title %}System <span class="text-primary">Performance Intelligence</span>{% endblock %}
+{% block header_title %}Falanqaynta <span class="text-primary">Shaqada Nidaamka</span>{% endblock %}
 
 {% block content %}
 <div class="animate__animated animate__fadeIn">
@@ -10,15 +10,15 @@
     <div class="card-premium p-4 mb-4">
         <form method="GET" action="{{ url_for('reports.index') }}" class="row g-3 align-items-end">
             <div class="col-md-3">
-                <label class="form-label text-muted small fw-bold">START DATE</label>
+                <label class="form-label text-muted small fw-bold text-uppercase">TAARIIKHDA BILOWGA</label>
                 <input type="date" name="start_date" class="form-control bg-glass rounded-3" value="{{ start_date }}">
             </div>
             <div class="col-md-3">
-                <label class="form-label text-muted small fw-bold">END DATE</label>
+                <label class="form-label text-muted small fw-bold text-uppercase">TAARIIKHDA DHAMAADKA</label>
                 <input type="date" name="end_date" class="form-control bg-glass rounded-3" value="{{ end_date }}">
             </div>
             <div class="col-md-3">
-                <label class="form-label text-muted small fw-bold">WAITERS / STAFF</label>
+                <label class="form-label text-muted small fw-bold text-uppercase">SHAQAALAHA / STAFF-KA</label>
                 <select name="user_id" class="form-select bg-glass rounded-3">
                     <option value="">Dhamaan Staff-ka</option>
                     {% for u in users %}
@@ -29,8 +29,8 @@
                 </select>
             </div>
             <div class="col-md-3">
-                <button type="submit" class="btn btn-primary w-100 rounded-3 py-2 fw-bold">
-                    <i class="fas fa-filter me-2"></i> Filter Reports
+                <button type="submit" class="btn btn-primary w-100 rounded-3 py-2 fw-bold shadow-sm">
+                    <i class="fas fa-filter me-2"></i> SHAQAALAYSII (FILTER)
                 </button>
             </div>
         </form>
@@ -47,8 +47,8 @@
                 <div>
                     <h2 class="mb-0 fw-800 text-gradient-primary">{{ sys_currency }} {{ "{:,.2f}".format(total_revenue)
                         }}</h2>
-                    <p class="text-muted small mb-0 fw-bold uppercase tracking-widest" style="font-size: 0.65rem;">Total
-                        Gross Revenue</p>
+                    <p class="text-muted small mb-0 fw-bold uppercase tracking-widest" style="font-size: 0.65rem;">
+                        WADARTA DAKHLIGA (GROSS REVENUE)</p>
                 </div>
             </div>
         </div>
@@ -61,7 +61,7 @@
                 <div>
                     <h2 class="mb-0 fw-800 text-gradient-primary">{{ total_orders }}</h2>
                     <p class="text-muted small mb-0 fw-bold uppercase tracking-widest" style="font-size: 0.65rem;">
-                        Direct Transactions</p>
+                        DALABYADA LA SAMEEYAY (TOTAL ORDERS)</p>
                 </div>
             </div>
         </div>
@@ -74,7 +74,7 @@
                 <div>
                     <h2 class="mb-0 fw-800 text-gradient-primary">{{ total_products }}</h2>
                     <p class="text-muted small mb-0 fw-bold uppercase tracking-widest" style="font-size: 0.65rem;">
-                        Active Menu Items</p>
+                        ALAABTA MENU-DA (ACTIVE ITEMS)</p>
                 </div>
             </div>
         </div>
@@ -85,7 +85,7 @@
         <div class="col-12">
             <div class="card-premium p-4">
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h4 class="fw-900 mb-0">Profit & Loss <span class="text-gradient-primary">Statement</span></h4>
+                    <h4 class="fw-900 mb-0">Warbixinta <span class="text-gradient-primary">Faa'iidada & Khasaaraha (P&L)</span></h4>
                     <span
                         class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold border border-primary border-opacity-20">
                         {{ start_date }} TO {{ end_date }}
@@ -104,8 +104,8 @@
                                             <i class="fas fa-arrow-up"></i>
                                         </div>
                                         <div>
-                                            <span class="d-block fw-bold fs-5 text-white">Gross Revenue</span>
-                                            <span class="text-muted small">Total paid orders</span>
+                                            <span class="d-block fw-bold fs-5 text-white">Dakhliga Guud (Revenue)</span>
+                                            <span class="text-muted small">Wadarta lacagta laga helay dalabyada (CASH)</span>
                                         </div>
                                     </div>
                                 </td>
@@ -124,9 +124,8 @@
                                             <i class="fas fa-box"></i>
                                         </div>
                                         <div>
-                                            <span class="d-block fw-bold fs-5 text-white">Cost of Goods Sold
-                                                (COGS)</span>
-                                            <span class="text-muted small">Estimated (~30% of revenue)</span>
+                                            <span class="d-block fw-bold fs-5 text-white">Kharashka Alaabta (COGS)</span>
+                                            <span class="text-muted small">Qiyaasta kharashka alaabta (~30% of revenue)</span>
                                         </div>
                                     </div>
                                 </td>
@@ -140,7 +139,7 @@
                             <tr
                                 style="background: rgba(255,255,255,0.02); border-bottom: 1px solid rgba(255,255,255,0.05);">
                                 <td class="py-3 px-4">
-                                    <span class="d-block fw-bold fs-5 text-info">Gross Profit</span>
+                                    <span class="d-block fw-bold fs-5 text-info">Faa'iidada Koowaad (Gross Profit)</span>
                                 </td>
                                 <td class="text-end py-3 px-4">
                                     <span class="fw-900 fs-4 text-info">{{ sys_currency }} {{
@@ -157,8 +156,8 @@
                                             <i class="fas fa-users"></i>
                                         </div>
                                         <div>
-                                            <span class="d-block fw-bold fs-5 text-white">Staff Salaries Expense</span>
-                                            <span class="text-muted small">Apportioned for selected date range</span>
+                                            <span class="d-block fw-bold fs-5 text-white">Mushaharka Shaqaalaha</span>
+                                            <span class="text-muted small">Wadarta mushaharka maalmaha aad dooratay</span>
                                         </div>
                                     </div>
                                 </td>
@@ -177,8 +176,8 @@
                                             <i class="fas fa-file-invoice-dollar"></i>
                                         </div>
                                         <div>
-                                            <span class="d-block fw-bold fs-5 text-white">Other Expenses</span>
-                                            <span class="text-muted small">Actual expenses recorded in date range</span>
+                                            <span class="d-block fw-bold fs-5 text-white">Kharashyada Kale (Other)</span>
+                                            <span class="text-muted small">Kharashyada kale ee nidaamka lagu diiwaangeliyay</span>
                                         </div>
                                     </div>
                                 </td>
@@ -192,9 +191,8 @@
                             <tr
                                 style="background: rgba(99, 102, 241, 0.1); border-top: 2px solid var(--bs-primary); border-radius: 8px;">
                                 <td class="py-4 px-4 rounded-start-3">
-                                    <span class="d-block fw-900 fs-4 text-primary">NET PROFIT</span>
-                                    <span class="text-primary small opacity-75">Final earnings after COGS, Salaries &
-                                        Expenses</span>
+                                    <span class="d-block fw-900 fs-4 text-primary">FAA'IIDADA SAFIGA AH (NET)</span>
+                                    <span class="text-primary small opacity-75">Dakhliga kuu haray markii laga jaro COGS, Mushaharka & Kharashyada</span>
                                 </td>
                                 <td class="text-end py-4 px-4 rounded-end-3">
                                     <span
@@ -258,5 +256,57 @@
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/reports.js') }}"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: {{ daily_labels | tojson }},
+                datasets: [{
+                    label: 'Dakhliga Maalinlaha ah',
+                    data: {{ daily_revenue | tojson }},
+                    borderColor: '#6366f1',
+                    borderWidth: 4,
+                    tension: 0.4,
+                    fill: true,
+                    backgroundColor: 'rgba(99, 102, 241, 0.1)',
+                    pointBackgroundColor: '#6366f1',
+                    pointRadius: 4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { 
+                    legend: { display: false },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                        padding: 12,
+                        backgroundColor: '#1E293B'
+                    }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(255,255,255,0.05)' }, 
+                        ticks: { 
+                            color: '#64748b',
+                            callback: function(value) { return '{{ sys_currency }}' + value.toLocaleString(); }
+                        } 
+                    },
+                    x: { grid: { display: false }, ticks: { color: '#64748b' } }
+                }
+            }
+        });
+
+        document.querySelectorAll('.progress-bar[data-status-width]').forEach(el => {
+            const width = el.getAttribute('data-status-width');
+            setTimeout(() => {
+                el.style.width = width + '%';
+            }, 500);
+        });
+    });
+</script>
 {% endblock %}

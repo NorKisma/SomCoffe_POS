@@ -2,7 +2,6 @@
 
 :root {
     --primary: #2f25f0;
-    /* Indigo */
     --primary-hover: #3425dd;
     --primary-glow: rgba(79, 70, 229, 0.4);
     --accent-blue: #0ea5e9;
@@ -38,15 +37,10 @@
     font-family: 'Inter', sans-serif;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-.fw-800,
-.fw-900,
-.nav-item-premium {
+h1, h2, h3, h4, h5, h6,
+.fw-800, .fw-900,
+.nav-item-premium,
+button, .btn {
     font-family: 'Outfit', sans-serif;
 }
 
@@ -210,10 +204,45 @@ body {
     border-right: 1px solid var(--border-glass);
     display: flex;
     flex-direction: column;
-    padding: 2rem 1.5rem;
+    padding: 2rem 1.5rem 1rem;
     position: relative;
     z-index: 1000;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    overflow: hidden;
+}
+
+/* Scrollable nav area */
+.sidebar-premium nav.flex-grow-1 {
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding-right: 4px;
+    margin-right: -4px;
+    /* Fade hint at bottom */
+    mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, black 85%, transparent 100%);
+}
+
+/* Premium thin scrollbar for sidebar nav */
+.sidebar-premium nav.flex-grow-1::-webkit-scrollbar {
+    width: 3px;
+}
+.sidebar-premium nav.flex-grow-1::-webkit-scrollbar-track {
+    background: transparent;
+}
+.sidebar-premium nav.flex-grow-1::-webkit-scrollbar-thumb {
+    background: rgba(99, 102, 241, 0.35);
+    border-radius: 10px;
+}
+.sidebar-premium nav.flex-grow-1::-webkit-scrollbar-thumb:hover {
+    background: rgba(99, 102, 241, 0.7);
+}
+
+/* Pinned footer user card */
+.sidebar-premium .mt-auto {
+    flex-shrink: 0;
+    padding-top: 0.75rem;
+    border-top: 1px solid var(--border-glass);
+    margin-top: 0.5rem;
 }
 
 .sidebar-premium.collapsed {
@@ -281,6 +310,36 @@ body {
     background: linear-gradient(135deg, var(--primary), var(--accent-purple));
     color: #fff !important;
     box-shadow: 0 10px 20px var(--primary-glow);
+}
+
+/* Nav Dropdown Group */
+.nav-dropdown-toggle {
+    cursor: pointer;
+}
+
+.nav-dropdown-toggle.active .nav-dropdown-chevron,
+.nav-dropdown-toggle[aria-expanded="true"] .nav-dropdown-chevron {
+    transform: rotate(180deg);
+}
+
+.nav-dropdown-chevron.rotated {
+    transform: rotate(180deg);
+}
+
+.nav-sub-item {
+    padding-left: 2.5rem !important;
+    padding-top: 0.6rem !important;
+    padding-bottom: 0.6rem !important;
+    font-size: 0.875rem;
+    margin-bottom: 0.25rem !important;
+}
+
+.sidebar-premium.collapsed .nav-dropdown-group .nav-dropdown-items {
+    max-height: 0 !important;
+}
+
+.sidebar-premium.collapsed .nav-dropdown-chevron {
+    display: none;
 }
 
 /* Inputs & Forms */
@@ -551,17 +610,95 @@ header {
 }
 
 /* Modal Enhancements */
-.modal-content.card-premium,
-.modal-content {
-    background: var(--bg-card) !important;
-    border: 1px solid var(--border-glass) !important;
-    color: var(--text-main) !important;
-    backdrop-filter: blur(15px);
+.modal {
+    z-index: 3500 !important;
 }
 
-.modal-header,
+.modal-backdrop {
+    z-index: 3490 !important;
+    backdrop-filter: blur(8px);
+    background-color: rgba(0, 0, 0, 0.6) !important;
+}
+
+.modal-content {
+    background: var(--bg-card) !important;
+    backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid var(--border-glass) !important;
+    border-radius: 28px !important;
+    box-shadow: 0 25px 80px -12px rgba(0, 0, 0, 0.6) !important;
+    color: var(--text-main) !important;
+    overflow: hidden;
+    transform: scale(0.95);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.modal.show .modal-content {
+    transform: scale(1);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-glass) !important;
+    padding: 1.5rem 2rem;
+}
+
 .modal-footer {
-    border-color: var(--border-glass) !important;
+    border-top: 1px solid var(--border-glass) !important;
+    padding: 1.25rem 2rem;
+}
+
+.modal-title {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+    opacity: 0.8;
+    transition: all 0.3s;
+}
+
+.btn-close:hover {
+    transform: rotate(90deg);
+}
+
+/* Responsive Modals (Mobile: Full-screen bottom sheet feel) */
+@media (max-width: 576px) {
+    .modal-dialog {
+        margin: 0;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        width: 100%;
+        max-width: 100% !important;
+        transform: translateY(100%);
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .modal.show .modal-dialog {
+        transform: translateY(0);
+    }
+
+    .modal-content {
+        border-radius: 30px 30px 0 0 !important;
+        min-height: 40vh;
+        max-height: 90vh;
+        overflow-y: auto;
+    }
+
+    /* Add a small handle for bottom sheet look */
+    .modal-content::after {
+        content: '';
+        position: absolute;
+        top: 12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 40px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
 }
 
 .text-main {
@@ -599,6 +736,44 @@ header {
     background: rgba(255, 255, 255, 0.08) !important;
     border-color: var(--primary) !important;
     box-shadow: 0 0 15px var(--primary-glow) !important;
+}
+
+/* Premium Dropdown Styles */
+.dropdown-menu {
+    border-radius: 18px !important;
+    padding: 0.8rem !important;
+    background: var(--bg-card) !important;
+    backdrop-filter: blur(25px) saturate(180%) !important;
+    border: 1px solid var(--border-glass) !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4) !important;
+    animation: dropdownFade 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1100;
+}
+
+@keyframes dropdownFade {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.dropdown-item {
+    border-radius: 10px !important;
+    padding: 0.6rem 1rem !important;
+    font-weight: 600 !important;
+    transition: all 0.2s !important;
+    color: var(--text-main) !important;
+}
+
+.dropdown-item:hover {
+    background: var(--primary) !important;
+    color: white !important;
+    transform: translateX(5px);
 }
 
 /* DT Buttons Professional Styling */

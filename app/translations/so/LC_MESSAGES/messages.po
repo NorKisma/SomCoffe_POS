@@ -1,0 +1,170 @@
+# Somali translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-03-11 10:37+0300\n"
+"PO-Revision-Date: 2026-03-11 10:27+0300\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: so\n"
+"Language-Team: so <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: app/blueprints/auth/routes.py:24
+msgid "You have logged in successfully!"
+msgstr "Si guul leh ayaad u gashay nidaamka!"
+
+#: app/blueprints/auth/routes.py:27
+msgid "Invalid username or password!"
+msgstr "Magaca ama furaha sirta ah waa khalad!"
+
+#: app/blueprints/auth/routes.py:35
+msgid "You have logged out successfully!"
+msgstr "Si guul leh ayaad uga baxday nidaamka!"
+
+#: app/blueprints/auth/routes.py:52
+msgid "Your OTP Code"
+msgstr "Furahaaga Sirta ah (OTP Code)"
+
+#: app/blueprints/auth/routes.py:55
+#, python-format
+msgid "Your password reset code is: %(otp)s. Valid for 10 minutes."
+msgstr "Koodhkaaga bedelaadda furaha waa: %(otp)s. Wuxuu dhacayaa 10 daqiiqo gudahood."
+
+#: app/blueprints/auth/routes.py:59
+msgid "OTP code has been sent to your email."
+msgstr "Koodhka OTP-ga waxaa loo soo diray email-kaaga."
+
+#: app/blueprints/auth/routes.py:62
+#, python-format
+msgid "Error sending email: %(error)s"
+msgstr "Cillad ayaa dhacday markii la dirayay email-ka: %(error)s"
+
+#: app/blueprints/auth/routes.py:64
+#, python-format
+msgid "Email (%(email)s) not found in the system!"
+msgstr "Email-ka (%(email)s) nidaamka kuma jiro!"
+
+#: app/blueprints/auth/routes.py:82
+msgid "Invalid or expired OTP code!"
+msgstr "Koodhka OTP-ga waa khalad ama wuu dhacay!"
+
+#: app/blueprints/auth/routes.py:96
+msgid "Passwords do not match!"
+msgstr "Furayaashu isuma mid aha!"
+
+#: app/blueprints/auth/routes.py:111
+msgid "Your password has been reset successfully!"
+msgstr "Furahaaga si guul leh ayaa loo bedelay!"
+
+#: app/blueprints/auth/routes.py:121
+msgid "Incorrect PIN!"
+msgstr "PIN-ka waa khalad!"
+
+#: app/blueprints/dashboard/templates/dashboard/dashboard.html:5
+msgid "System Intelligence Overview"
+msgstr "Kormeerka Guud ee Nidaamka"
+
+#: app/blueprints/dashboard/templates/dashboard/dashboard.html:18
+msgid "Revenue"
+msgstr "Lacagta Soo Gashay"
+
+#: app/blueprints/dashboard/templates/dashboard/dashboard.html:32
+msgid "Orders"
+msgstr "Dalabyada"
+
+#: app/blueprints/dashboard/templates/dashboard/dashboard.html:45
+msgid "Staff"
+msgstr "Shaqaalaha"
+
+#: app/blueprints/dashboard/templates/dashboard/dashboard.html:57
+msgid "Top Selling"
+msgstr "Ugu Iibinta Badan"
+
+#: app/blueprints/dashboard/templates/dashboard/dashboard.html:70
+msgid "Sales View"
+msgstr "Muuqaalka Iibka"
+
+#: app/blueprints/dashboard/templates/dashboard/dashboard.html:73
+msgid "LAST 7 DAYS"
+msgstr "7-DII MAALMOOD EE U DAMBEEYEY"
+
+#: app/blueprints/dashboard/templates/dashboard/dashboard.html:114
+msgid "No data available yet."
+msgstr "Wali wax xog ah ma jirto."
+
+#: app/blueprints/dashboard/templates/dashboard/dashboard.html:119
+msgid "Inventory Alerts"
+msgstr "Digniinta Kaydka"
+
+#: app/blueprints/dashboard/templates/dashboard/dashboard.html:129
+msgid "left in stock!"
+msgstr "ayaa ka haray kaydka!"
+
+#: app/templates/layout/base.html:54 app/templates/layout/base.html:56
+msgid "Dashboard"
+msgstr "Kormeerka"
+
+#: app/templates/layout/base.html:62 app/templates/layout/base.html:64
+msgid "Sales Terminal"
+msgstr "Nidaamka Iibka"
+
+#: app/templates/layout/base.html:70 app/templates/layout/base.html:72
+msgid "Order History"
+msgstr "Taariikhda Dalabka"
+
+#: app/templates/layout/base.html:78 app/templates/layout/base.html:80
+msgid "Customers"
+msgstr "Macaamiisha"
+
+#: app/templates/layout/base.html:87 app/templates/layout/base.html:89
+msgid "Kitchen Display"
+msgstr "Muuqaalka Jikada"
+
+#: app/templates/layout/base.html:97 app/templates/layout/base.html:99
+msgid "Inventory"
+msgstr "Kaydka Alaabta"
+
+#: app/templates/layout/base.html:103 app/templates/layout/base.html:105
+msgid "Analytics"
+msgstr "Xog-ururinta"
+
+#: app/templates/layout/base.html:109 app/templates/layout/base.html:111
+msgid "Expenses"
+msgstr "Kharaashka"
+
+#: app/templates/layout/base.html:118
+msgid "Administration"
+msgstr "Maamulka"
+
+#: app/templates/layout/base.html:122 app/templates/layout/base.html:124
+msgid "Staff Directory"
+msgstr "Liiska Shaqaalaha"
+
+#: app/templates/layout/base.html:128 app/templates/layout/base.html:130
+msgid "User Management"
+msgstr "Maareynta Isticmaalayaasha"
+
+#: app/templates/layout/base.html:137 app/templates/layout/base.html:139
+msgid "System Settings"
+msgstr "Habaynta Nidaamka"
+
+#: app/templates/layout/base.html:181
+msgid "Welcome"
+msgstr "Kusoo dhawoow"
+
+#: app/templates/layout/base.html:198
+msgid "Change Theme"
+msgstr "Bedel Muuqaalka"
+
+#: app/templates/layout/base.html:204
+msgid "NEW SALE"
+msgstr "IIB CUSUB"

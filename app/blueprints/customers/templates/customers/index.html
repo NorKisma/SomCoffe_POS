@@ -18,17 +18,7 @@
         </div>
     </div>
 
-    <!-- Flash Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 animate__animated animate__slideInDown shadow-sm">
-        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>{{ message
-        }}
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
+    <!-- Flash messages are now global in base.html -->
 
     <!-- Table Section -->
     <div class="table-glass-wrap animate__animated animate__fadeInUp">
@@ -64,7 +54,7 @@
                         </td>
                         <td>{{ customer.phone if customer.phone else '—' }}</td>
                         <td>{{ customer.email if customer.email else '—' }}</td>
-                        <td>{{ sys_currency }}<span class="customer-debt">{{ "%.2f"|format(customer.credit_limit)
+                        <td>{{ sys_currency }}<span class="customer-debt">{{ "%.2f"|format(customer.current_debt)
                                 }}</span></td>
                         <td class="text-end">
                             <div class="d-flex gap-2 justify-content-end">
@@ -131,17 +121,17 @@
                 var api = this.api();
                 var intVal = (i) => typeof i === 'string' ? i.replace(/[^\d.-]/g, '') * 1 : typeof i === 'number' ? i : 0;
 
-                // Total over this page
-                var pageTotalDebt = api.column(3, { page: 'current' }).data().reduce(function (acc, val) {
+                // Total over all filtered records
+                var totalDebt = api.column(3, { search: 'applied' }).data().reduce(function (acc, val) {
                     var tempDiv = document.createElement('div');
                     tempDiv.innerHTML = val;
                     var debtText = tempDiv.querySelector('.customer-debt') ? tempDiv.querySelector('.customer-debt').textContent : '';
                     var b = debtText || String(val).replace(/[^\d.-]/g, '');
                     return acc + intVal(b);
                 }, 0);
-
+                
                 // Update footer
-                $(api.column(3).footer()).html('{{ sys_currency }} ' + pageTotalDebt.toFixed(2));
+                $('#customer_grand_debt').html('{{ sys_currency }} ' + totalDebt.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,'));
             }
         });
     });

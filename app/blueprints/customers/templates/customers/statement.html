@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="so">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Account Statement - {{ customer.name }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --print-width: 80mm;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: #f8fafc;
+            margin: 0;
+            padding: 20px;
+            color: #1e293b;
+        }
+
+        .control-bar {
+            max-width: var(--print-width);
+            margin: 0 auto 30px;
+            background: #ffffff;
+            padding: 24px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            border: 1px solid #e2e8f0;
+            position: relative;
+            z-index: 1000;
+        }
+
+        @media (max-width: 991px) {
+            body {
+                padding: 10px;
+                padding-top: 20px;
+                padding-bottom: 200px;
+            }
+
+            .control-bar {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                max-width: none;
+                margin: 0;
+                background: #ffffff;
+                border-top: 2px solid #4f46e5;
+                box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.3);
+                padding: 30px 20px 50px; 
+                border-radius: 40px 40px 0 0;
+                z-index: 20000;
+            }
+        }
+
+        .btn {
+            padding: 15px;
+            border: none;
+            background: #f1f5f9;
+            cursor: pointer;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 800;
+            color: #475569;
+            text-transform: uppercase;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-print {
+            background: #10b981;
+            color: white;
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+        #print-area {
+            width: var(--print-width);
+            margin: 0 auto;
+            background: white;
+            padding: 5mm;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .statement-container {
+            width: 100%;
+            color: #000;
+            font-size: 12px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+            border-bottom: 2px dashed #000;
+            padding-bottom: 15px;
+        }
+
+        .restaurant-name {
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .info-line {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+
+        .bold { font-weight: bold; }
+
+        .items-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+
+        .items-table th {
+            border-bottom: 1px solid #000;
+            text-align: left;
+            padding-bottom: 5px;
+            font-size: 10px;
+        }
+
+        .items-table td {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .total-section {
+            border-top: 2px dashed #000;
+            padding-top: 10px;
+            margin-top: 15px;
+        }
+
+        .grand-total {
+            font-size: 16px;
+            font-weight: 900;
+            color: #10b981;
+        }
+
+        .grand-debt {
+            font-size: 16px;
+            font-weight: 900;
+            color: #ef4444;
+        }
+
+        .footer {
+            margin-top: 20px;
+            text-align: center;
+            border-top: 1px solid #000;
+            padding-top: 15px;
+            font-size: 10px;
+            font-style: italic;
+        }
+
+        @media print {
+            body { background: white; padding: 0; }
+            .control-bar { display: none; }
+            #print-area { box-shadow: none; width: 100%; margin: 0; padding: 0; }
+            @page { margin: 0; size: 80mm auto; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="control-bar">
+        <a href="javascript:history.back()" class="btn"><i class="fas fa-arrow-left me-2"></i> DIB U NOQO</a>
+        <button class="btn btn-print" onclick="window.print()">
+            <i class="fas fa-print me-2"></i> DAABAC HADDA
+        </button>
+    </div>
+
+    <div id="print-area">
+        <div class="statement-container">
+            <div class="header">
+                <div class="restaurant-name">{{ sys_name }}</div>
+                <div>{{ sys_address }}</div>
+                <div>Tel: {{ sys_phone }}</div>
+                <div style="margin-top:10px; font-weight: 800; font-size: 14px;">WARBIXINTA MACMIILKA</div>
+                <div style="font-size: 10px; opacity: 0.7;">(Account Statement)</div>
+            </div>
+
+            <div class="info-line">
+                <span class="bold">Macmiilka:</span>
+                <span class="bold">{{ customer.name }}</span>
+            </div>
+            <div class="info-line">
+                <span>Telefoonka:</span>
+                <span>{{ customer.phone or '—' }}</span>
+            </div>
+            <div class="info-line">
+                <span>Taariikhda:</span>
+                <span>{{ now.strftime('%d/%m/%Y %H:%M') if now else '' }}</span>
+            </div>
+
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>DALAB #</th>
+                        <th>TAARIIKH</th>
+                        <th style="text-align: right;">LACAG</th>
+                        <th style="text-align: right;">XALAAD</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                    <tr>
+                        <td>#{{ "%04d"|format(order.id) }}</td>
+                        <td>{{ order.created_at.strftime('%d/%m/%y') }}</td>
+                        <td style="text-align: right; font-weight: bold;">{{ sys_currency }}{{ "%.2f"|format(order.total_amount) }}</td>
+                        <td style="text-align: right;">
+                            {% if order.payment_status == 'paid' %}
+                                <span style="font-size: 9px; background: #e2e8f0; padding: 1px 4px; border-radius: 4px;">PAID</span>
+                            {% else %}
+                                <span style="font-size: 9px; font-weight: 900; color: #ef4444;">DEYN</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="total-section">
+                <div class="info-line" style="font-size: 13px;">
+                    <span class="bold">WADARTA GUUD:</span>
+                    <span class="bold">{{ sys_currency }}{{ "%.2f"|format(orders|sum(attribute='total_amount')) }}</span>
+                </div>
+                <div class="info-line grand-debt" style="margin-top: 5px;">
+                    <span class="bold">DEYNTA HARTA:</span>
+                    <span class="bold">{{ sys_currency }}{{ "%.2f"|format(balance) }}</span>
+                </div>
+            </div>
+
+            <div class="footer">
+                <div class="bold">MAHADSANID JOOGITAANKAAGA!</div>
+                <div style="margin-top: 5px;">SomCoffe POS Statement - {{ sys_name|upper }}</div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

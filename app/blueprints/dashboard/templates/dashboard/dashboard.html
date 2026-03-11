@@ -2,7 +2,7 @@
 
 {% block title %}{{ sys_name }} - Dashboard{% endblock %}
 
-{% block header_title %}System <span class="text-primary">Intelligence Overview</span>{% endblock %}
+{% block header_title %}{{ _('System Intelligence Overview') }}{% endblock %}
 
 {% block content %}
 <div class="animate__animated animate__fadeIn">
@@ -15,7 +15,7 @@
                     <i class="fas fa-coins"></i>
                 </div>
                 <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.65rem;">
-                    Lacagta (Revenue)</h6>
+                    {{ _('Revenue') }}</h6>
                 <div class="d-flex align-items-end flex-wrap gap-2">
                     <h2 class="mb-0 fw-800 text-gradient-primary">{{ sys_currency }}{{ "{:,.2f}".format(total_revenue)
                         }}</h2>
@@ -29,7 +29,7 @@
                     <i class="fas fa-shopping-cart"></i>
                 </div>
                 <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.65rem;">
-                    Dalabyada (Orders)</h6>
+                    {{ _('Orders') }}</h6>
                 <div class="d-flex align-items-end flex-wrap gap-2">
                     <h2 class="mb-0 fw-800 text-gradient-primary">{{ total_orders }}</h2>
                 </div>
@@ -42,7 +42,7 @@
                     <i class="fas fa-user-friends"></i>
                 </div>
                 <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.65rem;">
-                    Shaqaalaha (Staff)</h6>
+                    {{ _('Staff') }}</h6>
                 <div class="d-flex align-items-end flex-wrap gap-2">
                     <h2 class="mb-0 fw-800 text-gradient-primary">{{ total_employees }}</h2>
                 </div>
@@ -54,8 +54,7 @@
                 <div class="stat-icon-glow purple mb-3 mb-md-4">
                     <i class="fas fa-coffee"></i>
                 </div>
-                <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.65rem;">Ugu
-                    Iibinta Badan</h6>
+                <h6 class="text-muted fw-bold small text-uppercase mb-2 tracking-wider" style="font-size: 0.65rem;">{{ _('Top Selling') }}</h6>
                 <div class="d-flex align-items-end flex-wrap gap-2">
                     <h3 class="mb-0 fw-800 text-gradient-primary small">{{ peak_cat_name }}</h3>
                 </div>
@@ -68,10 +67,10 @@
         <div class="col-lg-8 animate__animated animate__fadeInLeft">
             <div class="card-premium h-100 p-4">
                 <div class="d-flex justify-content-between align-items-center mb-5">
-                    <h4 class="fw-900 mb-0">Muuqaalka <span class="text-gradient-primary">Iibka</span></h4>
+                    <h4 class="fw-900 mb-0">{{ _('Sales View') }}</h4>
                     <div
                         class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold border border-primary border-opacity-20">
-                        LAST 7 DAYS</div>
+                        {{ _('LAST 7 DAYS') }}</div>
                 </div>
                 <div style="height: 350px;">
                     <canvas id="mainDashboardChart"></canvas>
@@ -112,12 +111,12 @@
                     {% else %}
                     <div class="text-center py-5">
                         <i class="fas fa-inbox fa-3x text-muted opacity-20 mb-3"></i>
-                        <p class="text-muted small">Wali wax xog ah ma jirto.</p>
+                        <p class="text-muted small">{{ _('No data available yet.') }}</p>
                     </div>
                     {% endfor %}
 
                     <h6 class="text-muted fw-bold small text-uppercase mt-5 mb-4 tracking-widest"
-                        style="font-size: 0.65rem;">Inventory Alerts</h6>
+                        style="font-size: 0.65rem;">{{ _('Inventory Alerts') }}</h6>
                     {% for p in low_stock_products %}
                     <div
                         class="d-flex gap-3 mb-3 p-3 rounded-4 bg-danger bg-opacity-5 border border-danger border-opacity-10">
@@ -127,8 +126,7 @@
                         </div>
                         <div>
                             <p class="mb-0 fw-800 text-white small">{{ p.name }}</p>
-                            <p class="mb-0 text-danger small fw-bold" style="font-size: 0.7rem;">Only {{ p.stock }} left
-                                in stock!</p>
+                            <p class="mb-0 text-danger small fw-bold" style="font-size: 0.7rem;">Only {{ p.stock }} {{ _('left in stock!') }}</p>
                         </div>
                     </div>
                     {% endfor %}

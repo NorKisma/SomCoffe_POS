@@ -637,27 +637,29 @@
         z-index: 2550;
     }
 
-    .summary-line span:first-child {
-        color: rgba(255, 255, 255, 0.7) !important;
-        font-weight: 500;
-    }
-
-    .summary-line span:last-child {
-        color: #ffffff !important;
-        font-weight: 800;
-    }
-
-    .invoice-row .name {
-        font-size: 0.85rem;
-    }
-
-    .invoice-row .price {
-        font-size: 0.75rem;
-    }
-
     .payment-btn {
-        height: 48px;
-        font-size: 0.75rem !important;
+        height: 65px !important;
+        font-size: 0.95rem !important;
+        border-width: 2px !important;
+        border-radius: 18px !important;
+        margin-bottom: 5px;
+    }
+
+    .pay-now-btn {
+        height: 70px !important;
+        font-size: 1.1rem !important;
+        border-radius: 20px !important;
+    }
+
+    .invoice-footer {
+        padding: 1.5rem !important;
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 30px 30px 0 0;
+        margin: 1rem -1rem -1.5rem -1rem;
+    }
+
+    .total-line .amount {
+        font-size: 2.2rem !important;
     }
 }
 
@@ -777,15 +779,7 @@
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
 }
 
-@media (max-width: 576px) {
-    .modal-dialog {
-        margin: 0.5rem;
-    }
-
-    .modal-content {
-        border-radius: 20px !important;
-    }
-}
+/* Modal media query moved to global style.css */
 
 .modal-header {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;

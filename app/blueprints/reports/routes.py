@@ -29,61 +29,78 @@ def index():
         end_date = today
 
     # Prepare query filters for the date range
-    # End date should include the whole day (up to 23:59:59)
     end_date_filter = end_date + timedelta(days=1) - timedelta(microseconds=1)
 
-    # Base Order Query
-    orders_query = Order.query.filter(
+    # Base Order Query for status breakdown
+    all_orders = Order.query.filter(
         Order.created_at >= start_date,
         Order.created_at <= end_date_filter
     )
-    
     if user_id:
-        orders_query = orders_query.filter(Order.user_id == user_id)
+        all_orders = all_orders.filter(Order.user_id == user_id)
     
-    # Calculate revenue (Only completed and paid orders for P&L)
-    completed_orders = orders_query.filter(Order.status == 'completed')
-    
+    # Calculate revenue (Orders that are paid or partially paid)
+    # This is more accurate ('Xog Saxan') than just 'completed' status
     total_revenue_query = db.session.query(sqlalchemy.func.sum(Order.total_amount)).filter(
         Order.created_at >= start_date,
         Order.created_at <= end_date_filter,
-        Order.status == 'completed'
+        Order.payment_status.in_(['paid', 'partial'])
     )
-    
     if user_id:
         total_revenue_query = total_revenue_query.filter(Order.user_id == user_id)
         
-    total_revenue = total_revenue_query.scalar() or 0.0
+    total_revenue = float(total_revenue_query.scalar() or 0.0)
 
-    total_orders = orders_query.count()
+    # Daily Revenue for Chart
+    daily_revenue = []
+    daily_labels = []
+    curr = start_date
+    while curr <= end_date:
+        d_start = curr.replace(hour=0, minute=0, second=0)
+        d_end = curr.replace(hour=23, minute=59, second=59)
+        day_total = db.session.query(sqlalchemy.func.sum(Order.total_amount)).filter(
+            Order.created_at >= d_start,
+            Order.created_at <= d_end,
+            Order.payment_status.in_(['paid', 'partial'])
+        )
+        if user_id:
+            day_total = day_total.filter(Order.user_id == user_id)
+        
+        daily_revenue.append(float(day_total.scalar() or 0.0))
+        daily_labels.append(curr.strftime('%b %d'))
+        curr += timedelta(days=1)
+
+    total_orders = all_orders.count()
     total_products = Product.query.count()
     
-    # Revenue per status (All statuses for the chart/breakdown)
-    revenue_by_status_query = db.session.query(
+    # Revenue per status
+    revenue_by_status = db.session.query(
         Order.status, sqlalchemy.func.sum(Order.total_amount)
     ).filter(
         Order.created_at >= start_date,
         Order.created_at <= end_date_filter
-    ).group_by(Order.status)
-    
+    )
     if user_id:
-        revenue_by_status_query = revenue_by_status_query.filter(Order.user_id == user_id)
-        
-    revenue_by_status = revenue_by_status_query.all()
+        revenue_by_status = revenue_by_status.filter(Order.user_id == user_id)
+    revenue_by_status = revenue_by_status.group_by(Order.status).all()
     
     # === PROFIT & LOSS CALCULATIONS ===
-    # 1. Estimated COGS (Cost of goods sold) - Typically 30% for restaurants
-    estimated_cogs = float(total_revenue) * 0.30
+    # 1. Estimated COGS (Cost of goods sold) - 30% for restaurants if not tracked
+    estimated_cogs = total_revenue * 0.30
     
     # 2. Gross Profit
-    gross_profit = float(total_revenue) - estimated_cogs
+    gross_profit = total_revenue - estimated_cogs
     
     # 3. Staff Salaries
-    # We apportion the monthly salaries to the days in the date range.
     days_in_range = max((end_date.date() - start_date.date()).days + 1, 1)
-    # Sum of all monthly salaries
-    total_monthly_salaries = db.session.query(sqlalchemy.func.sum(Employee.salary)).scalar() or 0.0
-    # Approximate daily salary cost * days in range
+    if user_id:
+        # If user is selected, only show their apportioned salary if they are an employee
+        emp = Employee.query.filter_by(user_id=user_id).first()
+        total_monthly_salaries = emp.salary if emp else 0.0
+    else:
+        # Sum of all active employees
+        total_monthly_salaries = db.session.query(sqlalchemy.func.sum(Employee.salary)).filter_by(status='active').scalar() or 0.0
+    
     apportioned_salaries = (float(total_monthly_salaries) / 30.0) * days_in_range
     
     # 4. Other Expenses
@@ -95,7 +112,7 @@ def index():
     # 5. Net Profit
     net_profit = gross_profit - apportioned_salaries - float(total_expenses)
 
-    # Fetch users for filter (Waiters & Cashiers)
+    # Fetch users for filter
     users = User.query.all()
 
     return render_template('reports/index.html', 
@@ -111,5 +128,7 @@ def index():
                           total_expenses=total_expenses,
                           net_profit=net_profit,
                           users=users,
-                          selected_user_id=user_id)
+                          selected_user_id=user_id,
+                          daily_revenue=daily_revenue,
+                          daily_labels=daily_labels)
 

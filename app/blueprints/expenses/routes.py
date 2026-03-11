@@ -1,10 +1,10 @@
 from flask import render_template, request, flash, redirect, url_for
 from flask_login import login_required, current_user
 from . import expenses_bp
-from app.extensions import db
-from app.models.expense import Expense
+from ...extensions import db
+from ...models.expense import Expense
 from datetime import datetime
-from app.utils.decorators import manager_required
+from ...utils.decorators import manager_required
 
 @expenses_bp.route('/')
 @login_required

@@ -13,5 +13,14 @@ class Customer(db.Model):
     
     orders = db.relationship('Order', backref='customer_rel', lazy=True)
 
+    @property
+    def current_debt(self):
+        from app.models.order import Order
+        unpaid_orders = Order.query.filter(
+            Order.customer_id == self.id,
+            Order.payment_status != 'paid'
+        ).all()
+        return sum(order.total_amount for order in unpaid_orders)
+
     def __repr__(self):
         return f'<Customer {self.name}>'

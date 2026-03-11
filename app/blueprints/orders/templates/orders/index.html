@@ -309,9 +309,11 @@
             $('#editOrderModal').modal('show');
         });
 
-        $('.print-order-btn').on('click', function () {
+        // Print Order - Event delegation for responsive tables
+        $(document).on('click', '.print-order-btn', function () {
             const id = $(this).data('id');
-            window.open(`/orders/print/${id}`, '_blank');
+            // Navigate directly for a better mobile experience
+            window.location.href = `/orders/print/${id}`;
         });
     });
 </script>

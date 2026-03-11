@@ -1,4 +1,5 @@
 from flask import render_template, redirect, url_for, flash, request, session
+from flask_babel import _
 from flask_login import login_user, logout_user, login_required, current_user
 from . import auth_bp
 from app.models.user import User
@@ -20,10 +21,10 @@ def login():
         
         if user and user.check_password(password):
             login_user(user)
-            flash('Si guul leh ayaad u gashay nidaamka!', 'success')
+            flash(_('You have logged in successfully!'), 'success')
             return redirect(url_for('dashboard.index'))
         else:
-            flash('Magaca ama furaha sirta ah waa khalad!', 'danger')
+            flash(_('Invalid username or password!'), 'danger')
             
     return render_template('auth/login.html')
 
@@ -31,7 +32,7 @@ def login():
 @login_required
 def logout():
     logout_user()
-    flash('Si guul leh ayaad uga baxday nidaamka!', 'info')
+    flash(_('You have logged out successfully!'), 'info')
     return redirect(url_for('auth.login'))
 
 @auth_bp.route('/forgot-password', methods=['GET', 'POST'])
@@ -48,19 +49,19 @@ def forgot_password():
             
             # Send Email
             try:
-                msg = Message('Furahaaga Sirta ah (OTP Codes)',
+                msg = Message(_('Your OTP Code'),
                             sender=None, # Uses default from config
                             recipients=[email])
-                msg.body = f"Koodhkaaga bedelaadda furaha waa: {otp}. Wuxuu dhacayaa 10 daqiiqo gudahood."
+                msg.body = _("Your password reset code is: %(otp)s. Valid for 10 minutes.", otp=otp)
                 mail.send(msg)
                 
                 session['reset_email'] = email
-                flash('Koodhka OTP-ga waxaa loo soo diray Gmail-kaaga.', 'success')
+                flash(_('OTP code has been sent to your email.'), 'success')
                 return redirect(url_for('auth.verify_otp'))
             except Exception as e:
-                flash(f'Cillad ayaa dhacday markii la dirayay email-ka: {str(e)}', 'danger')
+                flash(_('Error sending email: %(error)s', error=str(e)), 'danger')
         else:
-            flash(f'Email-ka ({email}) nidaamka kuma jiro!', 'danger')
+            flash(_('Email (%(email)s) not found in the system!', email=email), 'danger')
             
     return render_template('auth/forgot_password.html')
 
@@ -78,7 +79,7 @@ def verify_otp():
             session['otp_verified'] = True
             return redirect(url_for('auth.reset_password'))
         else:
-            flash('Koodhka OTP-ga waa khalad ama wuu dhacay!', 'danger')
+            flash(_('Invalid or expired OTP code!'), 'danger')
             
     return render_template('auth/verify_otp.html')
 
@@ -92,7 +93,7 @@ def reset_password():
         confirm_password = request.form.get('confirm_password')
         
         if password != confirm_password:
-            flash('Furayaashu isuma mid aha!', 'danger')
+            flash(_('Passwords do not match!'), 'danger')
             return render_template('auth/reset_password.html')
             
         email = session['reset_email']
@@ -107,7 +108,7 @@ def reset_password():
             session.pop('reset_email', None)
             session.pop('otp_verified', None)
             
-            flash('Furahaaga si guul leh ayaa loo bedelay!', 'success')
+            flash(_('Your password has been reset successfully!'), 'success')
             return redirect(url_for('auth.login'))
             
     return render_template('auth/reset_password.html')
@@ -117,4 +118,4 @@ def verify_pin():
     pin = request.form.get('pin')
     if current_user.pin == pin:
         return {'success': True}
-    return {'success': False, 'message': 'PIN-ka waa khalad!'}, 401
+    return {'success': False, 'message': _('Incorrect PIN!')}, 401

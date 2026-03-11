@@ -1,4 +1,4 @@
-from flask import Flask, redirect, request as flask_request, flash, url_for
+from flask import Flask, redirect, request as flask_request, flash, url_for, session
 from config import Config
 from .extensions import db, login_manager, mail, babel, migrate, csrf
 
@@ -11,7 +11,18 @@ def create_app(config_class=Config):
     db.init_app(app)
     login_manager.init_app(app)
     mail.init_app(app)
-    babel.init_app(app)
+    
+    def get_locale():
+        # 1. User preference from session
+        if 'language' in session:
+            return session['language']
+        # 2. Logged in user preference (if you add the column later)
+        # if current_user.is_authenticated:
+        #     return current_user.language
+        # 3. Best match from browser
+        return flask_request.accept_languages.best_match(app.config['LANGUAGES'])
+
+    babel.init_app(app, locale_selector=get_locale)
     migrate.init_app(app, db)
     csrf.init_app(app)
 
@@ -39,7 +50,8 @@ def create_app(config_class=Config):
                 'sys_address': Setting.get_val('address', 'Mogadishu, Somalia'),
                 'sys_phone': Setting.get_val('phone', '+252 61XXXXXXX'),
                 'sys_currency': Setting.get_val('currency', '$'),
-                'Setting': Setting
+                'Setting': Setting,
+                'current_language': get_locale()
             }
         except Exception:
             return {
@@ -47,7 +59,8 @@ def create_app(config_class=Config):
                 'sys_address': 'Mogadishu, Somalia',
                 'sys_phone': '+252 61XXXXXXX',
                 'sys_currency': '$',
-                'Setting': Setting
+                'Setting': Setting,
+                'current_language': 'so'
             }
 
     # CSRF error handler — redirect back with a user-friendly flash message
@@ -85,5 +98,14 @@ def create_app(config_class=Config):
     app.register_blueprint(customers_bp, url_prefix='/customers')
     app.register_blueprint(kitchen_bp, url_prefix='/kitchen')
     app.register_blueprint(expenses_bp, url_prefix='/expenses')
+
+    @app.route('/set_language/<lang>')
+    def set_language(lang):
+        if lang in app.config['LANGUAGES']:
+            session['language'] = lang
+            flash('Language changed successfully!', 'success')
+        
+        referrer = flask_request.referrer or url_for('dashboard.index')
+        return redirect(referrer)
 
     return app

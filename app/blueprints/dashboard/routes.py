@@ -124,10 +124,25 @@ def _get_manager_data():
             .filter(func.date(Order.created_at) == day.date()).scalar() or 0
         chart_revenue.append(float(rev))
 
-    # All-time totals for the main card row
+    # All-time totals for the main card row (Paid/Partial only for 'Xog Saxan')
     total_revenue_all = db.session.query(
-        func.sum(Order.total_amount)).scalar() or 0
+        func.sum(Order.total_amount)).filter(Order.payment_status.in_(['paid', 'partial'])).scalar() or 0
     total_orders_all = Order.query.count()
+
+    # --- FINANCIAL DATA ---
+    from app.models.expense import Expense
+    from app.models.customer import Customer
+    from app.models.payment import Payment
+
+    # Expenses this month
+    start_of_month = today.replace(day=1)
+    total_expenses_month = db.session.query(func.sum(Expense.amount))\
+        .filter(Expense.date >= start_of_month).scalar() or 0
+
+    # Total Outstanding Debt (from customers)
+    # We can iterate or use a sum on the property if possible, but simpler to query unpaid orders
+    total_outstanding_debt = db.session.query(func.sum(Order.total_amount))\
+        .filter(Order.payment_status == 'unpaid').scalar() or 0
 
     # Recent 5 orders
     recent_activity = Order.query.order_by(
@@ -149,6 +164,9 @@ def _get_manager_data():
         total_orders_all=total_orders_all,
         recent_activity=recent_activity,
         low_stock_products=low_stock,
+        # Financial additions
+        total_expenses_month=total_expenses_month,
+        total_outstanding_debt=total_outstanding_debt,
         # keep legacy keys
         total_revenue=total_revenue_all,
         total_orders=total_orders_all,

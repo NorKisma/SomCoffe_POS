@@ -78,3 +78,29 @@ def edit(customer_id):
         return redirect(url_for('customers.view', customer_id=customer.id))
 
     return render_template('customers/edit.html', customer=customer)
+
+@customers_bp.route('/<int:customer_id>/statement')
+@login_required
+def statement(customer_id):
+    customer = Customer.query.get_or_404(customer_id)
+    orders = Order.query.filter_by(customer_id=customer_id).order_by(Order.created_at.desc()).all()
+    
+    # Calculate outstanding balance
+    outstanding_orders = Order.query.filter(
+        Order.customer_id == customer_id, 
+        Order.payment_status != 'paid'
+    ).all()
+    balance = sum(o.total_amount for o in outstanding_orders)
+    
+    from app.models.setting import Setting
+    settings = {s.key: s.value for s in Setting.query.all()}
+    
+    from datetime import datetime
+    return render_template('customers/statement.html', 
+                           customer=customer, 
+                           orders=orders, 
+                           balance=balance,
+                           now=datetime.utcnow(),
+                           sys_name=settings.get('system_name', 'SomCoffe POS'),
+                           sys_address=settings.get('address', ''),
+                           sys_phone=settings.get('phone', ''))

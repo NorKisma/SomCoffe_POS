@@ -42,6 +42,32 @@
         </div>
     </div>
 
+    <!-- FINANCIAL PERFORMANCE Section -->
+    <div class="row g-3 mb-5">
+        <div class="col-md-6 animate__animated animate__fadeInLeft">
+            <div class="card-premium p-4 d-flex align-items-center gap-4 border-start border-4 border-danger">
+                <div class="stat-icon-glow red" style="min-width:56px;height:56px;background:rgba(239,68,68,.1);color:#ef4444;">
+                    <i class="fas fa-wallet fa-lg"></i>
+                </div>
+                <div>
+                    <p class="text-muted small fw-bold text-uppercase mb-1" style="font-size:.65rem">Kharashka Bishan (Monthly Expenses)</p>
+                    <h2 class="mb-0 fw-800 text-white">{{ sys_currency }}{{ "{:,.2f}".format(total_expenses_month) }}</h2>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 animate__animated animate__fadeInRight">
+            <div class="card-premium p-4 d-flex align-items-center gap-4 border-start border-4 border-warning">
+                <div class="stat-icon-glow orange" style="min-width:56px;height:56px;background:rgba(245,158,11,.1);color:#f59e0b;">
+                    <i class="fas fa-hand-holding-usd fa-lg"></i>
+                </div>
+                <div>
+                    <p class="text-muted small fw-bold text-uppercase mb-1" style="font-size:.65rem">Deymaha Macaamiisha (Total Debts)</p>
+                    <h2 class="mb-0 fw-800 text-white">{{ sys_currency }}{{ "{:,.2f}".format(total_outstanding_debt) }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ALL-TIME STATS row -->
     <div class="row g-3 mb-5">
         <div class="col-md-6 animate__animated animate__fadeInLeft">

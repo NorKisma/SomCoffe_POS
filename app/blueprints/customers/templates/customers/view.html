@@ -13,10 +13,16 @@
             </a>
             <h2 class="fw-900 mb-0">Taariikhda <span class="text-primary">{{ customer.name }}</span></h2>
         </div>
-        <a href="{{ url_for('customers.edit', customer_id=customer.id) }}"
-            class="btn btn-outline-primary rounded-pill px-4">
-            <i class="fas fa-edit me-2"></i>Bedel Xogta
-        </a>
+        <div class="d-flex gap-2">
+            <a href="{{ url_for('customers.statement', customer_id=customer.id) }}"
+                class="btn btn-premium rounded-pill px-4">
+                <i class="fas fa-print me-2"></i>Daabac Xisaabta
+            </a>
+            <a href="{{ url_for('customers.edit', customer_id=customer.id) }}"
+                class="btn btn-outline-primary rounded-pill px-4">
+                <i class="fas fa-edit me-2"></i>Bedel Xogta
+            </a>
+        </div>
     </div>
 
     <!-- Flash Messages -->
