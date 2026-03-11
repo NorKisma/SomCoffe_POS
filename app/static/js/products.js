@@ -53,24 +53,7 @@ $(document).ready(function () {
     // Initialize DataTable
     const table = $('#inventoryTable').DataTable({
         responsive: true,
-        dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-4"fB>rt<"d-flex justify-content-between align-items-center mt-4"ip>',
-        buttons: [
-            {
-                extend: 'print',
-                text: '<i class="fas fa-print"></i> Daabac',
-                className: 'dt-button'
-            },
-            {
-                extend: 'excel',
-                text: '<i class="fas fa-file-excel"></i> Excel',
-                className: 'dt-button'
-            },
-            {
-                extend: 'pdf',
-                text: '<i class="fas fa-file-pdf"></i> PDF',
-                className: 'dt-button'
-            }
-        ],
+        dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-4"f>rt<"d-flex justify-content-between align-items-center mt-4"ip>',
         pageLength: 10,
         language: {
             search: "_INPUT_",
@@ -119,8 +102,8 @@ $(document).ready(function () {
     $('.cat-filter-btn').on('click', function () {
         const cat = $(this).data('cat');
 
-        $('.cat-filter-btn').removeClass('active btn-primary').addClass('btn-dark');
-        $(this).addClass('active btn-primary').removeClass('btn-dark');
+        $('.cat-filter-btn').removeClass('active btn-premium').addClass('text-theme-main fw-bold');
+        $(this).addClass('active btn-premium').removeClass('text-theme-main fw-bold');
 
         if (cat === "") {
             table.column(1).search('').draw();

@@ -35,19 +35,19 @@
     <div class="d-flex h-100 overflow-hidden">
         <!-- Elite Sidebar -->
         <aside class="sidebar-premium" id="sidebar">
-            <div class="mb-5 d-flex align-items-center gap-3 ps-2">
+            <div class="mb-5 d-flex align-items-center gap-3 ps-2 w-100">
                 <div class="bg-primary rounded-circle d-flex align-items-center justify-content-center shadow-lg"
-                    style="width: 45px; height: 45px; background: linear-gradient(135deg, var(--primary), var(--accent-purple)) !important;">
+                    style="width: 45px; height: 45px; min-width: 45px; background: linear-gradient(135deg, var(--primary), var(--accent-purple)) !important;">
                     <i class="fas fa-coffee text-white"></i>
                 </div>
-                <div>
-                    <h5 class="mb-0 fw-800 tracking-tight text-white">{{ sys_name }}</h5>
+                <div class="sidebar-brand-text w-100 overflow-hidden" style="white-space: nowrap; transition: opacity 0.3s;">
+                    <h5 class="mb-0 fw-800 tracking-tight text-white text-truncate">{{ sys_name }}</h5>
                     <span class="text-primary fw-bold"
                         style="font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px;">Elite v2.0</span>
                 </div>
             </div>
 
-            <nav class="flex-grow-1">
+            <nav class="flex-grow-1 sidebar-nav-container">
                 <!-- ALL ROLES: Dashboard -->
                 <a href="{{ url_for('dashboard.index') }}"
                     class="nav-item-premium {% if request.endpoint == 'dashboard.index' %}active{% endif %}"
@@ -92,16 +92,15 @@
                     <i class="fas fa-box-open"></i>
                     <span>{{ _('Inventory') }}</span>
                 </a>
+                
                 <!-- FINANCIAL MANAGEMENT dropdown -->
-                {% set finance_active = request.endpoint in ['reports.index', 'expenses.index', 'customers.index',
-                'customers.view', 'customers.statement'] %}
+                {% set finance_active = request.endpoint in ['reports.index', 'expenses.index', 'customers.index', 'customers.view', 'customers.statement'] %}
                 <div class="nav-dropdown-group mt-2">
                     <button
                         class="nav-item-premium nav-dropdown-toggle w-100 border-0 text-start {% if finance_active %}active{% endif %}"
-                        onclick="toggleNavDropdown('financeDropdown', this)"
-                        style="background: {% if finance_active %}linear-gradient(135deg, var(--primary), var(--accent-purple)){% else %}transparent{% endif %};">
-                        <i class="fas fa-chart-pie"></i>
-                        <span>Maamulka Maaliyadda</span>
+                        onclick="toggleNavDropdown('financeDropdown', this)" {% if finance_active %}style="background: linear-gradient(135deg, var(--primary), var(--accent-purple));" {% endif %}>
+                        <i class="fas fa-chart-line"></i>
+                        <span>{{ _('Financial') }}</span>
                         <i class="fas fa-chevron-down ms-auto nav-dropdown-chevron"
                             style="font-size:0.7rem; transition: transform 0.3s ease;"></i>
                     </button>
@@ -109,32 +108,31 @@
                         style="overflow:hidden; transition: max-height 0.35s ease; max-height: 0;">
                         <a href="{{ url_for('reports.index') }}"
                             class="nav-item-premium nav-sub-item {% if request.endpoint == 'reports.index' %}active{% endif %}"
-                            data-label="Warbixinta P&L">
+                            data-label="{{ _('Reports P&L') }}">
                             <i class="fas fa-file-invoice-dollar"></i>
-                            <span>Warbixinta P&L</span>
+                            <span>{{ _('Reports P&L') }}</span>
                         </a>
                         <a href="{{ url_for('expenses.index') }}"
                             class="nav-item-premium nav-sub-item {% if request.endpoint == 'expenses.index' %}active{% endif %}"
-                            data-label="Kharashyada">
+                            data-label="{{ _('Expenses') }}">
                             <i class="fas fa-wallet"></i>
-                            <span>Kharashyada</span>
+                            <span>{{ _('Expenses') }}</span>
                         </a>
                         <a href="{{ url_for('customers.index') }}"
                             class="nav-item-premium nav-sub-item {% if request.endpoint and request.endpoint.startswith('customers.') %}active{% endif %}"
-                            data-label="Deymaha Macaamiisha">
+                            data-label="{{ _('Customer Debts') }}">
                             <i class="fas fa-hand-holding-usd"></i>
-                            <span>Deymaha Macaamiisha</span>
+                            <span>{{ _('Customer Debts') }}</span>
                         </a>
                     </div>
                 </div>
 
                 <!-- ADMIN / MANAGER: Administration dropdown -->
                 {% set admin_active = request.endpoint in ['employees.index', 'users.index', 'settings.index'] %}
-                <div class="nav-dropdown-group mt-2">
+                <div class="nav-dropdown-group mt-2 mb-3">
                     <button
                         class="nav-item-premium nav-dropdown-toggle w-100 border-0 text-start {% if admin_active %}active{% endif %}"
-                        onclick="toggleNavDropdown('adminDropdown', this)"
-                        style="background: {% if admin_active %}linear-gradient(135deg, var(--primary), var(--accent-purple)) {% else %}transparent{% endif %};">
+                        onclick="toggleNavDropdown('adminDropdown', this)" {% if admin_active %}style="background: linear-gradient(135deg, var(--primary), var(--accent-purple));" {% endif %}>
                         <i class="fas fa-shield-alt"></i>
                         <span>{{ _('Administration') }}</span>
                         <i class="fas fa-chevron-down ms-auto nav-dropdown-chevron"
@@ -167,26 +165,26 @@
                 {% endif %}
             </nav>
 
-            <div class="mt-auto">
-                <div class="card-premium p-3 border-0 bg-white bg-opacity-5 rounded-4">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="bg-primary bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center"
+            <!-- Bottom User Profile Section in Sidebar -->
+            <div class="mt-auto pt-3 border-top border-white border-opacity-10 sidebar-user-box">
+                <div class="card-premium p-3 border-0 bg-white bg-opacity-5 rounded-4 d-flex flex-column" style="min-width: 0;">
+                    <div class="d-flex align-items-center gap-3 mb-2" style="min-width: 0;">
+                        <div class="bg-primary bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
                             style="width:38px;height:38px;min-width:38px">
                             <i class="fas fa-user-shield text-primary"></i>
                         </div>
-                        <div class="overflow-hidden flex-grow-1">
-                            <p class="mb-1 fw-bold text-white text-truncate" style="font-size:.9rem">{{
-                                current_user.username }}</p>
+                        <div class="overflow-hidden flex-grow-1 user-details-box" style="white-space: nowrap; transition: opacity 0.3s; min-width: 0;">
+                            <p class="mb-1 fw-bold text-white text-truncate" style="font-size:.9rem">{{ current_user.username }}</p>
                             <span
-                                class="badge bg-{{ current_user.role_color }} bg-opacity-20 text-{{ current_user.role_color }} px-2 py-1 rounded-pill fw-bold"
-                                style="font-size:.6rem">
+                                class="badge bg-{{ current_user.role_color }} bg-opacity-20 text-{{ current_user.role_color }} px-2 py-1 rounded-pill fw-bold text-truncate"
+                                style="font-size:.6rem; max-width: 100%; display: inline-block;">
                                 {{ current_user.role_label }}
                             </span>
                         </div>
-                        <a href="{{ url_for('auth.logout') }}" class="ms-auto text-muted" title="Sign Out">
-                            <i class="fas fa-sign-out-alt"></i>
-                        </a>
                     </div>
+                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger btn-sm w-100 rounded-pill sign-out-btn" style="transition: opacity 0.3s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
+                        <i class="fas fa-sign-out-alt me-2"></i> {{ _('Sign Out') }}
+                    </a>
                 </div>
             </div>
         </aside>
@@ -194,65 +192,66 @@
 
         <main class="flex-grow-1 d-flex flex-column overflow-hidden main-workspace">
             <!-- Glass Header -->
-            <header class="py-3 px-4 px-md-5 d-flex align-items-center justify-content-between">
+            <header class="py-3 px-4 px-md-5 d-flex align-items-center justify-content-between header-glass sticky-top z-3" style="background: var(--bg-header); backdrop-filter: blur(10px); border-bottom: 1px solid var(--border-glass);">
                 <div class="d-flex align-items-center gap-3">
-                    <button id="mobileToggle" class="d-lg-none"
+                    <button id="mobileToggle" class="btn btn-icon d-lg-none shadow-sm"
                         style="background: var(--bg-item); border: 1px solid var(--border-glass); color: var(--text-main); width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center;">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <button id="desktopToggle" class="d-none d-lg-flex"
+                    <button id="desktopToggle" class="btn btn-icon d-none d-lg-flex shadow-sm"
                         style="background: var(--bg-item); border: 1px solid var(--border-glass); color: var(--text-main); width: 40px; height: 40px; border-radius: 10px; align-items: center; justify-content: center; cursor: pointer; transition: all 0.3s;">
                         <i class="fas fa-bars-staggered"></i>
                     </button>
                     <div>
-                        <h4 class="mb-0 fw-bold d-none d-sm-block">{% block header_title %}{{ _('Welcome') }}, <span
-                                class="text-primary">{{ current_user.username }}</span>{% endblock %}</h4>
-                        <p class="mb-0 text-muted small d-none d-md-block" id="liveDate"></p>
+                        <h4 class="mb-0 fw-bold d-none d-sm-block text-truncate" style="max-width: 200px;">
+                            {% block header_title %}{{ _('Welcome') }}, <span class="text-primary">{{ current_user.username }}</span>{% endblock %}
+                        </h4>
+                        <p class="mb-0 text-muted small d-none d-md-block text-truncate" style="max-width: 250px;" id="liveDate"></p>
                     </div>
                 </div>
-                <div class="d-flex align-items-center gap-4">
+                <div class="d-flex align-items-center gap-2 gap-md-4">
                     <!-- Language Selection -->
                     <div class="dropdown">
-                        <button class="btn btn-premium btn-sm rounded-pill px-3 dropdown-toggle" type="button"
-                            data-bs-toggle="dropdown">
-                            <i class="fas fa-globe me-1"></i> {{ current_language|upper }}
+                        <button class="btn btn-premium btn-sm rounded-pill px-2 px-md-3 dropdown-toggle shadow-sm d-flex align-items-center justify-content-center gap-2" type="button"
+                            data-bs-toggle="dropdown" id="langDropdown" aria-expanded="false" data-bs-offset="0,8">
+                            <i class="fas fa-globe"></i> <span class="d-none d-md-inline">{{ 'SOMALI' if current_language == 'so' else 'ENGLISH' }}</span>
                         </button>
-                        <ul class="dropdown-menu dropdown-menu-end card-premium border-0 shadow-lg mt-2">
-                            <li><a class="dropdown-item text-white"
-                                    href="{{ url_for('set_language', lang='so') }}">Somali</a></li>
-                            <li><a class="dropdown-item text-white"
-                                    href="{{ url_for('set_language', lang='en') }}">English</a></li>
+                        <ul class="dropdown-menu dropdown-menu-end card-premium border-0 shadow-lg mt-2"
+                            aria-labelledby="langDropdown">
+                            <li><a class="dropdown-item py-2 fw-bold d-flex align-items-center gap-2"
+                                    href="{{ url_for('set_language', lang='so') }}"><img src="https://flagcdn.com/w20/so.png" width="20" alt="Somalia"> Somali</a></li>
+                            <li><a class="dropdown-item py-2 fw-bold d-flex align-items-center gap-2"
+                                    href="{{ url_for('set_language', lang='en') }}"><img src="https://flagcdn.com/w20/us.png" width="20" alt="English"> English</a></li>
                         </ul>
                     </div>
 
-                    <div class="theme-toggle" id="themeToggle" title="{{ _('Change Theme') }}">
+                    <div class="theme-toggle shadow-sm flex-shrink-0" id="themeToggle" title="{{ _('Change Theme') }}" style="cursor: pointer;">
                         <i class="fas fa-moon" id="themeIcon"></i>
                     </div>
 
-                    <div class="vr opacity-10"></div>
-                    <a href="{{ url_for('pos.index') }}" class="btn btn-premium btn-sm rounded-pill px-3">
-                        <i class="fas fa-plus"></i> <span class="d-none d-sm-inline">{{ _('NEW SALE') }}</span>
+                    <div class="vr opacity-10 d-none d-md-block"></div>
+                    <a href="{{ url_for('pos.index') }}" class="btn btn-premium btn-sm rounded-pill px-3 shadow-lg flex-shrink-0">
+                        <i class="fas fa-plus"></i> <span class="d-none d-sm-inline ms-1">{{ _('NEW SALE') }}</span>
                     </a>
                 </div>
             </header>
 
             <!-- Scrollable Content -->
-            <div class="flex-grow-1 overflow-auto custom-scrollbar">
+            <div class="flex-grow-1 overflow-auto custom-scrollbar position-relative pb-5">
                 <!-- Global Flash Messages -->
-                <div class="px-4 px-md-5 pt-3">
+                <div class="px-4 px-md-5 pt-4">
                     {% with messages = get_flashed_messages(with_categories=true) %}
                     {% if messages %}
                     {% for category, message in messages %}
-                    <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 animate__animated animate__slideInDown shadow-sm card-premium d-flex align-items-center gap-3"
-                        style="background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);">
-                        <div class="bg-{{ category }} bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center"
-                            style="width: 40px; height: 40px; min-width: 40px;">
+                    <div
+                        class="alert alert-{{ category }} border-0 rounded-4 mb-4 animate__animated animate__fadeInDown shadow-sm card-premium d-flex align-items-center gap-3 py-3">
+                        <div class="bg-{{ category }} bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
+                            style="width: 45px; height: 45px;">
                             <i
-                                class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} text-{{ category }}"></i>
+                                class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} text-{{ category }} fs-5"></i>
                         </div>
-                        <div class="flex-grow-1 fw-bold text-white">{{ message }}</div>
-                        <button type="button" class="btn-close btn-close-white ms-auto"
-                            data-bs-dismiss="alert"></button>
+                        <div class="flex-grow-1 fw-bold fs-6">{{ message }}</div>
+                        <button type="button" class="btn-close ms-auto shadow-none" data-bs-dismiss="alert"></button>
                     </div>
                     {% endfor %}
                     {% endif %}
@@ -268,7 +267,7 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- DataTables JS -->
+    <!-- DataTables JS & Plugins -->
     <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.7/js/dataTables.bootstrap5.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
@@ -280,8 +279,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
+    
     <script>
-        // Global CSRF Setup for jQuery
+        // Global CSRF Setup for jQuery Ajax
         $.ajaxSetup({
             beforeSend: function (xhr, settings) {
                 if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
@@ -290,34 +290,39 @@
             }
         });
 
+        // Live Date Update functionality
         function updateLiveDate() {
-            const now = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
-            document.getElementById('liveDate').innerText = now.toLocaleDateString('en-US', options);
+            const dateElement = document.getElementById('liveDate');
+            if (dateElement) {
+                const now = new Date();
+                const options = { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+                dateElement.innerText = now.toLocaleDateString('en-US', options);
+            }
         }
         updateLiveDate();
         setInterval(updateLiveDate, 60000);
 
-        // Theme Toggle Logic
+        // Theme Management Logic
         const themeToggle = document.getElementById('themeToggle');
         const themeIcon = document.getElementById('themeIcon');
-        const body = document.body;
-
-        // Load saved theme
         const savedTheme = localStorage.getItem('theme') || 'dark';
+        
         document.documentElement.setAttribute('data-theme', savedTheme);
         updateThemeIcon(savedTheme);
 
-        themeToggle.addEventListener('click', () => {
-            const currentTheme = document.documentElement.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        if(themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const currentTheme = document.documentElement.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
 
-            document.documentElement.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            updateThemeIcon(newTheme);
-        });
+                document.documentElement.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                updateThemeIcon(newTheme);
+            });
+        }
 
         function updateThemeIcon(theme) {
+            if (!themeIcon) return;
             if (theme === 'dark') {
                 themeIcon.classList.replace('fa-sun', 'fa-moon');
             } else {
@@ -325,66 +330,101 @@
             }
         }
 
-        // Sidebar Toggle
+        // Advanced Sidebar Toggle Logic
         const sidebar = document.getElementById('sidebar');
         const overlay = document.getElementById('sidebarOverlay');
         const mobileToggle = document.getElementById('mobileToggle');
         const desktopToggle = document.getElementById('desktopToggle');
 
-        // Load sidebar state (Default to collapsed)
-        const savedState = localStorage.getItem('sidebarCollapsed');
-        const isCollapsed = savedState === null ? true : savedState === 'true';
-
-        if (isCollapsed) {
-            sidebar.classList.add('collapsed');
-            if (savedState === null) {
-                localStorage.setItem('sidebarCollapsed', 'true');
+        // Restore Sidebar State on load
+        if (sidebar && desktopToggle) {
+            const savedState = localStorage.getItem('sidebarCollapsed');
+            const isCollapsed = savedState === null ? false : savedState === 'true'; // Default open on desktop
+            
+            if (isCollapsed && window.innerWidth >= 992) {
+                sidebar.classList.add('collapsed');
             }
+
+            desktopToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('collapsed');
+                localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+                // Trigger window resize to fix charts/datatables width issues when sidebar toggles
+                setTimeout(() => window.dispatchEvent(new Event('resize')), 350);
+            });
         }
 
-        desktopToggle.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-            localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
-        });
+        if (sidebar && overlay && mobileToggle) {
+            mobileToggle.addEventListener('click', () => {
+                sidebar.classList.add('show');
+                overlay.classList.add('show');
+            });
 
-        mobileToggle.addEventListener('click', () => {
-            sidebar.classList.add('show');
-            overlay.classList.add('show');
-        });
+            overlay.addEventListener('click', () => {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            });
+        }
 
-        overlay.addEventListener('click', () => {
-            sidebar.classList.remove('show');
-            overlay.classList.remove('show');
+        // Responsive Sidebar checking on resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 992 && sidebar && overlay) {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
         });
     </script>
     <script>
+        // Stylish Dropdown Animation Logic
         function toggleNavDropdown(id, btn) {
             const panel = document.getElementById(id);
+            if (!panel) return;
+            
             const chevron = btn.querySelector('.nav-dropdown-chevron');
             const isOpen = panel.style.maxHeight && panel.style.maxHeight !== '0px';
+            
             if (isOpen) {
-                panel.style.maxHeight = '0';
-                chevron.classList.remove('rotated');
+                panel.style.maxHeight = '0px';
+                if(chevron) chevron.classList.remove('rotated');
                 localStorage.setItem('dropdown_' + id, 'closed');
             } else {
                 panel.style.maxHeight = panel.scrollHeight + 'px';
-                chevron.classList.add('rotated');
+                if(chevron) chevron.classList.add('rotated');
                 localStorage.setItem('dropdown_' + id, 'open');
+                
+                // Close other open dropdowns for accordion effect (Optional - currently disabled for multi-open)
+                /* document.querySelectorAll('.nav-dropdown-items').forEach(otherPanel => {
+                    if(otherPanel.id !== id && otherPanel.style.maxHeight !== '0px') {
+                        otherPanel.style.maxHeight = '0px';
+                        const otherBtn = otherPanel.previousElementSibling;
+                        if(otherBtn) otherBtn.querySelector('.nav-dropdown-chevron')?.classList.remove('rotated');
+                        localStorage.setItem('dropdown_' + otherPanel.id, 'closed');
+                    }
+                }); */
             }
         }
-        // Restore dropdown states on page load
+        
+        // Restore dropdown states on page load safely
         document.addEventListener('DOMContentLoaded', function () {
             document.querySelectorAll('.nav-dropdown-items').forEach(function (panel) {
                 const id = panel.id;
                 const btn = panel.previousElementSibling;
                 const chevron = btn ? btn.querySelector('.nav-dropdown-chevron') : null;
                 const savedState = localStorage.getItem('dropdown_' + id);
-                // If currently has max-height set (server-side active), keep it open
-                if (panel.style.maxHeight && panel.style.maxHeight !== '0px') {
-                    if (chevron) chevron.classList.add('rotated');
-                } else if (savedState === 'open') {
+                
+                // If it's already active via python request.endpoint, keep it open and save state
+                if (btn && btn.classList.contains('active')) {
+                    panel.style.transition = 'none'; // Prevent animation on page load
                     panel.style.maxHeight = panel.scrollHeight + 'px';
                     if (chevron) chevron.classList.add('rotated');
+                    localStorage.setItem('dropdown_' + id, 'open');
+                    
+                    // Re-enable animation
+                    setTimeout(() => panel.style.transition = 'max-height 0.35s ease', 50);
+                } else if (savedState === 'open') {
+                    panel.style.transition = 'none';
+                    panel.style.maxHeight = panel.scrollHeight + 'px';
+                    if (chevron) chevron.classList.add('rotated');
+                    setTimeout(() => panel.style.transition = 'max-height 0.35s ease', 50);
                 }
             });
         });

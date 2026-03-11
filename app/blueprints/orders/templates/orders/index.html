@@ -65,36 +65,35 @@
                             {% if order.status == 'completed' %}
                             <span
                                 class="badge bg-success bg-opacity-10 text-success py-2 px-3 rounded-pill text-uppercase"
-                                style="font-size: 0.6rem;">DHAMMAAD</span>
+                                style="font-size: 0.6rem;">DHAMMAAD (Completed)</span>
                             {% elif order.status == 'pending' %}
                             <span
                                 class="badge bg-warning bg-opacity-10 text-warning py-2 px-3 rounded-pill text-uppercase"
-                                style="font-size: 0.6rem;">SUGITAAN</span>
+                                style="font-size: 0.6rem;">SUGITAAN (Pending)</span>
                             {% else %}
                             <span
                                 class="badge bg-danger bg-opacity-10 text-danger py-2 px-3 rounded-pill text-uppercase"
-                                style="font-size: 0.6rem;">LAA JIRAY</span>
+                                style="font-size: 0.6rem;">LAA JIRAY (Cancelled)</span>
                             {% endif %}
                         </td>
                         <td class="text-end pe-4">
                             <div class="d-flex justify-content-end gap-1">
-                                <button class="btn btn-action view-order-btn" data-id="{{ order.id }}"
-                                    title="Fiiri dalabka" style="background: rgba(79, 70, 229, 0.1); color: #4f46e5;">
+                                <button class="btn btn-action view-order-btn bg-soft-primary" data-id="{{ order.id }}"
+                                    title="Fiiri dalabka">
                                     <i class="fas fa-eye"></i>
                                 </button>
-                                <button class="btn btn-action edit-order-btn" data-id="{{ order.id }}"
+                                <button class="btn btn-action edit-order-btn bg-soft-warning" data-id="{{ order.id }}"
                                     data-customer="{{ order.customer_name }}" data-status="{{ order.status }}"
-                                    title="Wax ka badel" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+                                    title="Wax ka badel">
                                     <i class="fas fa-edit"></i>
                                 </button>
-                                <button class="btn btn-action print-order-btn" data-id="{{ order.id }}"
-                                    title="Print Resit" style="background: rgba(30, 41, 59, 0.1); color: #1e293b;">
+                                <button class="btn btn-action print-order-btn bg-soft-info" data-id="{{ order.id }}"
+                                    title="Print Resit">
                                     <i class="fas fa-print"></i>
                                 </button>
                                 {% if order.status != 'cancelled' %}
                                 <a href="{{ url_for('pos.index') }}?append_order_id={{ order.id }}&table_id={{ order.table_id or 0 }}&table_num={{ order.table.number if order.table else 'TAKEAWAY' }}"
-                                    class="btn btn-action" title="Ku dar dalab kale (Reorder)"
-                                    style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+                                    class="btn btn-action bg-soft-success" title="Ku dar dalab kale (Reorder)">
                                     <i class="fas fa-plus"></i>
                                 </a>
                                 {% endif %}
@@ -190,16 +189,16 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="modal-body p-4">
                     <div class="mb-3">
-                        <label class="form-label text-muted small fw-bold">Magaca Macmiilka</label>
+                        <label class="form-label text-primary small fw-bold">Magaca Macmiilka</label>
                         <input type="text" class="form-control form-control-premium" name="customer_name"
                             id="e_customer_name" placeholder="Macmiil">
                     </div>
                     <div class="mb-4">
-                        <label class="form-label text-muted small fw-bold">Heerka Dalabka (Status)</label>
+                        <label class="form-label text-primary small fw-bold">Heerka Dalabka (Status)</label>
                         <select class="form-select form-select-premium" name="status" id="e_status">
-                            <option value="pending">SUGITAAN</option>
-                            <option value="completed">DHAMMAAD</option>
-                            <option value="cancelled">LAA JIRAY</option>
+                            <option value="pending">SUGITAAN (Pending)</option>
+                            <option value="completed">DHAMMAAD (Completed)</option>
+                            <option value="cancelled">LAA JIRAY (Cancelled)</option>
                         </select>
                     </div>
                 </div>
@@ -221,12 +220,7 @@
     $(document).ready(function () {
         $('#ordersTable').DataTable({
             responsive: true,
-            dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-4"fB>rt<"d-flex justify-content-between align-items-center mt-4"ip>',
-            buttons: [
-                { extend: 'print', text: '<i class="fas fa-print"></i> Daabac', className: 'dt-button' },
-                { extend: 'excel', text: '<i class="fas fa-file-excel"></i> Excel', className: 'dt-button' },
-                { extend: 'pdf', text: '<i class="fas fa-file-pdf"></i> PDF', className: 'dt-button' }
-            ],
+            dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-4"f>rt<"d-flex justify-content-between align-items-center mt-4"ip>',
             order: [[0, 'desc']],
             language: {
                 search: "_INPUT_",

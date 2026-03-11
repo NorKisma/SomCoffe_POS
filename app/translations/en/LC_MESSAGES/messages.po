@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2026-03-11 10:37+0300\n"
+"POT-Creation-Date: 2026-03-11 13:22+0100\n"
 "PO-Revision-Date: 2026-03-11 10:27+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -69,6 +69,58 @@ msgstr ""
 msgid "Incorrect PIN!"
 msgstr ""
 
+#: app/blueprints/customers/templates/customers/index.html:11
+msgid "Maamulka"
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:11
+msgid "Macaamiisha"
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:12
+msgid "Halkan ka xakamee xogta macaamiisha iyo diiwaankooda."
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:16
+msgid "CREATE NEW CUSTOMER"
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:27
+msgid "Maamulka Macaamiisha"
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:28
+msgid "Maamul oo la soco dhamaan xogta iyo deynta macaamiisha."
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:36
+msgid "Magaca"
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:37
+msgid "Telefoonka"
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:38
+msgid "Emailka"
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:39
+msgid "Deynta Sareeysa"
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:40
+msgid "Actions"
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:76
+msgid "Wali macmiil lama diiwaangelin"
+msgstr ""
+
+#: app/blueprints/customers/templates/customers/index.html:83
+msgid "WADARTA DEYNTA:"
+msgstr ""
+
 #: app/blueprints/dashboard/templates/dashboard/dashboard.html:5
 msgid "System Intelligence Overview"
 msgstr ""
@@ -121,51 +173,48 @@ msgstr ""
 msgid "Order History"
 msgstr ""
 
-#: app/templates/layout/base.html:78 app/templates/layout/base.html:80
-msgid "Customers"
-msgstr ""
-
-#: app/templates/layout/base.html:87 app/templates/layout/base.html:89
+#: app/templates/layout/base.html:81 app/templates/layout/base.html:83
 msgid "Kitchen Display"
 msgstr ""
 
-#: app/templates/layout/base.html:97 app/templates/layout/base.html:99
+#: app/templates/layout/base.html:91 app/templates/layout/base.html:93
 msgid "Inventory"
 msgstr ""
 
-#: app/templates/layout/base.html:103 app/templates/layout/base.html:105
-msgid "Analytics"
-msgstr ""
-
-#: app/templates/layout/base.html:109 app/templates/layout/base.html:111
-msgid "Expenses"
-msgstr ""
-
-#: app/templates/layout/base.html:118
+#: app/templates/layout/base.html:139
 msgid "Administration"
 msgstr ""
 
-#: app/templates/layout/base.html:122 app/templates/layout/base.html:124
+#: app/templates/layout/base.html:147 app/templates/layout/base.html:149
 msgid "Staff Directory"
 msgstr ""
 
-#: app/templates/layout/base.html:128 app/templates/layout/base.html:130
+#: app/templates/layout/base.html:153 app/templates/layout/base.html:155
 msgid "User Management"
 msgstr ""
 
-#: app/templates/layout/base.html:137 app/templates/layout/base.html:139
+#: app/templates/layout/base.html:160 app/templates/layout/base.html:162
 msgid "System Settings"
 msgstr ""
 
-#: app/templates/layout/base.html:181
+#: app/templates/layout/base.html:208
 msgid "Welcome"
 msgstr ""
 
-#: app/templates/layout/base.html:198
+#: app/templates/layout/base.html:228
 msgid "Change Theme"
 msgstr ""
 
-#: app/templates/layout/base.html:204
+#: app/templates/layout/base.html:234
 msgid "NEW SALE"
 msgstr ""
+
+#~ msgid "Customers"
+#~ msgstr ""
+
+#~ msgid "Analytics"
+#~ msgstr ""
+
+#~ msgid "Expenses"
+#~ msgstr ""
 

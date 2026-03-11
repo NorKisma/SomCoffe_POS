@@ -47,7 +47,7 @@ def create_app(config_class=Config):
         try:
             return {
                 'sys_name': Setting.get_val('restaurant_name', 'Rays POS'),
-                'sys_address': Setting.get_val('address', 'Mogadishu, Somalia'),
+                'sys_address': Setting.get_val('address', 'Kismayo, Somalia'),
                 'sys_phone': Setting.get_val('phone', '+252 61XXXXXXX'),
                 'sys_currency': Setting.get_val('currency', '$'),
                 'Setting': Setting,
@@ -56,7 +56,7 @@ def create_app(config_class=Config):
         except Exception:
             return {
                 'sys_name': 'Rays POS',
-                'sys_address': 'Mogadishu, Somalia',
+                'sys_address': 'Kismayo, Somalia',
                 'sys_phone': '+252 61XXXXXXX',
                 'sys_currency': '$',
                 'Setting': Setting,

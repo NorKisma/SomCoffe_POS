@@ -12,7 +12,7 @@
                 <div class="stat-icon-glow blue mb-3"><i class="fas fa-receipt"></i></div>
                 <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">Dalabada Maanta</h6>
                 <h2 class="fw-800 mb-0 text-gradient-primary">{{ orders_count }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">Orders Today</p>
+                <p class="text-muted mb-0" style="font-size:.7rem">Dalabyadayda Maanta</p>
             </div>
         </div>
         <div class="col-6 col-md-3">
@@ -20,16 +20,16 @@
                 <div class="stat-icon-glow purple mb-3"><i class="fas fa-coins"></i></div>
                 <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">Lacagta</h6>
                 <h2 class="fw-800 mb-0 text-gradient-primary">{{ sys_currency }}{{ "{:,.2f}".format(total_sales) }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">My Total Sales</p>
+                <p class="text-muted mb-0" style="font-size:.7rem">Wadarta Iibkayga</p>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="card-premium p-4 animate__animated animate__fadeInUp" style="animation-delay:.3s">
-                <div class="stat-icon-glow" style="background:rgba(245,158,11,.12);color:#f59e0b;"><i
+                <div class="stat-icon-glow bg-soft-warning"><i
                         class="fas fa-hourglass-half"></i></div>
                 <h6 class="text-muted small text-uppercase fw-bold mb-1 mt-3" style="font-size:.65rem">Sugaya</h6>
-                <h2 class="fw-800 mb-0" style="color:#f59e0b">{{ pending_count }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">Pending Orders</p>
+                <h2 class="fw-800 mb-0 text-warning">{{ pending_count }}</h2>
+                <p class="text-muted mb-0" style="font-size:.7rem">Dalabada Sugaya</p>
             </div>
         </div>
         <div class="col-6 col-md-3">
@@ -37,7 +37,7 @@
                 <div class="stat-icon-glow green mb-3"><i class="fas fa-check-circle"></i></div>
                 <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">La Adeegay</h6>
                 <h2 class="fw-800 mb-0 text-gradient-primary">{{ served_count }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">Completed Orders</p>
+                <p class="text-muted mb-0" style="font-size:.7rem">Dalabada Dhamaystiran</p>
             </div>
         </div>
     </div>
@@ -59,8 +59,7 @@
                     </a>
                 </div>
 
-                <div class="mt-5 p-4 rounded-4"
-                    style="background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.2)">
+                <div class="mt-5 p-4 rounded-4 bg-soft-danger border border-soft-danger">
                     <p class="small text-muted mb-2 fw-bold text-uppercase"
                         style="font-size:.65rem; letter-spacing:.05rem">
                         <i class="fas fa-lock me-1 text-danger"></i> Xadidaadaha Heerkaaga
@@ -96,8 +95,8 @@
                         </thead>
                         <tbody>
                             {% for o in recent_orders %}
-                            <tr style="background:rgba(255,255,255,.03); border-radius:12px">
-                                <td class="py-3 fw-bold text-white rounded-start-4">#{{ "%04d"|format(o.id) }}</td>
+                            <tr style="background: var(--bg-item); border-radius:12px">
+                                <td class="py-3 fw-bold rounded-start-4">#{{ "%04d"|format(o.id) }}</td>
                                 <td>{{ o.table.number if o.table else 'Takeaway' }}</td>
                                 <td class="fw-800 text-gradient-primary">{{ sys_currency }}{{
                                     "{:,.2f}".format(o.total_amount) }}</td>

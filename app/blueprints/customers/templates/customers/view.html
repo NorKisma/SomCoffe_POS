@@ -13,7 +13,13 @@
             </a>
             <h2 class="fw-900 mb-0">Taariikhda <span class="text-primary">{{ customer.name }}</span></h2>
         </div>
-        <div class="d-flex gap-2">
+        <div class="d-flex gap-2 flex-wrap">
+            {% if balance > 0 %}
+            <button class="btn btn-success rounded-pill px-4 fw-bold shadow-sm" data-bs-toggle="modal" data-bs-target="#payDebtModal">
+                <i class="fas fa-hand-holding-usd me-2"></i>Bixi Lacag
+                <span class="badge bg-white text-success ms-1">{{ sys_currency }}{{ "%.2f"|format(balance) }}</span>
+            </button>
+            {% endif %}
             <a href="{{ url_for('customers.statement', customer_id=customer.id) }}"
                 class="btn btn-premium rounded-pill px-4">
                 <i class="fas fa-print me-2"></i>Daabac Xisaabta
@@ -29,10 +35,12 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
-    <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 text-white"
-        style="background-color: var(--bs-{{category}}); opacity: 0.9;">
-        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} me-2"></i>{{ message
-        }}
+    <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 shadow-sm card-premium d-flex align-items-center gap-3">
+        <div class="bg-{{ category }} bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 40px; height: 40px; min-width: 40px;">
+            <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' }} text-{{ category }}"></i>
+        </div>
+        <div class="fw-bold">{{ message }}</div>
     </div>
     {% endfor %}
     {% endif %}
@@ -139,8 +147,14 @@
                             <span class="badge bg-success rounded-pill px-3 py-2"><i
                                     class="fas fa-check-circle me-1"></i>Bixan</span>
                             {% elif order.payment_status == 'partial' %}
-                            <span class="badge bg-warning text-dark rounded-pill px-3 py-2"><i
-                                    class="fas fa-adjust me-1"></i>Nus-Bixan</span>
+                            <div class="d-flex flex-column align-items-start">
+                                <span class="badge bg-warning text-dark rounded-pill px-3 py-1 mb-1"><i
+                                        class="fas fa-adjust me-1"></i>Nus-Bixan</span>
+                                <small class="text-muted" style="font-size: 0.75rem; line-height: 1.2;">
+                                    Joogta: <span class="text-success fw-bold">{{ sys_currency }}{{ "%.2f"|format(order.amount_paid) }}</span><br>
+                                    Hadhay: <span class="text-danger fw-bold">{{ sys_currency }}{{ "%.2f"|format(order.amount_due) }}</span>
+                                </small>
+                            </div>
                             {% else %}
                             <span class="badge bg-danger rounded-pill px-3 py-2"><i
                                     class="fas fa-times-circle me-1"></i>Deyn</span>
@@ -223,6 +237,88 @@
         </div>
     </div>
 </div>
+<!-- Pay Debt Modal -->
+<div class="modal fade" id="payDebtModal" tabindex="-1" aria-labelledby="payDebtModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-premium border-0 p-2">
+            <div class="modal-header border-0 pb-0">
+                <div>
+                    <h5 class="fw-900 mb-1" id="payDebtModalLabel">
+                        <i class="fas fa-hand-holding-usd text-success me-2"></i>
+                        Bixinta <span class="text-primary">Deynta</span>
+                    </h5>
+                    <p class="text-muted small mb-0">{{ customer.name }} — Deynta Hadhay:
+                        <span class="fw-bold text-danger">{{ sys_currency }}{{ "%.2f"|format(balance) }}</span>
+                    </p>
+                </div>
+                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal"></button>
+            </div>
+
+            <form action="{{ url_for('customers.record_payment', customer_id=customer.id) }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <div class="modal-body p-4">
+
+                    <!-- Amount -->
+                    <div class="mb-4">
+                        <label class="form-label small fw-bold text-muted text-uppercase">LACAGTA BIXINAYSA</label>
+                        <div class="input-group">
+                            <span class="input-group-text fw-bold"
+                                style="background: rgba(16,185,129,.1); border-color: rgba(16,185,129,.2); color: #10b981;">{{ sys_currency }}</span>
+                            <input type="number" name="amount" step="0.01" min="0.01"
+                                max="{{ "%.2f"|format(balance) }}"
+                                class="form-control rounded-end-4 py-3 fw-bold fs-5"
+                                placeholder="0.00"
+                                value="{{ "%.2f"|format(balance) }}"
+                                required id="payAmount">
+                        </div>
+                        <!-- Quick-pay buttons -->
+                        <div class="d-flex gap-2 mt-2 flex-wrap">
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 quick-pay"
+                                data-val="{{ "%.2f"|format(balance * 0.25) }}">25%</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 quick-pay"
+                                data-val="{{ "%.2f"|format(balance * 0.5) }}">50%</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 quick-pay"
+                                data-val="{{ "%.2f"|format(balance * 0.75) }}">75%</button>
+                            <button type="button" class="btn btn-sm btn-success rounded-pill px-3 quick-pay"
+                                data-val="{{ "%.2f"|format(balance) }}">Dhammaan</button>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method -->
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-muted text-uppercase">QAABKA LACAG-BIXINTA</label>
+                        <div class="d-flex gap-2 flex-wrap" id="methodBtns">
+                            <button type="button"
+                                class="btn btn-outline-success rounded-pill px-3 method-btn active"
+                                data-method="Cash">
+                                <i class="fas fa-money-bill-wave me-1"></i> Cash
+                            </button>
+                            <button type="button"
+                                class="btn btn-outline-info rounded-pill px-3 method-btn"
+                                data-method="EVC Plus">
+                                <i class="fas fa-mobile-alt me-1"></i> EVC Plus
+                            </button>
+                            <button type="button"
+                                class="btn btn-outline-primary rounded-pill px-3 method-btn"
+                                data-method="eDahab">
+                                <i class="fas fa-sim-card me-1"></i> eDahab
+                            </button>
+                        </div>
+                        <input type="hidden" name="payment_method" id="selectedMethod" value="Cash">
+                    </div>
+
+                </div>
+                <div class="modal-footer border-0 pt-0 d-flex justify-content-end gap-2">
+                    <button type="button" class="btn btn-outline-secondary rounded-pill px-4"
+                        data-bs-dismiss="modal">Xir</button>
+                    <button type="submit" class="btn btn-success rounded-pill px-5 fw-bold shadow-sm">
+                        <i class="fas fa-check-circle me-2"></i>Diiwaangeli Lacagta
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}
@@ -230,12 +326,7 @@
     $(document).ready(function () {
         $('#customerOrdersTable').DataTable({
             responsive: true,
-            dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-3"Bf>rt<"d-flex justify-content-between align-items-center mt-3"ip>',
-            buttons: [
-                { extend: 'print', text: '<i class="fas fa-print me-2"></i> Daabac', className: 'btn btn-sm btn-outline-primary rounded-pill px-3 shadow-none' },
-                { extend: 'excel', text: '<i class="fas fa-file-excel me-2"></i> Excel', className: 'btn btn-sm btn-outline-success rounded-pill px-3 shadow-none' },
-                { extend: 'pdf', text: '<i class="fas fa-file-pdf me-2"></i> PDF', className: 'btn btn-sm btn-outline-danger rounded-pill px-3 shadow-none' }
-            ],
+            dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-3"f>rt<"d-flex justify-content-between align-items-center mt-3"ip>',
             order: [[0, 'desc']],
             language: {
                 search: "_INPUT_",
@@ -251,7 +342,6 @@
                 var api = this.api();
                 var intVal = (i) => typeof i === 'string' ? i.replace(/[^\d.-]/g, '') * 1 : typeof i === 'number' ? i : 0;
 
-                // Total over this page
                 var pageTotal = api.column(3, { page: 'current' }).data().reduce(function (acc, val) {
                     var tempDiv = document.createElement('div');
                     tempDiv.innerHTML = val;
@@ -260,7 +350,6 @@
                     return acc + intVal(b);
                 }, 0);
 
-                // Update footer
                 $(api.column(3).footer()).html('{{ sys_currency }} ' + pageTotal.toFixed(2));
             }
         });
@@ -292,6 +381,22 @@
                         Swal.fire('Error', res.message, 'error');
                     }
                 });
+        });
+    });
+
+    // Quick-pay shortcuts
+    document.querySelectorAll('.quick-pay').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.getElementById('payAmount').value = btn.dataset.val;
+        });
+    });
+
+    // Payment method selector
+    document.querySelectorAll('.method-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.method-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('selectedMethod').value = btn.dataset.method;
         });
     });
 </script>

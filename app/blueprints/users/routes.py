@@ -15,6 +15,7 @@ def index():
 @users_bp.route('/add', methods=['POST'])
 @login_required
 @admin_required
+@manager_required
 def add_user():
     username = request.form.get('username')
     email = request.form.get('email')

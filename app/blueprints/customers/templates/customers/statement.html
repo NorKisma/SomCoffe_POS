@@ -218,6 +218,8 @@
                         <td style="text-align: right;">
                             {% if order.payment_status == 'paid' %}
                                 <span style="font-size: 9px; background: #e2e8f0; padding: 1px 4px; border-radius: 4px;">PAID</span>
+                            {% elif order.payment_status == 'partial' %}
+                                <span style="font-size: 9px; font-weight: 900; color: #f59e0b;">NUS-BIXAN (Hadhay: {{ sys_currency }}{{ "%.2f"|format(order.amount_due) }})</span>
                             {% else %}
                                 <span style="font-size: 9px; font-weight: 900; color: #ef4444;">DEYN</span>
                             {% endif %}

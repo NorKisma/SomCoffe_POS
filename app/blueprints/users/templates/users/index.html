@@ -24,14 +24,14 @@
     }
 
     [data-theme="dark"] {
-        --saas-surface: #1e1e2d;
-        --saas-border: #2b2b40;
+        --saas-surface: rgba(15, 25, 40, 0.85);
+        --saas-border: rgba(148, 163, 184, 0.08);
         --saas-text: #e2e8f0;
-        --saas-text-muted: #94a3b8;
-        --saas-primary-soft: rgba(99, 102, 241, 0.15);
-        --saas-danger-soft: rgba(239, 68, 68, 0.15);
-        --saas-success-soft: rgba(16, 185, 129, 0.15);
-        --saas-warning-soft: rgba(245, 158, 11, 0.15);
+        --saas-text-muted: #64748b;
+        --saas-primary-soft: rgba(99, 102, 241, 0.12);
+        --saas-danger-soft: rgba(239, 68, 68, 0.12);
+        --saas-success-soft: rgba(16, 185, 129, 0.12);
+        --saas-warning-soft: rgba(245, 158, 11, 0.12);
     }
 
     /* Page Header */
@@ -96,7 +96,31 @@
     }
 
     .saas-table tbody tr:hover td {
-        background: rgba(99, 102, 241, 0.02);
+        background: rgba(79, 70, 229, 0.06);
+    }
+
+    [data-theme="dark"] .saas-table th {
+        background: transparent;
+        border-bottom-color: rgba(148, 163, 184, 0.07);
+    }
+
+    [data-theme="dark"] .saas-table td {
+        background: transparent;
+        border-bottom-color: rgba(148, 163, 184, 0.06);
+    }
+
+    [data-theme="dark"] .saas-table tbody tr:hover td {
+        background: rgba(79, 70, 229, 0.08);
+    }
+
+    [data-theme="dark"] .saas-card {
+        background: rgba(12, 20, 34, 0.85);
+        border-color: rgba(148, 163, 184, 0.07);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+    }
+
+    [data-theme="dark"] .saas-action-btn {
+        border-color: rgba(148, 163, 184, 0.1);
     }
 
     /* Avatars */
@@ -293,12 +317,12 @@
     <!-- Header -->
     <div class="saas-header">
         <div>
-            <h1 class="saas-title">User Management</h1>
-            <p class="saas-sub">Manage system access, roles, and profiles</p>
+            <h1 class="saas-title"><i class="fas fa-users-cog me-2 text-primary opacity-75"></i>Maamulka <span class="text-primary">Xubnaheeda</span></h1>
+            <p class="saas-sub">Maamul gelitaanka nidaamka, doorarka, iyo xogta shaqaalaha</p>
         </div>
         <div>
             <button class="btn-saas" data-bs-toggle="modal" data-bs-target="#addUserModal">
-                <i class="fas fa-user-plus me-2"></i> Add New User
+                <i class="fas fa-user-plus me-2"></i> Kudar Isticmaale
             </button>
         </div>
     </div>
@@ -307,9 +331,12 @@
     {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
     {% for category, message in messages %}
-    <div class="alert alert-{{ category }} rounded-3 shadow-sm mb-4 border-0 d-flex align-items-center">
-        <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} me-3 fs-5"></i>
-        <div>{{ message }}</div>
+    <div class="alert alert-{{ category }} border-0 rounded-4 mb-4 shadow-sm card-premium d-flex align-items-center gap-3">
+        <div class="bg-{{ category }} bg-opacity-10 rounded-circle d-flex align-items-center justify-content-center"
+            style="width: 40px; height: 40px; min-width: 40px;">
+            <i class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} text-{{ category }}"></i>
+        </div>
+        <div class="fw-bold">{{ message }}</div>
     </div>
     {% endfor %}
     {% endif %}
@@ -321,11 +348,11 @@
             <table id="usersTable" class="table saas-table w-100 mb-0 pointer-cursor">
                 <thead>
                     <tr>
-                        <th style="padding-left: 24px;">User Profile</th>
-                        <th>Email Address</th>
-                        <th>Role / Access</th>
-                        <th>Status</th>
-                        <th class="text-end" style="padding-right: 24px;">Actions</th>
+                        <th style="padding-left: 24px;">Xubinta Nidaamka</th>
+                        <th>Email</th>
+                        <th>Doorka / Gelitaanka</th>
+                        <th>Xaaladda</th>
+                        <th class="text-end" style="padding-right: 24px;">Ficilada</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -380,7 +407,7 @@
                                 <!-- Delete Button (AJAX/SweetAlert trigger) -->
                                 {% if user.id != current_user.id and current_user.is_admin %}
                                 <button class="saas-action-btn delete"
-                                    onclick="confirmDelete({{ user.id }}, '{{ user.username }}')" title="Delete User">
+                                    onclick="confirmDelete('{{ user.id }}', '{{ user.username }}')" title="Delete User">
                                     <i class="fas fa-trash"></i>
                                 </button>
                                 <!-- Hidden form for actual deletion -->
@@ -553,12 +580,7 @@
     $(document).ready(function () {
         $('#usersTable').DataTable({
             responsive: true,
-            dom: '<"d-flex flex-wrap justify-content-between align-items-center p-4 border-bottom"fB>rt<"d-flex justify-content-between align-items-center p-4"ip>',
-            buttons: [
-                { extend: 'print', text: '<i class="fas fa-print me-1"></i> Print', className: 'btn btn-light btn-sm rounded-3 fw-bold px-3 border shadow-sm' },
-                { extend: 'excel', text: '<i class="fas fa-file-excel me-1"></i> Excel', className: 'btn btn-light btn-sm rounded-3 fw-bold px-3 border shadow-sm mx-2' },
-                { extend: 'pdf', text: '<i class="fas fa-file-pdf me-1"></i> PDF', className: 'btn btn-light btn-sm rounded-3 fw-bold px-3 border shadow-sm' }
-            ],
+            dom: '<"d-flex flex-wrap justify-content-between align-items-center p-4 border-bottom"f>rt<"d-flex justify-content-between align-items-center p-4"ip>',
             pageLength: 10,
             language: {
                 search: "",

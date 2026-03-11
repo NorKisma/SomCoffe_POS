@@ -12,7 +12,7 @@
                 <div class="stat-icon-glow green mb-3"><i class="fas fa-money-bill-wave"></i></div>
                 <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">Cash</h6>
                 <h2 class="fw-800 mb-0 text-gradient-primary">{{ sys_currency }}{{ "{:,.2f}".format(cash) }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">Lacagta Caddaan</p>
+                <p class="text-muted mb-0" style="font-size:.7rem">Lacag Cadaan ah</p>
             </div>
         </div>
         <div class="col-6 col-md-3">
@@ -20,7 +20,7 @@
                 <div class="stat-icon-glow blue mb-3"><i class="fas fa-mobile-alt"></i></div>
                 <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">EVC Plus</h6>
                 <h2 class="fw-800 mb-0 text-gradient-primary">{{ sys_currency }}{{ "{:,.2f}".format(evc) }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">Mobile Money</p>
+                <p class="text-muted mb-0" style="font-size:.7rem">Lacagta Mobile-ka</p>
             </div>
         </div>
         <div class="col-6 col-md-3">
@@ -28,16 +28,16 @@
                 <div class="stat-icon-glow purple mb-3"><i class="fas fa-sim-card"></i></div>
                 <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">eDahab</h6>
                 <h2 class="fw-800 mb-0 text-gradient-primary">{{ sys_currency }}{{ "{:,.2f}".format(edahab) }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">Mobile Money</p>
+                <p class="text-muted mb-0" style="font-size:.7rem">Lacagta Mobile-ka</p>
             </div>
         </div>
         <div class="col-6 col-md-3">
             <div class="card-premium p-4 animate__animated animate__fadeInUp" style="animation-delay:.4s">
-                <div class="stat-icon-glow" style="background:rgba(239,68,68,.12);color:#ef4444;"><i
+                <div class="stat-icon-glow bg-soft-danger"><i
                         class="fas fa-hand-holding-usd"></i></div>
                 <h6 class="text-muted small text-uppercase fw-bold mb-1 mt-3" style="font-size:.65rem">Deynta</h6>
-                <h2 class="fw-800 mb-0" style="color:#ef4444">{{ sys_currency }}{{ "{:,.2f}".format(credit) }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">Credit / Deyn</p>
+                <h2 class="fw-800 mb-0 text-danger">{{ sys_currency }}{{ "{:,.2f}".format(credit) }}</h2>
+                <p class="text-muted mb-0" style="font-size:.7rem">Dalabada Deynta ah</p>
             </div>
         </div>
     </div>
@@ -72,14 +72,13 @@
                 <h6 class="text-muted fw-bold text-uppercase mb-3" style="font-size:.65rem">Dalabada Furan ({{
                     open_orders|length }})</h6>
                 {% for o in open_orders[:5] %}
-                <div class="d-flex justify-content-between align-items-center p-3 mb-2 rounded-4"
-                    style="background:rgba(245,158,11,.08); border:1px solid rgba(245,158,11,.2)">
+                <div class="d-flex justify-content-between align-items-center p-3 mb-2 rounded-4 bg-soft-warning border border-soft-warning">
                     <div>
-                        <div class="fw-800 text-white small">#{{ "%04d"|format(o.id) }}</div>
+                        <div class="fw-800 small">#{{ "%04d"|format(o.id) }}</div>
                         <div class="text-muted" style="font-size:.7rem">{{ o.table.number if o.table else 'Takeaway' }}
                         </div>
                     </div>
-                    <span class="fw-900" style="color:#f59e0b">{{ sys_currency }}{{ "{:,.2f}".format(o.total_amount)
+                    <span class="fw-900 text-warning">{{ sys_currency }}{{ "{:,.2f}".format(o.total_amount)
                         }}</span>
                 </div>
                 {% else %}
@@ -108,7 +107,7 @@
                         <tbody>
                             {% for p in recent_payments %}
                             <tr>
-                                <td class="py-3 fw-bold text-white">#{{ "%04d"|format(p.order_id) }}</td>
+                                <td class="py-3 fw-bold">#{{ "%04d"|format(p.order_id) }}</td>
                                 <td>
                                     {% if p.payment_method == 'Cash' %}
                                     <span

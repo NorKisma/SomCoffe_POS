@@ -8,12 +8,12 @@
     <!-- Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
-            <h2 class="fw-900 mb-1">Maamulka <span class="text-primary">Macaamiisha</span></h2>
-            <p class="text-muted small mb-0">Halkan ka xakamee xogta macaamiisha iyo diiwaankooda.</p>
+            <h2 class="fw-900 mb-1">{{ _('Maamulka') }} <span class="text-primary">{{ _('Macaamiisha') }}</span></h2>
+            <p class="text-muted small mb-0">{{ _('Halkan ka xakamee xogta macaamiisha iyo diiwaankooda.') }}</p>
         </div>
         <div class="d-flex align-items-center gap-3">
             <a href="{{ url_for('customers.add') }}" class="btn btn-premium px-4 py-2 rounded-pill shadow-lg">
-                <i class="fas fa-plus me-2"></i>CREATE NEW CUSTOMER
+                <i class="fas fa-plus me-2"></i>{{ _('CREATE NEW CUSTOMER') }}
             </a>
         </div>
     </div>
@@ -24,8 +24,8 @@
     <div class="table-glass-wrap animate__animated animate__fadeInUp">
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 px-3">
             <div>
-                <h3 class="fw-900 mb-1 text-gradient-primary">Maamulka Macaamiisha</h3>
-                <p class="text-muted small mb-0">Maamul oo la soco dhamaan xogta iyo deynta macaamiisha.</p>
+                <h3 class="fw-900 mb-1 text-gradient-primary">{{ _('Maamulka Macaamiisha') }}</h3>
+                <p class="text-muted small mb-0">{{ _('Maamul oo la soco dhamaan xogta iyo deynta macaamiisha.') }}</p>
             </div>
         </div>
 
@@ -33,11 +33,11 @@
             <table id="customersTable" class="table align-middle w-100">
                 <thead>
                     <tr>
-                        <th>Magaca</th>
-                        <th>Telefoonka</th>
-                        <th>Emailka</th>
-                        <th>Deynta Sareeysa</th>
-                        <th class="text-end">Actions</th>
+                        <th>{{ _('Magaca') }}</th>
+                        <th>{{ _('Telefoonka') }}</th>
+                        <th>{{ _('Emailka') }}</th>
+                        <th>{{ _('Deynta Sareeysa') }}</th>
+                        <th class="text-end">{{ _('Actions') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -73,14 +73,14 @@
                     <tr>
                         <td colspan="5" class="text-center py-5">
                             <i class="fas fa-users-slash fa-3x mb-3 d-block text-muted"></i>
-                            <p class="text-muted fw-bold">Wali macmiil lama diiwaangelin</p>
+                            <p class="text-muted fw-bold">{{ _('Wali macmiil lama diiwaangelin') }}</p>
                         </td>
                     </tr>
                     {% endfor %}
                 </tbody>
                 <tfoot class="border-0">
                     <tr class="border-0">
-                        <th colspan="3" class="text-end pe-4 py-4 fw-bold border-0 fs-5">WADARTA DEYNTA:</th>
+                        <th colspan="3" class="text-end pe-4 py-4 fw-bold border-0 fs-5">{{ _('WADARTA DEYNTA:') }}</th>
                         <th class="py-4 fw-900 text-primary border-0" id="customer_grand_debt"
                             style="font-size: 1.6rem !important;">{{ sys_currency }} 0.00</th>
                         <th colspan="1" class="border-0"></th>
@@ -97,12 +97,7 @@
     $(document).ready(function () {
         $('#customersTable').DataTable({
             responsive: true,
-            dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-4"fB>rt<"d-flex justify-content-between align-items-center mt-4"ip>',
-            buttons: [
-                { extend: 'print', text: '<i class="fas fa-print"></i> Daabac', className: 'dt-button' },
-                { extend: 'excel', text: '<i class="fas fa-file-excel"></i> Excel', className: 'dt-button' },
-                { extend: 'pdf', text: '<i class="fas fa-file-pdf"></i> PDF', className: 'dt-button' }
-            ],
+            dom: '<"d-flex flex-wrap justify-content-between align-items-center mb-4"f>rt<"d-flex justify-content-between align-items-center mt-4"ip>',
             pageLength: 10,
             language: {
                 search: "_INPUT_",

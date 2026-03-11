@@ -98,7 +98,7 @@
                         </div>
                         <div class="flex-grow-1">
                             <div class="d-flex justify-content-between">
-                                <p class="mb-0 fw-800 text-white small">Dalab #{{ "%04d"|format(order.id) }}</p>
+                                <p class="mb-0 fw-800 small">Dalab #{{ "%04d"|format(order.id) }}</p>
                                 <span class="text-muted" style="font-size: 0.65rem;">{{
                                     order.created_at.strftime('%H:%M') }}</span>
                             </div>
@@ -125,7 +125,7 @@
                             <i class="fas fa-exclamation-triangle"></i>
                         </div>
                         <div>
-                            <p class="mb-0 fw-800 text-white small">{{ p.name }}</p>
+                             <p class="mb-0 fw-800 small">{{ p.name }}</p>
                             <p class="mb-0 text-danger small fw-bold" style="font-size: 0.7rem;">Only {{ p.stock }} {{ _('left in stock!') }}</p>
                         </div>
                     </div>

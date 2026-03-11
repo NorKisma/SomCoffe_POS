@@ -41,12 +41,12 @@
     {% endwith %}
 
     <!-- Dynamic Filters (will be handled by DataTables) -->
-    <div class="card-premium mb-4 p-3 border-glass shadow-sm">
-        <div class="d-flex flex-wrap gap-2 justify-content-center" id="categoryFilters">
-            <button class="btn btn-sm btn-dark rounded-pill px-3 py-2 border-glass cat-filter-btn active"
+    <div class="mb-4 d-flex justify-content-center">
+        <div class="d-flex flex-wrap gap-2 p-2 rounded-pill bg-white bg-opacity-5 border-glass" id="categoryFilters">
+            <button class="btn btn-sm btn-premium rounded-pill px-4 py-2 cat-filter-btn active"
                 data-cat="">DHAMAAN (ALL)</button>
             {% for cat in categories %}
-            <button class="btn btn-sm btn-dark rounded-pill px-3 py-2 border-glass cat-filter-btn"
+            <button class="btn btn-sm text-theme-main border-0 rounded-pill px-4 py-2 cat-filter-btn fw-bold"
                 data-cat="{{ cat.name }}">
                 {{ cat.name }}
             </button>
@@ -58,10 +58,9 @@
     <div class="table-glass-wrap animate__animated animate__fadeInUp shadow-2xl">
         <div class="d-flex flex-wrap justify-content-between align-items-center mb-5 px-3">
             <div>
-                <h3 class="fw-900 mb-1 text-gradient-primary">Liiska Agabka Bakhaarka</h3>
-                <p class="text-muted small mb-0">Maamul oo la soco dhamaan agabka iyo qeybaha.</p>
+                <h3 class="fw-900 mb-1 text-gradient-primary">Maamulka Saami-agabka</h3>
+                <p class="text-muted small mb-0">Halkan ka hel xogta agabka bakhaarka oo dhamaystiran.</p>
             </div>
-            <div id="dt-buttons-container"></div>
         </div>
 
         <div class="table-responsive">
@@ -97,15 +96,13 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="d-none d-lg-table-cell">
-                            <div class="category-badge">
-                                {% if p.category.image %}
-                                <img src="{{ url_for('static', filename='uploads/categories/' + p.category.image) }}">
-                                {% else %}
-                                <i class="fas fa-{{ p.category.icon if p.category.icon else 'tag' }}"></i>
+                        <td class="d-none d-lg-table-cell" data-search="{{ p.category.name }}">
+                            <span class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill text-uppercase" style="font-size: 0.65rem; border: 1px solid rgba(99, 102, 241, 0.2);">
+                                {% if p.category.icon %}
+                                <i class="fas fa-{{ p.category.icon }} me-1"></i>
                                 {% endif %}
                                 {{ p.category.name }}
-                            </div>
+                            </span>
                         </td>
                         <td class="d-none d-md-table-cell">
                             {% if p.is_service %}
@@ -127,7 +124,7 @@
                         <td class="d-none d-sm-table-cell">
                             {% if not p.is_service %}
                             <div class="stock-indicator">
-                                <div class="progress flex-grow-1 bg-white bg-opacity-10"
+                                <div class="progress flex-grow-1 bg-soft-primary"
                                     style="height: 6px; border-radius: 10px;">
                                     {% set stock_percent = (p.stock / 100 * 100) if p.stock < 100 else 100 %} <div
                                         class="progress-bar {% if p.stock < 10 %}bg-warning{% else %}bg-primary{% endif %}"
@@ -159,12 +156,12 @@
         </tr>
         {% endfor %}
         </tbody>
-        <tfoot>
+        <tfoot style="border-top: 2px solid rgba(99, 102, 241, 0.2);">
             <tr class="border-0">
-                <th colspan="3" class="text-end pe-4 py-4 fw-bold border-0 fs-5">WADARTA GUUD:</th>
+                <th colspan="3" class="text-end pe-4 py-4 fw-900 border-0 text-muted" style="letter-spacing: 1px;">WADARTA GUUD:</th>
                 <th class="py-4 fw-900 text-primary border-0" id="prod_total_price"
-                    style="font-size: 1.6rem !important;">{{ sys_currency }} 0.00</th>
-                <th class="py-4 fw-900 border-0 fs-5" id="prod_total_stock" style="color:var(--text-muted);">0</th>
+                    style="font-size: 1.5rem !important;">{{ sys_currency }} 0.00</th>
+                <th class="py-4 fw-900 border-0 text-muted" id="prod_total_stock" style="font-size: 1.2rem !important;">0</th>
                 <th class="border-0"></th>
             </tr>
         </tfoot>
@@ -188,25 +185,25 @@
                     <div class="mb-4">
                         <label class="form-label text-muted small fw-bold tracking-wider">MAGACA ALAABTA</label>
                         <input type="text" name="name"
-                            class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass"
+                            class="form-control rounded-4 py-3 bg-item border-glass"
                             placeholder="e.g. Latte Macchiato" required>
                     </div>
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
                             <label class="form-label text-muted small fw-bold tracking-wider">QIIMAHA ($)</label>
                             <input type="number" step="0.01" name="price"
-                                class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass"
+                                class="form-control rounded-4 py-3 bg-item border-glass"
                                 placeholder="0.00" required>
                         </div>
                         <div class="col-md-6" id="stockInputGroup">
                             <label class="form-label text-muted small fw-bold tracking-wider">TIRADA (STOCK)</label>
                             <input type="number" name="stock"
-                                class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass" placeholder="0"
+                                class="form-control rounded-4 py-3 bg-item border-glass" placeholder="0"
                                 value="0">
                         </div>
                     </div>
                     <div
-                        class="mb-4 d-flex align-items-center justify-content-between p-3 rounded-4 bg-white bg-opacity-5 border-glass">
+                        class="mb-4 d-flex align-items-center justify-content-between p-3 rounded-4 bg-item border-glass">
                         <div>
                             <h6 class="mb-0 fw-bold">Waa Adeeg (Service)?</h6>
                             <small class="text-muted">Malaha wax dhaad ah (stock)</small>
@@ -219,18 +216,18 @@
                     <div class="mb-4">
                         <label class="form-label text-muted small fw-bold tracking-wider">SAWIRKA (OPTIONAL)</label>
                         <input type="file" name="image"
-                            class="form-control rounded-4 py-2 bg-white bg-opacity-5 border-glass" accept="image/*">
+                            class="form-control rounded-4 py-2 bg-item border-glass" accept="image/*">
                     </div>
                     <div class="mb-0">
                         <label class="form-label text-muted small fw-bold tracking-wider">QEYBTA (CATEGORY)</label>
                         <div class="d-flex gap-2">
                             <select name="category_id"
-                                class="form-select rounded-4 py-3 bg-white bg-opacity-5 border-glass flex-grow-1">
+                                class="form-select rounded-4 py-3 bg-item border-glass flex-grow-1">
                                 {% for cat in categories %}
                                 <option value="{{ cat.id }}">{{ cat.name }}</option>
                                 {% endfor %}
                             </select>
-                            <button type="button" class="btn btn-dark rounded-4 px-3" data-bs-toggle="modal"
+                            <button type="button" class="btn btn-outline-primary rounded-4 px-3" data-bs-toggle="modal"
                                 data-bs-target="#manageCategoriesModal">
                                 <i class="fas fa-plus"></i>
                             </button>
@@ -258,7 +255,7 @@
                 <div class="row g-5">
                     <!-- Add Category Form -->
                     <div class="col-md-5">
-                        <div class="p-4 rounded-4 bg-white bg-opacity-5 border-glass">
+                        <div class="p-4 rounded-4 bg-item border-glass">
                             <h6 class="text-primary fw-900 mb-4 small tracking-widest uppercase">NEW CATEGORY</h6>
                             <form action="{{ url_for('products.add_category') }}" method="POST"
                                 enctype="multipart/form-data">
@@ -266,19 +263,19 @@
                                 <div class="mb-4">
                                     <label class="form-label text-muted small fw-bold">MAGACA</label>
                                     <input type="text" name="name"
-                                        class="form-control bg-dark border-0 rounded-4 py-3 text-white"
+                                        class="form-control bg-soft-primary border-glass rounded-4 py-3"
                                         placeholder="e.g. Burgers" required>
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label text-muted small fw-bold">SAWIRKA (IMAGE)</label>
                                     <input type="file" name="image"
-                                        class="form-control bg-dark border-0 rounded-4 py-2 text-white"
+                                        class="form-control bg-soft-primary border-glass rounded-4 py-2"
                                         accept="image/*">
                                 </div>
                                 <div class="mb-4">
                                     <label class="form-label text-muted small fw-bold">ICON-KA (FALLBACK)</label>
                                     <input type="text" name="icon"
-                                        class="form-control bg-dark border-0 rounded-4 py-3 text-white"
+                                        class="form-control bg-soft-primary border-glass rounded-4 py-3"
                                         placeholder="burger, tag, etc." value="tag">
                                 </div>
                                 <button type="submit" class="btn btn-premium w-100 py-3 rounded-4 shadow-lg">ABUUR
@@ -294,7 +291,7 @@
                             style="max-height: 400px; overflow-y: auto;">
                             {% for cat in categories %}
                             <div
-                                class="list-group-item bg-transparent border-glass d-flex justify-content-between align-items-center p-3 mb-3 rounded-4 bg-white bg-opacity-5">
+                                class="list-group-item bg-transparent border-glass d-flex justify-content-between align-items-center p-3 mb-3 rounded-4 bg-item">
                                 <div class="d-flex align-items-center">
                                     <div class="me-3"
                                         style="width: 48px; height: 48px; border-radius: 12px; overflow: hidden; background: rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center;">
@@ -338,24 +335,24 @@
                     <div class="mb-4">
                         <label class="form-label text-muted small fw-bold tracking-wider">MAGACA ALAABTA</label>
                         <input type="text" name="name" id="edit_name"
-                            class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass"
+                            class="form-control rounded-4 py-3 bg-item border-glass"
                             placeholder="e.g. Latte Macchiato" required>
                     </div>
                     <div class="row g-4 mb-4">
                         <div class="col-md-6">
                             <label class="form-label text-muted small fw-bold tracking-wider">QIIMAHA ($)</label>
                             <input type="number" step="0.01" name="price" id="edit_price"
-                                class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass"
+                                class="form-control rounded-4 py-3 bg-item border-glass"
                                 placeholder="0.00" required>
                         </div>
                         <div class="col-md-6" id="editStockInputGroup">
                             <label class="form-label text-muted small fw-bold tracking-wider">TIRADA (STOCK)</label>
                             <input type="number" name="stock" id="edit_stock"
-                                class="form-control rounded-4 py-3 bg-white bg-opacity-5 border-glass" placeholder="0">
+                                class="form-control rounded-4 py-3 bg-item border-glass" placeholder="0">
                         </div>
                     </div>
                     <div
-                        class="mb-4 d-flex align-items-center justify-content-between p-3 rounded-4 bg-white bg-opacity-5 border-glass">
+                        class="mb-4 d-flex align-items-center justify-content-between p-3 rounded-4 bg-item border-glass">
                         <div>
                             <h6 class="mb-0 fw-bold">Waa Adeeg (Service)?</h6>
                             <small class="text-muted">Malaha wax dhaad ah (stock)</small>
@@ -369,12 +366,12 @@
                         <label class="form-label text-muted small fw-bold tracking-wider">SAWIRKA (HADDII AAD
                             RABTO)</label>
                         <input type="file" name="image"
-                            class="form-control rounded-4 py-2 bg-white bg-opacity-5 border-glass" accept="image/*">
+                            class="form-control rounded-4 py-2 bg-item border-glass" accept="image/*">
                     </div>
                     <div class="mb-0">
                         <label class="form-label text-muted small fw-bold tracking-wider">QEYBTA (CATEGORY)</label>
                         <select name="category_id" id="edit_category_id"
-                            class="form-select rounded-4 py-3 bg-white bg-opacity-5 border-glass">
+                            class="form-select rounded-4 py-3 bg-item border-glass">
                             {% for cat in categories %}
                             <option value="{{ cat.id }}">{{ cat.name }}</option>
                             {% endfor %}

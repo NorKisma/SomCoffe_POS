@@ -44,6 +44,24 @@ class OrderService:
     @staticmethod
     def update_order(order_id, status, customer_name):
         order = Order.query.get_or_404(order_id)
+        
+        # Restore stock and delete if order is being cancelled
+        if status == 'cancelled':
+            if order.status != 'cancelled':
+                for item in order.items:
+                    product = item.product
+                    if product and getattr(product, 'stock', None) is not None and not getattr(product, 'is_service', False):
+                        product.stock += item.quantity
+                        
+            # Delete associated payments if they exist
+            if hasattr(order, 'payments'):
+                for payment in order.payments:
+                    db.session.delete(payment)
+                    
+            db.session.delete(order)
+            db.session.commit()
+            return None
+
         if status:
             order.status = status
         if customer_name is not None:

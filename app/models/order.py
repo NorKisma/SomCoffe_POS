@@ -22,3 +22,11 @@ class Order(db.Model):
 
     def __repr__(self):
         return f'<Order {self.id}>'
+
+    @property
+    def amount_paid(self):
+        return sum(p.amount for p in self.payments) if self.payments else 0.0
+
+    @property
+    def amount_due(self):
+        return max(0.0, self.total_amount - self.amount_paid)

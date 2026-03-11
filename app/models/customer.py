@@ -20,7 +20,13 @@ class Customer(db.Model):
             Order.customer_id == self.id,
             Order.payment_status != 'paid'
         ).all()
-        return sum(order.total_amount for order in unpaid_orders)
+        
+        total_debt = 0
+        for order in unpaid_orders:
+            already_paid = sum(p.amount for p in order.payments)
+            total_debt += (order.total_amount - already_paid)
+            
+        return total_debt
 
     def __repr__(self):
         return f'<Customer {self.name}>'

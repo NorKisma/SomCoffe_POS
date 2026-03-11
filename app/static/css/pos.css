@@ -3,20 +3,28 @@
     --pos-primary-glow: rgba(79, 70, 229, 0.25);
     --pos-secondary: #0f172a;
     --pos-surface: #ffffff;
-    --pos-text: #1e293b;
-    --pos-text-muted: #64748b;
-    --pos-border: #e2e8f0;
-    --pos-bg: #f8fafc;
+    --pos-text: #1f2937;
+    --pos-text-muted: #6b7280;
+    --pos-border: rgba(0,0,0,0.08);
+    --pos-bg: #f1f5f9;
     --pos-accent: #f59e0b;
     --pos-success: #10b981;
+    --pos-invoice-bg: #1e1b4b;
 }
 
 [data-theme="dark"] {
-    --pos-bg: #0a0f1e;
-    --pos-surface: #111827;
-    --pos-text: #f1f5f9;
-    --pos-text-muted: #94a3b8;
-    --pos-border: #1e293b;
+    --pos-bg: #080d14;
+    --pos-surface: rgba(15, 25, 40, 0.85);
+    --pos-text: #e2e8f0;
+    --pos-text-muted: #64748b;
+    --pos-border: rgba(148, 163, 184, 0.07);
+    --pos-invoice-bg: #050b14;
+}
+
+[data-theme="dark"] .pos-categories-nav .nav-cat-item,
+[data-theme="dark"] .product-title,
+[data-theme="dark"] .text-muted {
+    color: #ffffff !important;
 }
 
 .terminal-container {
@@ -221,8 +229,7 @@
 /* Right Section: Invoice/Cart */
 .pos-invoice-panel {
     width: 390px;
-    background: var(--pos-primary);
-    background: linear-gradient(160deg, #1e1b4b 0%, #0f172a 100%);
+    background: var(--pos-invoice-bg);
     border-left: none;
     display: flex;
     flex-direction: column;
@@ -230,6 +237,7 @@
     transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     z-index: 100;
     color: #fff;
+    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
 }
 
 .invoice-header {
@@ -772,10 +780,15 @@
 
 /* Global Modal Refinement for POS */
 .modal-content {
-    background: linear-gradient(160deg, #1e1b4b, #0f172a) !important;
-    color: #ffffff !important;
-    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: var(--pos-surface) !important;
+    color: var(--pos-text) !important;
+    border: 1px solid var(--pos-border) !important;
     border-radius: 28px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+}
+
+[data-theme="dark"] .modal-content {
+    background: linear-gradient(160deg, #1e1b4b, #0f172a) !important;
     box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5) !important;
 }
 
