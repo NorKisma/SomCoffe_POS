@@ -1,134 +1,231 @@
 {% extends "layout/base.html" %}
 
-{% block title %}System Settings - Rays POS{% endblock %}
+{% block title %}System Settings — {{ sys_name }}{% endblock %}
 
-{% block header_title %}Control <span class="text-primary">System Center</span>{% endblock %}
+{% block header_title %}Control <span class="text-primary">Center</span>{% endblock %}
 
 {% block content %}
-<div class="animate__animated animate__fadeIn">
-    <!-- Alert Messages -->
-    {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-    {% for category, message in messages %}
-    <div class="alert alert-{{ category }} border-0 card-premium mb-4 animate__animated animate__slideInDown">
-        {{ message }}
-    </div>
-    {% endfor %}
-    {% endif %}
-    {% endwith %}
-
+<div class="animate__animated animate__fadeIn px-3 px-md-5">
+    
     <div class="row g-5">
-        <div class="col-lg-7">
-            <div class="card-premium p-4">
-                <h5 class="fw-bold mb-4">Establishment <span class="text-primary">Profile</span></h5>
-                <form action="{{ url_for('settings.update') }}" method="POST">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                    <div class="row g-4">
-                        <div class="col-md-12">
-                            <label class="form-label text-muted small fw-bold">RESTAURANT NAME</label>
-                            <input type="text" name="restaurant_name"
-                                class="form-control bg-dark border-0 rounded-4 text-white"
-                                value="{{ settings.restaurant_name }}">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small fw-bold">TAX RATE (%)</label>
-                            <input type="number" name="vat_rate"
-                                class="form-control bg-dark border-0 rounded-4 text-white"
-                                value="{{ settings.vat_rate }}">
-                        </div>
-                        <div class="col-md-6">
-                            <label class="form-label text-muted small fw-bold">DEFAULT CURRENCY</label>
-                            <input type="text" name="currency"
-                                class="form-control bg-dark border-0 rounded-4 text-white"
-                                value="{{ settings.currency }}">
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label text-muted small fw-bold">PHYSICAL ADDRESS</label>
-                            <input type="text" name="address" class="form-control bg-dark border-0 rounded-4 text-white"
-                                value="{{ settings.address }}">
-                        </div>
-                        <div class="col-md-12">
-                            <label class="form-label text-muted small fw-bold">CONTACT PHONE</label>
-                            <input type="text" name="phone" class="form-control bg-dark border-0 rounded-4 text-white"
-                                value="{{ settings.phone }}">
-                        </div>
+        <!-- Sidebar Navigation for Settings -->
+        <div class="col-lg-3">
+            <div class="card-premium p-4 sticky-top" style="top: 20px;">
+                <h6 class="text-theme-muted small fw-bold text-uppercase mb-4" style="letter-spacing: 1px;">Configuration</h6>
+                <div class="nav flex-column nav-pills gap-2" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <button class="nav-link active text-start rounded-4 py-3 px-4 border-0 transition-all d-flex align-items-center gap-3" id="tab-general" data-bs-toggle="pill" data-bs-target="#content-general" type="button" role="tab">
+                        <i class="fas fa-store-alt opacity-50"></i> Establishment
+                    </button>
+                    <button class="nav-link text-start rounded-4 py-3 px-4 border-0 transition-all d-flex align-items-center gap-3" id="tab-logic" data-bs-toggle="pill" data-bs-target="#content-logic" type="button" role="tab">
+                        <i class="fas fa-cogs opacity-50"></i> System Logic
+                    </button>
+                    <button class="nav-link text-start rounded-4 py-3 px-4 border-0 transition-all d-flex align-items-center gap-3" id="tab-localization" data-bs-toggle="pill" data-bs-target="#content-localization" type="button" role="tab">
+                        <i class="fas fa-globe opacity-50"></i> Localization
+                    </button>
+                    <button class="nav-link text-start rounded-4 py-3 px-4 border-0 transition-all d-flex align-items-center gap-3" id="tab-health" data-bs-toggle="pill" data-bs-target="#content-health" type="button" role="tab">
+                        <i class="fas fa-heartbeat opacity-50"></i> Maintenance
+                    </button>
+                </div>
+            </div>
+        </div>
 
-                        <!-- Waiter Setup Section -->
-                        <div class="col-md-12 mt-4">
-                            <h6 class="fw-bold mb-3 text-primary">Recommended Waiter Setup</h6>
+        <!-- Main Settings Content -->
+        <div class="col-lg-9">
+            <form action="{{ url_for('settings.update') }}" method="POST">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="tab-content" id="v-pills-tabContent">
+                    <!-- GENERAL: Establishment Profile -->
+                    <div class="tab-pane fade show active" id="content-general" role="tabpanel">
+                        <div class="card-premium p-5 animate__animated animate__fadeInUp">
+                            <div class="d-flex justify-content-between align-items-center mb-5">
+                                <div>
+                                    <h4 class="fw-900 mb-0">Establishment <span class="text-gradient-primary">Profile</span></h4>
+                                    <p class="text-theme-muted small mb-0">Public branding and contact information</p>
+                                </div>
+                                <div class="bg-primary bg-opacity-10 p-3 rounded-circle text-primary">
+                                    <i class="fas fa-store fa-2x"></i>
+                                </div>
+                            </div>
+
                             <div class="row g-4">
-                                <div class="col-md-6">
-                                    <label class="form-label text-muted small fw-bold">AUTO LOGOUT</label>
-                                    <select name="auto_logout"
-                                        class="form-select bg-dark border-0 rounded-4 text-white">
-                                        <option value="OFF" {% if settings.auto_logout=='OFF' %}selected{% endif %}>OFF
-                                            (Recommended)</option>
-                                        <option value="ON" {% if settings.auto_logout=='ON' %}selected{% endif %}>ON
-                                        </option>
-                                    </select>
+                                <div class="col-12">
+                                    <label class="form-label-premium">RESTAURANT NAME</label>
+                                    <input type="text" name="restaurant_name" class="form-control-premium" value="{{ settings.restaurant_name }}">
                                 </div>
                                 <div class="col-md-6">
-                                    <label class="form-label text-muted small fw-bold">SESSION TIMEOUT (MIN)</label>
-                                    <input type="number" name="session_timeout"
-                                        class="form-control bg-dark border-0 rounded-4 text-white"
-                                        value="{{ settings.session_timeout }}" min="1" max="60">
+                                    <label class="form-label-premium">CONTACT PHONE</label>
+                                    <input type="text" name="phone" class="form-control-premium" value="{{ settings.phone }}">
                                 </div>
-                                <div class="col-md-12">
-                                    <p class="text-muted small">
-                                        <i class="fas fa-info-circle me-1"></i>
-                                        Setting <strong>Auto Logout to OFF</strong> and <strong>Session Timeout to 3–5
-                                            minutes</strong> allows waiters to complete orders and print receipts
-                                        without being logged out of the system.
-                                    </p>
+                                <div class="col-md-6">
+                                    <label class="form-label-premium">DEFAULT CURRENCY</label>
+                                    <input type="text" name="currency" class="form-control-premium" value="{{ settings.currency }}">
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label-premium">PHYSICAL ADDRESS</label>
+                                    <textarea name="address" class="form-control-premium" rows="2">{{ settings.address }}</textarea>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="mt-5 pt-3">
-                        <button type="submit" class="btn btn-premium w-100 py-3">FORCE SYSTEM UPDATE</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-        <div class="col-lg-5">
-            <div class="card-premium p-4 mb-4">
-                <h5 class="fw-bold mb-4">Technical <span class="text-primary">Health</span></h5>
-                <div class="mb-4">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted small fw-bold uppercase">DATABASE CONNECTION</span>
-                        <span class="text-success small fw-bold">STABLE</span>
-                    </div>
-                    <div class="progress bg-white bg-opacity-5" style="height: 6px; border-radius: 10px;">
-                        <div class="progress-bar bg-success" style="width: 100%"></div>
-                    </div>
-                </div>
-                <div class="mb-4">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted small fw-bold uppercase">SERVER RESPONSE</span>
-                        <span class="text-primary small fw-bold">FAST (12ms)</span>
-                    </div>
-                    <div class="progress bg-white bg-opacity-5" style="height: 6px; border-radius: 10px;">
-                        <div class="progress-bar bg-primary" style="width: 85%"></div>
-                    </div>
-                </div>
-                <div class="mb-0">
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted small fw-bold uppercase">STORAGE USAGE</span>
-                        <span class="text-warning small fw-bold">OPTIMIZED</span>
-                    </div>
-                    <div class="progress bg-white bg-opacity-5" style="height: 6px; border-radius: 10px;">
-                        <div class="progress-bar bg-warning" style="width: 45%"></div>
-                    </div>
-                </div>
-            </div>
 
-            <div class="card-premium p-5 bg-primary bg-opacity-5 text-center">
-                <i class="fas fa-lock fa-4x text-primary mb-4 opacity-20"></i>
-                <h6 class="fw-bold text-white mb-2">Security Hardening</h6>
-                <p class="text-muted small mb-0">System updates are encrypted and logged for security auditing purposes.
-                </p>
-            </div>
+                    <!-- LOGIC: System Behaviors -->
+                    <div class="tab-pane fade" id="content-logic" role="tabpanel">
+                        <div class="card-premium p-5 animate__animated animate__fadeInUp">
+                            <div class="d-flex justify-content-between align-items-center mb-5">
+                                <div>
+                                    <h4 class="fw-900 mb-0">System <span class="text-gradient-primary">Logic & Sales</span></h4>
+                                    <p class="text-theme-muted small mb-0">Automation and transaction behaviors</p>
+                                </div>
+                                <div class="bg-warning bg-opacity-10 p-3 rounded-circle text-warning">
+                                    <i class="fas fa-robot fa-2x"></i>
+                                </div>
+                            </div>
+
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <label class="form-label-premium">TAX RATE (%)</label>
+                                    <div class="input-group">
+                                        <input type="number" name="vat_rate" class="form-control-premium" value="{{ settings.vat_rate }}">
+                                        <span class="input-group-text bg-glass border-0 text-muted">%</span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-premium">AUTO LOGOUT</label>
+                                    <select name="auto_logout" class="form-select-premium">
+                                        <option value="OFF" {% if settings.auto_logout == 'OFF' %}selected{% endif %}>OFF (Recommended for Waiters)</option>
+                                        <option value="ON" {% if settings.auto_logout == 'ON' %}selected{% endif %}>ON (High Security)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label-premium">SESSION TIMEOUT (MINUTES)</label>
+                                    <input type="number" name="session_timeout" class="form-control-premium" value="{{ settings.session_timeout }}" min="1">
+                                </div>
+                                <div class="col-12">
+                                    <div class="p-4 rounded-4 bg-primary bg-opacity-5 border border-primary border-opacity-10 d-flex gap-3">
+                                        <i class="fas fa-lightbulb text-primary mt-1"></i>
+                                        <p class="small text-theme-muted mb-0">
+                                            <strong>Pro Tip:</strong> Keeping <strong>Auto Logout OFF</strong> ensures staff can print receipts and manage orders seamlessly without repeated logins during peak hours.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- LOCALIZATION -->
+                    <div class="tab-pane fade" id="content-localization" role="tabpanel">
+                        <div class="card-premium p-5 animate__animated animate__fadeInUp">
+                            <h4 class="fw-900 mb-4">Localization & <span class="text-gradient-primary">Regional</span></h4>
+                            <div class="row g-4">
+                                <div class="col-md-12">
+                                    <label class="form-label-premium">SYSTEM PRIMARY LANGUAGE</label>
+                                    <select class="form-select-premium" disabled>
+                                        <option selected>Somali (Default)</option>
+                                        <option>English</option>
+                                        <option>Arabic</option>
+                                    </select>
+                                    <p class="small text-theme-muted mt-2">Language is currently detected from browser or manually switched in header.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MAINTENANCE: Technical Health -->
+                    <div class="tab-pane fade" id="content-health" role="tabpanel">
+                        <div class="card-premium p-5 animate__animated animate__fadeInUp">
+                            <h4 class="fw-900 mb-5">System <span class="text-gradient-primary">Maintenance</span></h4>
+                            
+                            <div class="row g-4">
+                                <div class="col-md-6">
+                                    <div class="p-4 rounded-4 bg-glass border border-glass h-100">
+                                        <div class="d-flex justify-content-between mb-3">
+                                            <span class="small fw-bold text-theme-muted uppercase">Database</span>
+                                            <span class="badge bg-soft-success text-success">CONNECTED</span>
+                                        </div>
+                                        <h6 class="mb-0 fw-bold">MySQL Server 8.0</h6>
+                                        <p class="text-theme-muted small mt-2">Running on Local Port 3306</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="p-4 rounded-4 bg-glass border border-glass h-100">
+                                        <div class="d-flex justify-content-between mb-3">
+                                            <span class="small fw-bold text-theme-muted uppercase">Storage</span>
+                                            <span class="badge bg-soft-primary text-primary">OPTIMIZED</span>
+                                        </div>
+                                        <h6 class="mb-0 fw-bold">1.2 GB / 20 GB</h6>
+                                        <div class="progress bg-white bg-opacity-5 mt-3" style="height:4px">
+                                            <div class="progress-bar bg-primary" style="width: 15%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-12 mt-4">
+                                    <div class="p-4 rounded-4 border border-dashed text-center">
+                                        <i class="fas fa-cloud-download-alt fa-2x text-theme-muted mb-3 opacity-20"></i>
+                                        <h6 class="fw-bold">Database Backup</h6>
+                                        <p class="text-theme-muted small">Generate a full SQL backup of all orders and customers.</p>
+                                        <button type="button" class="btn btn-sm btn-glass px-4 mt-2">Download .SQL</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Global Save Button -->
+                <div class="mt-5 mb-5 sticky-bottom" style="bottom: 20px;">
+                    <div class="card-premium p-4 d-flex justify-content-between align-items-center shadow-lg border-primary border-opacity-20">
+                        <div class="d-none d-md-block">
+                            <p class="mb-0 small text-theme-muted">You have unsaved changes</p>
+                            <span class="small fw-bold">Changes are recorded in Security Audit Logs</span>
+                        </div>
+                        <button type="submit" class="btn btn-premium px-5 py-3 shadow-lg">
+                            <i class="fas fa-save me-2"></i> Save All Settings
+                        </button>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
 </div>
+
+<style>
+    .nav-pills .nav-link {
+        color: var(--text-muted);
+        background: transparent;
+    }
+    .nav-pills .nav-link:hover {
+        background: rgba(255,255,255,0.05);
+        color: white;
+    }
+    .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, var(--primary), var(--accent-purple)) !important;
+        color: white !important;
+        box-shadow: 0 10px 20px rgba(79, 70, 229, 0.2);
+    }
+    .form-label-premium {
+        font-size: 0.65rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        color: var(--text-muted);
+        margin-bottom: 0.75rem;
+        display: block;
+    }
+    .form-control-premium, .form-select-premium {
+        background: rgba(255,255,255,0.03);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 12px;
+        color: white;
+        padding: 0.8rem 1.2rem;
+        transition: all 0.3s ease;
+    }
+    .form-control-premium:focus, .form-select-premium:focus {
+        background: rgba(255,255,255,0.06);
+        border-color: var(--primary);
+        box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        color: white;
+        outline: none;
+    }
+</style>
 {% endblock %}

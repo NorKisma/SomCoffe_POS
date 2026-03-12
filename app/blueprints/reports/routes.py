@@ -115,6 +115,25 @@ def index():
     # Fetch users for filter
     users = User.query.all()
 
+    # 6. Dine-in vs Takeaway breakdown
+    order_type_stats = db.session.query(
+        Order.order_type, sqlalchemy.func.count(Order.id), sqlalchemy.func.sum(Order.total_amount)
+    ).filter(
+        Order.created_at >= start_date,
+        Order.created_at <= end_date_filter
+    ).group_by(Order.order_type).all()
+
+    # 7. Top Selling Products in this range
+    from app.models.order_item import OrderItem
+    top_selling_products = db.session.query(
+        Product.name, sqlalchemy.func.sum(OrderItem.quantity).label('total_qty'), sqlalchemy.func.sum(OrderItem.quantity * OrderItem.price_at_time).label('total_rev')
+    ).join(OrderItem, OrderItem.product_id == Product.id)\
+     .join(Order, Order.id == OrderItem.order_id)\
+     .filter(Order.created_at >= start_date, Order.created_at <= end_date_filter)\
+     .group_by(Product.name)\
+     .order_by(sqlalchemy.text('total_qty DESC'))\
+     .limit(10).all()
+
     return render_template('reports/index.html', 
                           total_revenue=total_revenue,
                           total_orders=total_orders,
@@ -130,5 +149,14 @@ def index():
                           users=users,
                           selected_user_id=user_id,
                           daily_revenue=daily_revenue,
-                          daily_labels=daily_labels)
+                          daily_labels=daily_labels,
+                          order_type_stats=order_type_stats,
+                          top_selling_products=top_selling_products)
+
+
+@reports_bp.route('/audit')
+def audit():
+    from app.models.audit_log import AuditLog
+    logs = AuditLog.query.order_by(AuditLog.timestamp.desc()).limit(200).all()
+    return render_template('reports/audit.html', logs=logs)
 

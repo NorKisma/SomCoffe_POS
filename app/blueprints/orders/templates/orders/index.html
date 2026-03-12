@@ -61,19 +61,25 @@
                         </td>
                         <td class="fw-800 text-primary">{{ sys_currency }} <span class="order-amount">{{
                                 "%.2f"|format(order.total_amount) }}</span></td>
-                        <td>
+                        <td class="status-col">
                             {% if order.status == 'completed' %}
-                            <span
-                                class="badge bg-success bg-opacity-10 text-success py-2 px-3 rounded-pill text-uppercase"
-                                style="font-size: 0.6rem;">DHAMMAAD (Completed)</span>
+                            <span class="badge bg-soft-success py-2 px-3 rounded-pill text-uppercase d-inline-flex align-items-center gap-2" 
+                                  style="font-size: 0.68rem; border: 1px solid rgba(16, 185, 129, 0.2);">
+                                <i class="fas fa-check-circle" style="font-size: 0.8rem;"></i>
+                                <span class="fw-bold">DHAMMAAD</span>
+                            </span>
                             {% elif order.status == 'pending' %}
-                            <span
-                                class="badge bg-warning bg-opacity-10 text-warning py-2 px-3 rounded-pill text-uppercase"
-                                style="font-size: 0.6rem;">SUGITAAN (Pending)</span>
+                            <span class="badge bg-soft-warning py-2 px-3 rounded-pill text-uppercase d-inline-flex align-items-center gap-2"
+                                  style="font-size: 0.68rem; border: 1px solid rgba(245, 158, 11, 0.2);">
+                                <i class="fas fa-clock" style="font-size: 0.8rem;"></i>
+                                <span class="fw-bold">SUGITAAN</span>
+                            </span>
                             {% else %}
-                            <span
-                                class="badge bg-danger bg-opacity-10 text-danger py-2 px-3 rounded-pill text-uppercase"
-                                style="font-size: 0.6rem;">LAA JIRAY (Cancelled)</span>
+                            <span class="badge bg-soft-danger py-2 px-3 rounded-pill text-uppercase d-inline-flex align-items-center gap-2"
+                                  style="font-size: 0.68rem; border: 1px solid rgba(239, 68, 68, 0.2);">
+                                <i class="fas fa-times-circle" style="font-size: 0.8rem;"></i>
+                                <span class="fw-bold">LAA JIRAY</span>
+                            </span>
                             {% endif %}
                         </td>
                         <td class="text-end pe-4">
@@ -82,11 +88,13 @@
                                     title="Fiiri dalabka">
                                     <i class="fas fa-eye"></i>
                                 </button>
+                                {% if current_user.is_manager_or_above and order.status != 'completed' %}
                                 <button class="btn btn-action edit-order-btn bg-soft-warning" data-id="{{ order.id }}"
                                     data-customer="{{ order.customer_name }}" data-status="{{ order.status }}"
                                     title="Wax ka badel">
                                     <i class="fas fa-edit"></i>
                                 </button>
+                                {% endif %}
                                 <button class="btn btn-action print-order-btn bg-soft-info" data-id="{{ order.id }}"
                                     title="Print Resit">
                                     <i class="fas fa-print"></i>
@@ -189,17 +197,23 @@
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                 <div class="modal-body p-4">
                     <div class="mb-3">
-                        <label class="form-label text-primary small fw-bold">Magaca Macmiilka</label>
-                        <input type="text" class="form-control form-control-premium" name="customer_name"
-                            id="e_customer_name" placeholder="Macmiil">
+                        <label class="form-label text-theme-main small fw-bold opacity-75">Magaca Macmiilka</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-soft-primary border-0"><i class="fas fa-user text-primary"></i></span>
+                            <input type="text" class="form-control form-control-premium border-0 bg-soft-primary bg-opacity-10" 
+                                   name="customer_name" id="e_customer_name" placeholder="Magaca Macmiilka">
+                        </div>
                     </div>
                     <div class="mb-4">
-                        <label class="form-label text-primary small fw-bold">Heerka Dalabka (Status)</label>
-                        <select class="form-select form-select-premium" name="status" id="e_status">
-                            <option value="pending">SUGITAAN (Pending)</option>
-                            <option value="completed">DHAMMAAD (Completed)</option>
-                            <option value="cancelled">LAA JIRAY (Cancelled)</option>
-                        </select>
+                        <label class="form-label text-theme-main small fw-bold opacity-75">Heerka Dalabka (Status)</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-soft-primary border-0"><i class="fas fa-info-circle text-primary"></i></span>
+                            <select class="form-select form-select-premium border-0 bg-soft-primary bg-opacity-10" name="status" id="e_status">
+                                <option value="pending">SUGITAAN (Pending)</option>
+                                <option value="completed">DHAMMAAD (Completed)</option>
+                                <option value="cancelled">LAA JIRAY (Cancelled)</option>
+                            </select>
+                        </div>
                     </div>
                 </div>
                 <div class="modal-footer border-top border-white border-opacity-10 bg-dark bg-opacity-25">

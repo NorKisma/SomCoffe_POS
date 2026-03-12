@@ -152,6 +152,25 @@ def _get_manager_data():
     low_stock = Product.query.filter(
         Product.stock <= 10, Product.is_service == False).limit(3).all()
 
+    # Category breakdown for Doughnut Chart
+    cat_stats = db.session.query(
+        Category.name, func.sum(OrderItem.quantity)
+    ).join(Product, Product.category_id == Category.id)\
+     .join(OrderItem, OrderItem.product_id == Product.id)\
+     .join(Order, Order.id == OrderItem.order_id)\
+     .filter(func.date(Order.created_at) == today)\
+     .group_by(Category.name).all()
+    
+    cat_labels = [c[0] for c in cat_stats]
+    cat_counts = [int(c[1]) for c in cat_stats]
+
+    # Audit Logs (Recent 5)
+    from app.models.audit_log import AuditLog
+    audit_logs = AuditLog.query.order_by(AuditLog.timestamp.desc()).limit(5).all()
+
+    # Net Profit (Revenue - Monthly Expenses)
+    net_profit = total_revenue_all - total_expenses_month
+
     return dict(
         total_today=total_today,
         orders_today=orders_today,
@@ -167,6 +186,12 @@ def _get_manager_data():
         # Financial additions
         total_expenses_month=total_expenses_month,
         total_outstanding_debt=total_outstanding_debt,
+        net_profit=net_profit,
+        # Chart additions
+        cat_labels=cat_labels,
+        cat_counts=cat_counts,
+        # Audit Logs
+        audit_logs=audit_logs,
         # keep legacy keys
         total_revenue=total_revenue_all,
         total_orders=total_orders_all,

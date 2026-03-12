@@ -3,6 +3,7 @@ from app.models.order_item import OrderItem
 from app.models.product import Product
 from app.models.setting import Setting
 from app.models.payment import Payment  # type: ignore
+from app.models.audit_log import AuditLog
 from app.extensions.db import db
 from datetime import datetime
 
@@ -107,4 +108,19 @@ class POSService:
             ))
                 
         db.session.commit()
+        
+        # Award Loyalty Points if customer exists and order is paid/completed
+        if order.customer_id and (order.payment_status in ['paid', 'partial']):
+            from app.models.customer import Customer
+            customer = db.session.get(Customer, order.customer_id)
+            if customer:
+                # 1 point per 1 unit of currency
+                if customer.loyalty_points is None: customer.loyalty_points = 0
+                customer.loyalty_points += int(order.total_amount)
+                db.session.commit()
+
+        # Log the action
+        action_type = "UPDATE_ORDER" if existing_order else "CREATE_ORDER"
+        AuditLog.log(action_type, f"{action_type} #{order.id} for {order.total_amount:.2f}", user_id=user_id)
+        
         return order

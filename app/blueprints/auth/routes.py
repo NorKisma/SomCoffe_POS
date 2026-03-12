@@ -3,6 +3,7 @@ from flask_babel import _
 from flask_login import login_user, logout_user, login_required, current_user
 from . import auth_bp
 from app.models.user import User
+from app.models.audit_log import AuditLog
 from app.extensions.db import db
 from app.extensions.mail import mail
 from flask_mail import Message
@@ -21,6 +22,7 @@ def login():
         
         if user and user.check_password(password):
             login_user(user)
+            AuditLog.log('LOGIN', f'User {username} successfully logged in.')
             flash(_('You have logged in successfully!'), 'success')
             return redirect(url_for('dashboard.index'))
         else:
@@ -31,6 +33,8 @@ def login():
 @auth_bp.route('/logout')
 @login_required
 def logout():
+    username = current_user.username
+    AuditLog.log('LOGOUT', f'User {username} logged out.')
     logout_user()
     flash(_('You have logged out successfully!'), 'info')
     return redirect(url_for('auth.login'))

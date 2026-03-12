@@ -24,6 +24,11 @@ class UserService:
             return False, 'You cannot delete yourself!'
             
         user = User.query.get_or_404(user_id)
+        
+        # Security: Cannot delete an Admin account
+        if user.role == 'admin':
+            return False, 'Critial Error: Admin accounts cannot be deleted by other staff.'
+            
         db.session.delete(user)
         db.session.commit()
         return True, None

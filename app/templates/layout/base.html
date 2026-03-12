@@ -128,7 +128,7 @@
                 </div>
 
                 <!-- ADMIN / MANAGER: Administration dropdown -->
-                {% set admin_active = request.endpoint in ['employees.index', 'users.index', 'settings.index'] %}
+                {% set admin_active = request.endpoint in ['employees.index', 'users.index', 'settings.index', 'reports.audit'] %}
                 <div class="nav-dropdown-group mt-2 mb-3">
                     <button
                         class="nav-item-premium nav-dropdown-toggle w-100 border-0 text-start {% if admin_active %}active{% endif %}"
@@ -148,9 +148,15 @@
                         </a>
                         <a href="{{ url_for('users.index') }}"
                             class="nav-item-premium nav-sub-item {% if request.endpoint == 'users.index' %}active{% endif %}"
-                            data-label="{{ _('User Management') }}">
-                            <i class="fas fa-users-cog"></i>
-                            <span>{{ _('User Management') }}</span>
+                            data-label="{{ _('User Roles') }}">
+                            <i class="fas fa-user-shield"></i>
+                            <span>{{ _('User Roles') }}</span>
+                        </a>
+                        <a href="{{ url_for('reports.audit') }}"
+                            class="nav-item-premium nav-sub-item {% if request.endpoint == 'reports.audit' %}active{% endif %}"
+                            data-label="{{ _('System Logs') }}">
+                            <i class="fas fa-history"></i>
+                            <span>{{ _('System Logs') }}</span>
                         </a>
                         {% if current_user.is_admin %}
                         <a href="{{ url_for('settings.index') }}"
@@ -167,23 +173,20 @@
 
             <!-- Bottom User Profile Section in Sidebar -->
             <div class="mt-auto pt-3 border-top border-white border-opacity-10 sidebar-user-box">
-                <div class="card-premium p-3 border-0 bg-white bg-opacity-5 rounded-4 d-flex flex-column" style="min-width: 0;">
-                    <div class="d-flex align-items-center gap-3 mb-2" style="min-width: 0;">
-                        <div class="bg-primary bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                            style="width:38px;height:38px;min-width:38px">
-                            <i class="fas fa-user-shield text-primary"></i>
+                <div class="sidebar-user-card d-flex flex-column gap-3">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="avatar-circle">
+                            <i class="fas fa-user-shield text-white" style="font-size: 1.1rem;"></i>
                         </div>
-                        <div class="overflow-hidden flex-grow-1 user-details-box" style="white-space: nowrap; transition: opacity 0.3s; min-width: 0;">
-                            <p class="mb-1 fw-bold text-white text-truncate" style="font-size:.9rem">{{ current_user.username }}</p>
-                            <span
-                                class="badge bg-{{ current_user.role_color }} bg-opacity-20 text-{{ current_user.role_color }} px-2 py-1 rounded-pill fw-bold text-truncate"
-                                style="font-size:.6rem; max-width: 100%; display: inline-block;">
+                        <div class="user-info-text overflow-hidden">
+                            <p class="mb-0 username text-truncate">{{ current_user.username }}</p>
+                            <span class="role-badge text-white opacity-75">
                                 {{ current_user.role_label }}
                             </span>
                         </div>
                     </div>
-                    <a href="{{ url_for('auth.logout') }}" class="btn btn-outline-danger btn-sm w-100 rounded-pill sign-out-btn" style="transition: opacity 0.3s; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">
-                        <i class="fas fa-sign-out-alt me-2"></i> {{ _('Sign Out') }}
+                    <a href="{{ url_for('auth.logout') }}" class="btn-sign-out-premium text-decoration-none">
+                        <i class="fas fa-power-off"></i> <span>{{ _('Sign Out') }}</span>
                     </a>
                 </div>
             </div>
@@ -238,25 +241,8 @@
 
             <!-- Scrollable Content -->
             <div class="flex-grow-1 overflow-auto custom-scrollbar position-relative pb-5">
-                <!-- Global Flash Messages -->
-                <div class="px-4 px-md-5 pt-4">
-                    {% with messages = get_flashed_messages(with_categories=true) %}
-                    {% if messages %}
-                    {% for category, message in messages %}
-                    <div
-                        class="alert alert-{{ category }} border-0 rounded-4 mb-4 animate__animated animate__fadeInDown shadow-sm card-premium d-flex align-items-center gap-3 py-3">
-                        <div class="bg-{{ category }} bg-opacity-20 rounded-circle d-flex align-items-center justify-content-center flex-shrink-0"
-                            style="width: 45px; height: 45px;">
-                            <i
-                                class="fas fa-{{ 'check-circle' if category == 'success' else 'exclamation-circle' }} text-{{ category }} fs-5"></i>
-                        </div>
-                        <div class="flex-grow-1 fw-bold fs-6">{{ message }}</div>
-                        <button type="button" class="btn-close ms-auto shadow-none" data-bs-dismiss="alert"></button>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-                    {% endwith %}
-                </div>
+                <!-- Global Flash Messages (Handled via scripts) -->
+
 
                 {% block content %}{% endblock %}
             </div>
@@ -428,6 +414,44 @@
                 }
             });
         });
+
+        // Premium Toast Notification System
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+
+        function showToast(icon, title) {
+            Toast.fire({
+                icon: icon,
+                title: title,
+                background: document.documentElement.getAttribute('data-theme') === 'dark' ? '#0f172a' : '#fff',
+                color: document.documentElement.getAttribute('data-theme') === 'dark' ? '#fff' : '#000',
+            });
+        }
+    </script>
+
+    <!-- Flash Message Data Portal (Safely bridges Server -> Client) -->
+    <div id="flash-data" data-messages='{{ get_flashed_messages(with_categories=true)|tojson|safe }}' style="display:none"></div>
+
+    <script>
+        // Handle Flask Flash Messages as Toasts
+        (function() {
+            const portal = document.getElementById('flash-data');
+            const flashMessages = JSON.parse(portal.getAttribute('data-messages') || '[]');
+            
+            flashMessages.forEach(([category, message]) => {
+                const toastType = category === 'success' ? 'success' : (category === 'danger' ? 'error' : 'warning');
+                showToast(toastType, message);
+            });
+        })();
     </script>
     {% block scripts %}{% endblock %}
 </body>

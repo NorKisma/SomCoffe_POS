@@ -23,8 +23,34 @@
 
 [data-theme="dark"] .pos-categories-nav .nav-cat-item,
 [data-theme="dark"] .product-title,
-[data-theme="dark"] .text-muted {
+[data-theme="dark"] .text-muted,
+[data-theme="dark"] .table-label,
+[data-theme="dark"] .dataTables_info,
+[data-theme="dark"] .dataTables_length label {
     color: #ffffff !important;
+}
+
+[data-theme="light"] .product-title,
+[data-theme="light"] .table-label,
+[data-theme="light"] .dataTables_info,
+[data-theme="light"] .dataTables_length label {
+    color: #0f172a !important;
+}
+
+[data-theme="light"] .text-muted {
+    color: #475569 !important;
+}
+
+[data-theme="light"] .nav-cat-item {
+    color: #64748b;
+}
+
+[data-theme="light"] .nav-cat-item i {
+    color: #475569;
+}
+
+[data-theme="light"] .nav-cat-item.active i {
+    color: #ffffff;
 }
 
 .terminal-container {
@@ -205,7 +231,7 @@
 .product-image i {
     font-size: 2rem;
     color: var(--pos-primary);
-    opacity: 0.7;
+    opacity: 0.9;
 }
 
 .product-title {
@@ -300,12 +326,12 @@
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: #e2e8f0;
+    color: #ffffff;
 }
 
 .invoice-item-info .price {
     font-size: 0.75rem;
-    color: #94a3b8;
+    color: #cbd5e1;
 }
 
 .qty-controls {
@@ -353,11 +379,11 @@
 
 
 .summary-line span:first-child {
-    color: var(--pos-text-muted);
+    color: rgba(255, 255, 255, 0.6);
 }
 
 .summary-line span:last-child {
-    color: var(--pos-text);
+    color: #ffffff;
     font-weight: 800;
 }
 
@@ -735,7 +761,8 @@
     font-size: 1.5rem;
     margin-bottom: 10px;
     display: block;
-    color: var(--pos-text-muted);
+    color: var(--pos-primary);
+    opacity: 0.8;
 }
 
 .table-option-card .table-label {
@@ -835,14 +862,15 @@
 .table-option-card i {
     font-size: 1.8rem !important;
     margin-bottom: 12px !important;
-    color: #a5b4fc !important;
+    color: var(--pos-primary) !important;
     display: block !important;
+    opacity: 1 !important;
 }
 
 .table-option-card .table-label {
     font-weight: 900 !important;
     font-size: 0.8rem !important;
-    color: #e2e8f0 !important;
+    color: var(--pos-text) !important;
     text-transform: uppercase !important;
     letter-spacing: 1px !important;
 }

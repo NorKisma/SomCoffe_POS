@@ -5,276 +5,485 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Resitka Dalabka #{{ "%06d"|format(order.id) }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <!-- Premium Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --print-width: 80mm;
+            --bg-color: #eff3f7;
+            --text-main: #1e293b;
+            --accent: #4f46e5;
+            --success: #10b981;
+            --receipt-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
         }
 
         body {
-            font-family: 'Outfit', 'Courier New', Courier, monospace;
-            background: #f8fafc;
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-color);
             margin: 0;
-            padding: 20px;
+            padding: 2.5rem 1rem;
+            color: var(--text-main);
+            min-height: 100vh;
+        }
+
+        /* --- CONTROL INTERFACE --- */
+        .control-bar {
+            max-width: 500px;
+            margin: 0 auto 3rem;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .control-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .control-header h2 {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 800;
+        }
+
+        .btn-back {
+            background: #f1f5f9;
+            color: #64748b;
+            padding: 0.6rem 1.25rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transition: all 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-back:hover {
+            background: #e2e8f0;
             color: #1e293b;
         }
 
-        /* Control Bar - Premium Floating Pop for Mobile */
-        .control-bar {
-            max-width: var(--print-width);
-            margin: 0 auto 30px;
-            background: #ffffff;
-            padding: 24px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        .control-group {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            border: 1px solid #e2e8f0;
-            position: relative;
-            z-index: 1000;
+            gap: 0.75rem;
         }
 
-        @media (max-width: 991px) {
-            body {
-                padding: 10px;
-                padding-top: 20px;
-                padding-bottom: 350px; /* More space for larger touch-buttons */
-            }
+        .control-label {
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+            color: #94a3b8;
+        }
 
+        .btn-toggle-group {
+            display: flex;
+            background: #f1f5f9;
+            padding: 4px;
+            border-radius: 14px;
+            gap: 4px;
+        }
+
+        .btn-toggle {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.2s;
+        }
+
+        .btn-toggle.active {
+            background: white;
+            color: var(--accent);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .btn-print-main {
+            background: linear-gradient(135deg, var(--accent), #4338ca);
+            color: white;
+            padding: 1.25rem;
+            border-radius: 18px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 10px 25px rgba(79, 70, 229, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .btn-print-main:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(79, 70, 229, 0.4);
+        }
+
+        .btn-print-main:active {
+            transform: translateY(0);
+        }
+
+        /* --- RECEIPT DESIGN --- */
+        #print-area {
+            width: var(--print-width);
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .receipt-paper {
+            background: var(--receipt-bg);
+            width: 100%;
+            padding: 4mm 3mm;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            font-family: 'JetBrains Mono', 'Courier New', monospace;
+            color: #000;
+            font-size: 11px;
+            line-height: 1.25;
+            position: relative;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        /* Paper Tear Effect for Screen */
+        .receipt-paper::before,
+        .receipt-paper::after {
+            content: "";
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background-size: 12px 12px;
+            z-index: 10;
+        }
+
+        .receipt-paper::before {
+            top: 0;
+            background-image: radial-gradient(circle at 6px -6px, transparent 8px, white 9px);
+        }
+
+        .receipt-paper::after {
+            bottom: 0;
+            background-image: radial-gradient(circle at 6px 18px, transparent 8px, white 9px);
+        }
+
+        .receipt-header {
+            text-align: center;
+            margin-bottom: 0.8rem;
+        }
+
+        .receipt-header .date-time-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10px;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 0.3rem;
+        }
+
+        .restaurant-brand {
+            font-size: 1.1rem;
+            font-weight: 800;
+            margin: 0.2rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .restaurant-info {
+            font-size: 10.5px;
+            margin-bottom: 0.4rem;
+            font-weight: 800; /* Bold ka dhig */
+            color: #000;
+        }
+
+        .merchant-codes {
+            font-size: 10px;
+            margin: 0.4rem 0;
+            color: #000;
+            word-break: break-all;
+            font-weight: 900; /* Midkan aad u dhumuc weyn ka dhig */
+            letter-spacing: 0.3px;
+        }
+
+        .info-block {
+            border-top: 1px dashed #000;
+            border-bottom: 1px dashed #000;
+            padding: 0.5rem 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+            font-size: 10px;
+        }
+
+        .info-row span:first-child {
+            font-weight: 600;
+            color: #444;
+            white-space: nowrap;
+            padding-right: 6px;
+            order: 1;
+        }
+
+        /* Dots in the middle */
+        .info-row::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1px dotted #bbb;
+            height: 1px;
+            margin: 0 4px;
+            order: 2;
+            transform: translateY(-2px);
+        }
+
+        .info-row span:last-child {
+            font-weight: 800;
+            color: #000;
+            padding-left: 4px;
+            text-align: left; /* Ka billow bidixda si ay dhibcaha isku saarmaan */
+            order: 3;
+            min-width: 65px; 
+        }
+
+        .receipt-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 0.5rem 0;
+        }
+
+        .receipt-table th {
+            text-align: left;
+            border-bottom: 1px solid #000;
+            padding-bottom: 0.3rem;
+            font-size: 10px;
+            text-transform: uppercase;
+        }
+
+        .receipt-table td {
+            padding: 0.3rem 0;
+            vertical-align: top;
+        }
+
+        .receipt-table .qty-col { width: 35px; text-align: left; font-weight: 700; }
+        .receipt-table .desc-col { padding-right: 5px; }
+        .receipt-table .price-col { width: 60px; text-align: right; }
+        .receipt-table .total-col { width: 70px; text-align: right; font-weight: 700; }
+
+        .receipt-summary {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px dashed #000;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.2rem;
+            font-size: 11px;
+        }
+
+        .summary-row.grand-total {
+            margin-top: 0.5rem;
+            padding-top: 0.5rem;
+            border-top: 1px solid #000;
+            font-size: 1.2rem;
+            font-weight: 800;
+        }
+
+        .receipt-footer {
+            margin-top: 1.2rem;
+            text-align: center;
+        }
+
+
+
+        .footer-branding {
+            font-size: 8px;
+            margin-top: 0.6rem;
+            font-weight: 800;
+            letter-spacing: 0.2px;
+            text-transform: uppercase;
+            border-top: 0.5px dashed #ccc;
+            padding-top: 0.4rem;
+            color: #444;
+            white-space: nowrap;
+            display: block;
+        }
+
+        .footer-thanks {
+            font-size: 9px;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+            margin-bottom: 2px;
+        }
+
+        /* --- KITCHEN MODE --- */
+        .kitchen-receipt {
+            background-color: #fff9c4; /* Subtle yellow on screen */
+        }
+
+        .kitchen-receipt .price-col,
+        .kitchen-receipt .total-col,
+        .kitchen-receipt .receipt-summary,
+        .kitchen-receipt .footer-branding,
+        .kitchen-receipt .merchant-codes {
+            display: none !important;
+        }
+
+        .kitchen-receipt .receipt-table {
+            border-collapse: separate;
+            border-spacing: 0 4px;
+            margin-top: 0.3rem;
+        }
+
+        .kitchen-receipt .receipt-table th {
+            border-bottom: none;
+            vertical-align: bottom;
+        }
+
+        .kitchen-receipt .receipt-table th.desc-col {
+            border-bottom: 1px solid #000;
+            padding-bottom: 6px;
+            padding-left: 12px;
+        }
+
+        .kitchen-receipt .receipt-table td {
+            font-size: 0.95rem;
+            font-weight: 700;
+            padding: 0;
+            vertical-align: middle;
+        }
+
+        .kitchen-receipt .receipt-table td.desc-col {
+            padding-left: 12px;
+        }
+
+        .kitchen-receipt th.qty-col,
+        .kitchen-receipt td.qty-col {
+            background: #000 !important;
+            color: #fff !important;
+            border-radius: 6px;
+            text-align: center;
+            width: 45px;
+        }
+
+        .kitchen-receipt th.qty-col {
+            font-size: 12px;
+            padding: 6px 0;
+            font-weight: 800;
+            vertical-align: middle !important;
+        }
+
+        .kitchen-receipt td.qty-col {
+            font-size: 1.3rem;
+            font-weight: 900;
+            padding: 4px 0;
+        }
+
+        .kitchen-badge {
+            display: none;
+            background: #000;
+            color: #fff;
+            padding: 0.4rem;
+            text-align: center;
+            font-size: 0.75rem;
+            font-weight: 800;
+            margin-bottom: 0.6rem;
+            border-radius: 4px;
+        }
+
+        .kitchen-receipt .kitchen-badge {
+            display: block;
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem 0.5rem 120px;
+            }
             .control-bar {
                 position: fixed;
                 bottom: 0;
                 left: 0;
                 right: 0;
-                max-width: none;
                 margin: 0;
-                background: #ffffff;
-                border-top: 2px solid #4f46e5;
-                box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.3);
-                padding: 30px 20px 50px; 
-                border-radius: 40px 40px 0 0;
-                z-index: 20000 !important;
-                animation: slideUpMobile 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+                max-width: none;
+                z-index: 1000;
+                border-radius: 32px 32px 0 0;
+                padding: 1.5rem;
+                box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.1);
+                border-top: 1px solid #e2e8f0;
             }
-
-            @keyframes slideUpMobile {
-                from { transform: translateY(100%); }
-                to { transform: translateY(0); }
+            #print-area {
+                width: 100%;
+                max-width: var(--print-width);
             }
-
-            .btn {
-                padding: 22px 10px !important; /* Extremely Large Tappable Area */
-                font-size: 14px !important;
-                border-radius: 18px !important;
-                border-width: 3px !important; /* Thick Borders for Visibility */
-            }
-
-            .btn-print {
-                padding: 25px !important;
-                font-size: 20px !important;
-                border-radius: 22px !important;
-                margin-top: 20px !important;
-                background: #10b981 !important;
-                box-shadow: 0 12px 30px rgba(16, 185, 129, 0.5) !important;
-            }
-
-            label.small {
-                font-size: 16px !important; /* Bigger Labels */
-                margin-bottom: 8px !important;
-                font-weight: 800 !important;
-                color: #0f172a;
-            }
+            .btn-toggle { font-size: 0.75rem; padding: 0.6rem; }
         }
 
-        .btn-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 12px 10px;
-            border: 2px solid #f1f5f9;
-            background: #f8fafc;
-            cursor: pointer;
-            border-radius: 12px;
-            font-size: 12px;
-            font-weight: 800;
-            transition: all 0.2s;
-            color: #475569;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn.active {
-            background: #4f46e5;
-            color: white;
-            border-color: #4f46e5;
-            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
-        }
-
-        .btn-print {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-            border: none;
-            padding: 16px;
-            font-size: 16px;
-            border-radius: 16px;
-            font-weight: 900;
-            margin-top: 10px;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
-        }
-
-        .btn-print:active {
-            transform: scale(0.95);
-        }
-
-        /* Receipt Canvas */
-        #print-area {
-            width: var(--print-width);
-            margin: 0 auto;
-            background: white;
-            padding: 5mm;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .receipt-container {
-            width: 100%;
-            color: #000;
-            font-size: 12px;
-            margin-bottom: 30px;
-            page-break-after: always;
-        }
-
-        .text-center {
-            text-align: center;
-        }
-
-        .text-right {
-            text-align: right;
-        }
-
-        .bold {
-            font-weight: bold;
-        }
-
-        .header {
-            margin-bottom: 10px;
-            border-bottom: 2px dashed #000;
-            padding-bottom: 5px;
-        }
-
-        .restaurant-name {
-            font-size: 18px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-
-        .info-line {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 4px;
-        }
-
-        .items-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin: 10px 0;
-        }
-
-        .items-table th {
-            border-bottom: 1px solid #000;
-            text-align: left;
-            padding-bottom: 5px;
-        }
-
-        .items-table td {
-            padding: 5px 0;
-            vertical-align: top;
-        }
-
-        .total-section {
-            border-top: 2px dashed #000;
-            padding-top: 8px;
-            margin-top: 10px;
-        }
-
-        .grand-total {
-            font-size: 16px;
-            font-weight: 900;
-        }
-
-        .footer {
-            margin-top: 15px;
-            border-top: 1px solid #000;
-            padding-top: 10px;
-            font-size: 10px;
-        }
-
-        /* Kitchen Mode Overrides */
-        .kitchen-receipt {
-            font-size: 16px;
-        }
-
-        .kitchen-receipt .restaurant-name,
-        .kitchen-receipt .footer,
-        .kitchen-receipt .price-col,
-        .kitchen-receipt .total-col,
-        .kitchen-receipt .total-section,
-        .kitchen-receipt .payment-info {
-            display: none;
-        }
-
-        .kitchen-receipt .info-line {
-            font-size: 18px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-        }
-
-        .kitchen-receipt .qty-col {
-            font-size: 24px;
-            font-weight: 900;
-            background: #000;
-            color: #fff;
-            padding: 2px 8px;
-            border-radius: 4px;
-        }
-
-        .kitchen-receipt .kitchen-label {
-            display: block !important;
-            background: #000;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-            font-weight: 900;
-            margin-bottom: 15px;
-        }
-
-        .kitchen-label {
-            display: none;
-        }
-
+        /* --- PRINT STYLES --- */
         @media print {
             body {
                 background: white;
                 padding: 0;
+                margin: 0;
             }
 
             .control-bar {
                 display: none;
             }
 
-            #print-area {
+            .receipt-paper {
                 box-shadow: none;
-                width: 100%;
                 margin: 0;
-                padding: 0;
+                width: 100%;
+                border-bottom: 2px dashed #000; /* Separator for one sheet */
+                padding-bottom: 15mm;
+            }
+
+            .kitchen-receipt {
+                background: white;
+                margin-top: 15mm;
+            }
+
+            .receipt-paper::before,
+            .receipt-paper::after {
+                display: none;
             }
 
             @page {
-                margin: 0;
                 size: 80mm auto;
+                margin: 0;
             }
         }
     </style>
@@ -283,112 +492,128 @@
 <body>
 
     <div class="control-bar">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-            <label class="bold small" style="margin-bottom: 0;">1. Nooca Rasiidka:</label>
-            <button class="btn" onclick="history.back()" style="flex: none; padding: 5px 15px; background: #f1f5f9; border: none; color: #475569; font-size: 11px;">
-                <i class="fas fa-arrow-left me-1"></i> DIB U NOQO
+        <div class="control-header">
+            <h2>Habaynta Daabacaadda</h2>
+            <button class="btn-back" onclick="history.back()">
+                <i class="fas fa-arrow-left"></i> DIB
             </button>
         </div>
-        <div class="btn-group">
-            <button class="btn active" onclick="setMode('customer', this)">Macaamiilka (Sales)</button>
-            <button class="btn" onclick="setMode('kitchen', this)">Jikada (Kitchen)</button>
-            <button class="btn" onclick="setMode('dual', this)">Labada Rasiid</button>
+
+        <div class="control-group">
+            <span class="control-label">Nooca Rasiidka</span>
+            <div class="btn-toggle-group">
+                <button class="btn-toggle active" onclick="setMode('customer', this)">Sales Slip</button>
+                <button class="btn-toggle" onclick="setMode('kitchen', this)">Kitchen Copy</button>
+                <button class="btn-toggle" onclick="setMode('dual', this)">Laba (Dual)</button>
+            </div>
         </div>
 
-        <label class="bold small">2. Inta Koobi:</label>
-        <div class="btn-group">
-            <button class="btn active" onclick="setCopies(1, this)">1 Copy</button>
-            <button class="btn" onclick="setCopies(2, this)">2 Copies</button>
-            <button class="btn" onclick="setCopies(3, this)">3 Copies</button>
+        <div class="control-group">
+            <span class="control-label">Nuqullada (Copies)</span>
+            <div class="btn-toggle-group">
+                <button class="btn-toggle active" onclick="setCopies(1, this)">1 Copy</button>
+                <button class="btn-toggle" onclick="setCopies(2, this)">2 Copies</button>
+                <button class="btn-toggle" onclick="setCopies(3, this)">3 Copies</button>
+            </div>
         </div>
 
-        <button class="btn btn-print" onclick="window.print()">
-            <i class="fas fa-print"></i> DAABAC HADDA (PRINT)
+        <button class="btn-print-main" onclick="window.print()">
+            <i class="fas fa-print"></i> DAABAC RASIIDKA
         </button>
     </div>
 
     <div id="print-area">
         <div id="receipt-payload">
-            <!-- This block will be repeated by JS based on copies selection -->
-            <div class="receipt-container">
-                <div class="kitchen-label">DALABKA JIKADA (KITCHEN COPY)</div>
-
-                <div class="header text-center">
-                    <div class="restaurant-name">{{ sys_name }}</div>
-                    <div>{{ sys_address }}</div>
-                    <div>Tel: {{ sys_phone }}</div>
+            <!-- This template is a master copy used by JS -->
+            <div class="receipt-paper">
+                <div class="kitchen-badge">KITCHEN COPY (DALABKA JIKADA)</div>
+                
+                <div class="receipt-header">
+                    <div class="date-time-row">
+                        <span>{{ order.date[:10] }}</span>
+                        <span>{{ order.date[11:] }}</span>
+                    </div>
+                    
+                    <div class="restaurant-brand">{{ sys_name }}</div>
+                    <div class="restaurant-info">
+                        {{ sys_address }}<br>
+                        Calling Customer: {{ sys_phone }}
+                    </div>
+                    
+                    <div class="merchant-codes">
+                        {% if order.evc_number %}
+                        Merchant: *789*{{ order.evc_number }}*{{ "%.2f"|format(order.total) }}#<br>
+                        {% endif %}
+                        {% if order.edahab_number %}
+                        eDahab: {{ order.edahab_number }}
+                        {% endif %}
+                    </div>
                 </div>
 
-                <div class="info-line">
-                    <span class="bold">Order #:</span>
-                    <span class="text-right bold">#{{ "%06d"|format(order.id) }}</span>
-                </div>
-                <div class="info-line">
-                    <span>Taariikh:</span>
-                    <span class="text-right">{{ order.date }}</span>
-                </div>
-                <div class="info-line">
-                    <span class="bold">Miiska:</span>
-                    <span class="text-right bold" style="font-size: 1.2em;">{{ order.table }}</span>
-                </div>
-                <div class="info-line">
-                    <span>Macmiilka:</span>
-                    <span class="text-right">{{ order.customer }}</span>
-                </div>
-                <div class="info-line">
-                    <span>Adeegaha (Staff):</span>
-                    <span class="text-right">{{ order.served_by }}</span>
+                <div class="info-block">
+                    <div class="info-row">
+                        <span>Receipt #</span>
+                        <span>{{ "%06d"|format(order.id) }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Table #</span>
+                        <span>{{ order.table }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Served by</span>
+                        <span>{{ order.served_by }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Customer</span>
+                        <span>{{ order.customer }}</span>
+                    </div>
                 </div>
 
-                <table class="items-table">
+                <table class="receipt-table">
                     <thead>
                         <tr>
-                            <th>Alaabta</th>
-                            <th class="text-center">Tiro</th>
-                            <th class="text-right price-col">Qiimo</th>
-                            <th class="text-right total-col">Wadar</th>
+                            <th class="desc-col">Description</th>
+                            <th class="qty-col">Qty</th>
+                            <th class="price-col">Price</th>
+                            <th class="total-col">Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for item in order['items'] %}
                         <tr>
-                            <td class="bold">{{ item.product_name }}</td>
-                            <td class="text-center"><span class="qty-col">{{ item.quantity }}</span></td>
-                            <td class="text-right price-col">{{ sys_currency }}{{ "%.2f"|format(item.price) }}</td>
-                            <td class="text-right total-col bold">{{ sys_currency }}{{ "%.2f"|format(item.total) }}</td>
+                            <td class="desc-col">{{ item.product_name }}</td>
+                            <td class="qty-col">{{ item.quantity }}</td>
+                            <td class="price-col">{{ sys_currency }}{{ "%.2f"|format(item.price) }}</td>
+                            <td class="total-col">{{ sys_currency }}{{ "%.2f"|format(item.total) }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>
                 </table>
 
-                <div class="total-section">
-                    <div class="info-line grand-total">
-                        <span>WADARTA (TOTAL):</span>
-                        <span class="text-right">{{ sys_currency }}{{ "%.2f"|format(order.total) }}</span>
+                <div class="receipt-summary">
+                    <div class="summary-row">
+                        <span>Sub Total</span>
+                        <span>{{ sys_currency }}{{ "%.2f"|format(order.total) }}</span>
                     </div>
-                    <div class="info-line" style="font-size: 0.8em; margin-top: 5px;">
+                    <div class="summary-row">
+                        <span>Sales Tax @0%</span>
+                        <span>{{ sys_currency }}0.00</span>
+                    </div>
+                    <div class="summary-row grand-total">
+                        <span>Grand Total</span>
+                        <span>{{ sys_currency }}{{ "%.2f"|format(order.total) }}</span>
+                    </div>
+                    <div class="summary-row" style="margin-top: 10px; font-size: 9px; opacity: 0.8;">
                         <span>Payment Status:</span>
-                        <span class="text-right bold">{{ order.payment_status | upper }}</span>
+                        <span>{{ order.payment_status | upper }}</span>
                     </div>
                 </div>
 
-                <div class="payment-info" style="margin-top: 15px; text-align: left;">
-                    {% if order.evc_number %}
-                    <div style="margin-bottom: 8px; font-size: 15px;" class="bold">
-                        EVC Plus: *789*{{ order.evc_number }}*{{ "%.2f"|format(order.total) }}#
+                <div class="receipt-footer">
+                    <div class="footer-thanks">★ MAHADSANID, DIB U SOO LABASHO WACAN! ★</div>
+                    <div class="footer-branding">
+                        Powered by Rays Tech Center | raystechcenter.online
                     </div>
-                    {% endif %}
-                    {% if order.edahab_number %}
-                    <div style="font-size: 15px;" class="bold">
-                        eDahab: {{ order.edahab_number }}
-                    </div>
-                    {% endif %}
-                </div>
-
-                <div class="footer text-center"
-                    style="margin-top: 15px; border-top: 2px dashed #000; padding-top: 10px;">
-                    <div class="bold">SHARAF AYEY NOO TAHAY INAAD NALA JOOGTO, MAHADSANID!</div>
-                    <div style="margin-top: 5px;">Software by RaysTech center(RTC) v2.0</div>
                 </div>
             </div>
         </div>
@@ -397,50 +622,48 @@
     <script>
         let currentMode = 'customer';
         let currentCopies = 1;
-        const originalContent = document.getElementById('receipt-payload').innerHTML;
+        const masterTemplate = document.querySelector('.receipt-paper').outerHTML;
 
         function refreshReceipt() {
             let finalHtml = '';
+            
+            // Loop for number of copies
             for (let i = 0; i < currentCopies; i++) {
-                finalHtml += originalContent;
+                if (currentMode === 'dual') {
+                    // In dual mode, one copy is customer, one is kitchen
+                    finalHtml += masterTemplate; // First copy (customer by default)
+                    let kitchenCopy = masterTemplate;
+                    finalHtml += kitchenCopy.replace('receipt-paper', 'receipt-paper kitchen-receipt');
+                } else if (currentMode === 'kitchen') {
+                    finalHtml += masterTemplate.replace('receipt-paper', 'receipt-paper kitchen-receipt');
+                } else {
+                    finalHtml += masterTemplate;
+                }
             }
             
-            const payload = document.getElementById('receipt-payload');
-            payload.innerHTML = finalHtml;
-            
-            if (currentMode === 'kitchen' || currentMode === 'dual') {
-                const containers = payload.querySelectorAll('.receipt-container');
-                containers.forEach((container, idx) => {
-                    if (currentMode === 'kitchen') {
-                        container.classList.add('kitchen-receipt');
-                    } else if (currentMode === 'dual') {
-                        // Every second container is kitchen
-                        if (idx % 2 !== 0) {
-                            container.classList.add('kitchen-receipt');
-                            container.style.pageBreakBefore = 'always';
-                        }
-                    }
-                });
-            }
+            document.getElementById('receipt-payload').innerHTML = finalHtml;
         }
 
         function setMode(mode, btn) {
-            btn.parentElement.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            btn.parentElement.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentMode = mode;
             refreshReceipt();
         }
 
         function setCopies(n, btn) {
-            btn.parentElement.querySelectorAll('.btn').forEach(b => b.classList.remove('active'));
+            btn.parentElement.querySelectorAll('.btn-toggle').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
             currentCopies = n;
             refreshReceipt();
         }
 
-        window.onload = function () {
-            console.log("Print control ready.");
-        }
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+             // We already have the first one rendered by Jinja2, 
+             // but let's re-run for consistency if needed.
+             // Actually, refreshReceipt() uses masterTemplate which is the first one.
+        });
     </script>
 </body>
 

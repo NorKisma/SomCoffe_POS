@@ -15,12 +15,11 @@ def index():
 @users_bp.route('/add', methods=['POST'])
 @login_required
 @admin_required
-@manager_required
 def add_user():
     username = request.form.get('username')
     email = request.form.get('email')
     password = request.form.get('password')
-    role = request.form.get('role', 'staff')
+    role = request.form.get('role', 'waiter')
     evc_number = request.form.get('evc_number')
     edahab_number = request.form.get('edahab_number')
     pin = request.form.get('pin')
@@ -49,9 +48,23 @@ def delete_user(id):
 @login_required
 @manager_required
 def update_user(id):
+    from app.models.user import User
+    target_user = User.query.get_or_404(id)
+    
+    # Security: Admin accounts can ONLY be updated by themselves
+    if target_user.role == 'admin':
+        if current_user.id != target_user.id:
+            flash('Security Violation: Admin accounts can only be updated by the owner.', 'danger')
+            return redirect(url_for('users.index'))
+        
+    # Security: Managers cannot promote someone to Admin
+    role = request.form.get('role')
+    if role == 'admin' and not current_user.is_admin:
+        flash('Action Denied: You do not have permission to assign Admin role.', 'danger')
+        return redirect(url_for('users.index'))
+
     username = request.form.get('username')
     email = request.form.get('email')
-    role = request.form.get('role')
     password = request.form.get('password')
     evc_number = request.form.get('evc_number')
     edahab_number = request.form.get('edahab_number')

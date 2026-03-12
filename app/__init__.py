@@ -37,6 +37,7 @@ def create_app(config_class=Config):
     from .models.employee import Employee
     from .models.customer import Customer
     from .models.expense import Expense
+    from .models.audit_log import AuditLog
 
     @login_manager.user_loader
     def load_user(user_id):

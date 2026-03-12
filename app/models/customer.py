@@ -9,9 +9,14 @@ class Customer(db.Model):
     email = db.Column(db.String(100), nullable=True)
     address = db.Column(db.Text, nullable=True)
     credit_limit = db.Column(db.Float, default=0.0)
+    loyalty_points = db.Column(db.Integer, default=0)
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     orders = db.relationship('Order', backref='customer_rel', lazy=True)
+
+    @property
+    def total_spent(self):
+        return sum(o.total_amount for o in self.orders if o.payment_status == 'paid')
 
     @property
     def current_debt(self):

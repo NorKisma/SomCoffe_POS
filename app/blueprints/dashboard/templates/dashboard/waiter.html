@@ -8,36 +8,36 @@
     <!-- Stat Cards -->
     <div class="row g-3 g-md-4 mb-5">
         <div class="col-6 col-md-3">
-            <div class="card-premium p-4 animate__animated animate__fadeInUp" style="animation-delay:.1s">
+            <div class="card-premium p-4 animate__animated animate__fadeInUp hover-lift" style="animation-delay:.1s">
                 <div class="stat-icon-glow blue mb-3"><i class="fas fa-receipt"></i></div>
-                <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">Dalabada Maanta</h6>
+                <h6 class="text-theme-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">Dalabada Maanta</h6>
                 <h2 class="fw-800 mb-0 text-gradient-primary">{{ orders_count }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">Dalabyadayda Maanta</p>
+                <p class="text-theme-muted mb-0" style="font-size:.7rem">My Orders Today</p>
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card-premium p-4 animate__animated animate__fadeInUp" style="animation-delay:.2s">
+            <div class="card-premium p-4 animate__animated animate__fadeInUp hover-lift" style="animation-delay:.2s">
                 <div class="stat-icon-glow purple mb-3"><i class="fas fa-coins"></i></div>
-                <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">Lacagta</h6>
+                <h6 class="text-theme-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">Lacagta</h6>
                 <h2 class="fw-800 mb-0 text-gradient-primary">{{ sys_currency }}{{ "{:,.2f}".format(total_sales) }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">Wadarta Iibkayga</p>
+                <p class="text-theme-muted mb-0" style="font-size:.7rem">My Total Sales</p>
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card-premium p-4 animate__animated animate__fadeInUp" style="animation-delay:.3s">
-                <div class="stat-icon-glow bg-soft-warning"><i
+            <div class="card-premium p-4 animate__animated animate__fadeInUp hover-lift" style="animation-delay:.3s">
+                <div class="stat-icon-glow orange mb-3"><i
                         class="fas fa-hourglass-half"></i></div>
-                <h6 class="text-muted small text-uppercase fw-bold mb-1 mt-3" style="font-size:.65rem">Sugaya</h6>
+                <h6 class="text-theme-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">Sugaya</h6>
                 <h2 class="fw-800 mb-0 text-warning">{{ pending_count }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">Dalabada Sugaya</p>
+                <p class="text-theme-muted mb-0" style="font-size:.7rem">Pending Orders</p>
             </div>
         </div>
         <div class="col-6 col-md-3">
-            <div class="card-premium p-4 animate__animated animate__fadeInUp" style="animation-delay:.4s">
+            <div class="card-premium p-4 animate__animated animate__fadeInUp hover-lift" style="animation-delay:.4s">
                 <div class="stat-icon-glow green mb-3"><i class="fas fa-check-circle"></i></div>
-                <h6 class="text-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">La Adeegay</h6>
+                <h6 class="text-theme-muted small text-uppercase fw-bold mb-1" style="font-size:.65rem">La Adeegay</h6>
                 <h2 class="fw-800 mb-0 text-gradient-primary">{{ served_count }}</h2>
-                <p class="text-muted mb-0" style="font-size:.7rem">Dalabada Dhamaystiran</p>
+                <p class="text-theme-muted mb-0" style="font-size:.7rem">Completed Orders</p>
             </div>
         </div>
     </div>
