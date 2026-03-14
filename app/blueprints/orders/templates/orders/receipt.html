@@ -533,7 +533,7 @@
             </div>
         </div>
 
-        <button class="btn-print-main" onclick="window.print()">
+        <button class="btn-print-main" onclick="printAndLogout()">
             <i class="fas fa-print"></i> DAABAC RASIIDKA
         </button>
     </div>
@@ -676,6 +676,12 @@
             btn.classList.add('active');
             currentCopies = n;
             refreshReceipt();
+        }
+
+        function printAndLogout() {
+            window.print();
+            // Redirect to logout after the print dialog is closed
+            window.location.href = "{{ url_for('auth.logout') }}";
         }
 
         // Initialize
