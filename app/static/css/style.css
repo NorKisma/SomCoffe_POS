@@ -301,6 +301,18 @@ body {
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
 }
 
+/* Status Indicators */
+.status-indicator-bar {
+    width: 4px;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    border-radius: 50px;
+}
+.status-indicator-bar.completed { background: #10b981; box-shadow: 0 0 10px rgba(16, 185, 129, 0.5); }
+.status-indicator-bar.pending { background: #f59e0b; box-shadow: 0 0 10px rgba(245, 158, 11, 0.5); }
+
 [data-theme="dark"] .alert {
     background: rgba(30, 41, 59, 0.7) !important;
 }
@@ -605,6 +617,67 @@ body {
     font-weight: 700 !important;
 }
 
+/* Input Wrappers & Icons */
+.input-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input-icon {
+    position: absolute;
+    left: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary); /* Change to primary for better visibility */
+    transition: all 0.3s;
+    z-index: 10;
+    pointer-events: none;
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.input-wrapper .form-control-premium, 
+.input-wrapper .form-select-premium,
+.input-wrapper .form-control,
+.input-wrapper .form-select {
+    padding-left: 3.5rem !important;
+}
+
+.form-control:focus + .input-icon,
+.form-control-premium:focus + .input-icon {
+    color: var(--primary);
+}
+
+.show-pass-toggle {
+    position: absolute;
+    right: 1.25rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: 0.3s;
+    z-index: 5;
+}
+
+.show-pass-toggle:hover {
+    color: var(--primary);
+}
+
+/* Fix Browser Autofill Highlighting */
+input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--bg-item) inset !important;
+    -webkit-text-fill-color: var(--text-main) !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Ensure Icons are above the autofill */
+.input-wrapper i {
+    z-index: 10 !important;
+}
+
 /* Header & Toggle */
 header {
     background: var(--bg-header);
@@ -820,22 +893,47 @@ header {
 
 /* Action Buttons in Tables */
 .btn-action {
-    width: 36px;
-    height: 36px;
+    width: 38px;
+    height: 38px;
     padding: 0;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 10px;
+    border-radius: 12px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     border: 1px solid var(--border-glass);
     background: var(--bg-item);
     color: var(--text-muted);
+    font-size: 0.9rem;
 }
 
 .btn-action:hover {
-    transform: translateY(-3px) scale(1.1);
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    transform: translateY(-4px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.btn-edit:hover {
+    background: var(--primary) !important;
+    color: #fff !important;
+    border-color: var(--primary) !important;
+}
+
+.btn-delete:hover {
+    background: #ef4444 !important;
+    color: #fff !important;
+    border-color: #ef4444 !important;
+}
+
+.bg-soft-primary {
+    background: rgba(99, 102, 241, 0.1) !important;
+    color: #6366f1 !important;
+    border: 1px solid rgba(99, 102, 241, 0.1) !important;
+}
+
+.bg-soft-danger {
+    background: rgba(239, 68, 68, 0.1) !important;
+    color: #ef4444 !important;
+    border: 1px solid rgba(239, 68, 68, 0.1) !important;
 }
 
 .btn-view:hover {
@@ -1152,6 +1250,31 @@ header {
     background: rgba(255, 255, 255, 0.1);
 }
 
+.btn-install-premium {
+    background: rgba(47, 37, 240, 0.1);
+    border: 1px solid rgba(47, 37, 240, 0.3);
+    color: var(--primary) !important;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    padding: 8px;
+    margin-bottom: 8px;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    cursor: pointer;
+}
+
+.btn-install-premium:hover {
+    background: var(--primary);
+    color: #fff !important;
+    border-color: var(--primary);
+    box-shadow: 0 5px 15px var(--primary-glow);
+    transform: scale(1.02);
+}
+
 .btn-sign-out-premium {
     background: rgba(239, 68, 68, 0.1);
     border: 1px solid rgba(239, 68, 68, 0.3);
@@ -1184,4 +1307,19 @@ header {
 .sidebar-premium.collapsed .user-info-text,
 .sidebar-premium.collapsed .btn-sign-out-premium span {
     display: none !important;
+}
+/* Connection Status Dot */
+.status-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+}
+.status-dot.online {
+    background-color: #10b981;
+    box-shadow: 0 0 8px #10b981;
+}
+.status-dot.offline {
+    background-color: #f87171;
+    box-shadow: 0 0 8px #f87171;
 }

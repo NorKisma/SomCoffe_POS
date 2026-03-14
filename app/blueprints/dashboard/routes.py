@@ -49,19 +49,17 @@ def _get_waiter_data():
 def _get_cashier_data():
     today = _today()
 
-    def _sum_method(method_name):
-        # Sum payments for the given method today
-        return db.session.query(func.sum(Payment.amount))\
-            .join(Order)\
-            .filter(
-                func.date(Payment.timestamp) == today,
-                Payment.payment_method == method_name
-            ).scalar() or 0
-
-    cash       = _sum_method('Cash')
-    evc        = _sum_method('EVC Plus')
-    edahab     = _sum_method('eDahab')
-    credit     = _sum_method('Credit')
+    today_payments = db.session.query(
+        Payment.payment_method,
+        func.sum(Payment.amount)
+    ).join(Order).filter(func.date(Payment.timestamp) == today)\
+     .group_by(Payment.payment_method).all()
+    
+    pay_stats = {str(m): float(v or 0) for m, v in today_payments}
+    cash = pay_stats.get('Cash', 0.0)
+    evc = pay_stats.get('EVC Plus', 0.0)
+    edahab = pay_stats.get('eDahab', 0.0)
+    credit = pay_stats.get('Credit', 0.0)
     total_today = cash + evc + edahab + credit
 
     # Orders waiting to be paid / closed
@@ -115,14 +113,20 @@ def _get_manager_data():
 
     peak_product = top_product[0] if top_product else 'N/A'
 
-    # Chart – last 7 days revenue
+    # Optimized 7-day revenue query
+    start_date = (datetime.utcnow() - timedelta(days=6)).date()
+    seven_day_stats = db.session.query(
+        func.date(Order.created_at).label('date'),
+        func.sum(Order.total_amount)
+    ).filter(func.date(Order.created_at) >= start_date)\
+     .group_by(func.date(Order.created_at)).all()
+    
+    stats_map = {str(d): float(v or 0) for d, v in seven_day_stats}
     chart_days, chart_revenue = [], []
     for i in range(6, -1, -1):
-        day = datetime.utcnow() - timedelta(days=i)
+        day = (datetime.utcnow() - timedelta(days=i)).date()
         chart_days.append(day.strftime('%d %b'))
-        rev = db.session.query(func.sum(Order.total_amount))\
-            .filter(func.date(Order.created_at) == day.date()).scalar() or 0
-        chart_revenue.append(float(rev))
+        chart_revenue.append(stats_map.get(str(day), 0.0))
 
     # All-time totals for the main card row (Paid/Partial only for 'Xog Saxan')
     total_revenue_all = db.session.query(

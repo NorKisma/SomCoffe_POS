@@ -16,6 +16,9 @@
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#8b5cf6">
     <!-- DataTables CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/dataTables.bootstrap5.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css">
@@ -74,8 +77,8 @@
 
 
 
-                <!-- CASHIER + ABOVE: Kitchen Display -->
-                {% if current_user.is_cashier_or_above %}
+                <!-- KITCHEN + CASHIER + ABOVE: Kitchen Display -->
+                {% if current_user.role == 'kitchen' or current_user.is_cashier_or_above %}
                 <a href="{{ url_for('kitchen.index') }}"
                     class="nav-item-premium {% if request.endpoint == 'kitchen.index' %}active{% endif %}"
                     data-label="{{ _('Kitchen Display') }}">
@@ -185,6 +188,11 @@
                             </span>
                         </div>
                     </div>
+                    <!-- PWA Install Button -->
+                    <button id="pwaInstallBtn" class="btn-install-premium text-decoration-none border-0 w-100" style="display: none;">
+                        <i class="fas fa-download"></i> <span>{{ _('Install App') }}</span>
+                    </button>
+                    
                     <a href="{{ url_for('auth.logout') }}" class="btn-sign-out-premium text-decoration-none">
                         <i class="fas fa-power-off"></i> <span>{{ _('Sign Out') }}</span>
                     </a>
@@ -213,6 +221,11 @@
                     </div>
                 </div>
                 <div class="d-flex align-items-center gap-2 gap-md-4">
+                    <div id="connectionStatus" class="d-flex align-items-center gap-2 px-3 py-1 rounded-pill shadow-sm animate__animated animate__fadeIn" style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.2); color: #10b981;">
+                        <span class="status-dot online"></span>
+                        <span class="small fw-bold d-none d-lg-inline">ONLINE</span>
+                    </div>
+
                     <!-- Language Selection -->
                     <div class="dropdown">
                         <button class="btn btn-premium btn-sm rounded-pill px-2 px-md-3 dropdown-toggle shadow-sm d-flex align-items-center justify-content-center gap-2" type="button"
@@ -358,6 +371,33 @@
                 overlay.classList.remove('show');
             }
         });
+
+        // PWA Installation Handler
+        let deferredPrompt;
+        const installBtn = document.getElementById('pwaInstallBtn');
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Prevent the mini-infobar from appearing on mobile
+            e.preventDefault();
+            // Stash the event so it can be triggered later.
+            deferredPrompt = e;
+            // Update UI notify the user they can install the PWA
+            if(installBtn) installBtn.style.display = 'flex';
+        });
+
+        if(installBtn) {
+            installBtn.addEventListener('click', async () => {
+                if (!deferredPrompt) return;
+                // Show the install prompt
+                deferredPrompt.prompt();
+                // Wait for the user to respond to the prompt
+                const { outcome } = await deferredPrompt.userChoice;
+                // We've used the prompt, and can't use it again, throw it away
+                deferredPrompt = null;
+                // Hide the install button
+                installBtn.style.display = 'none';
+            });
+        }
     </script>
     <script>
         // Stylish Dropdown Animation Logic
@@ -452,6 +492,69 @@
                 showToast(toastType, message);
             });
         })();
+    </script>
+    <script>
+        // PWA Service Worker Registration
+        // Persist session for offline use
+        {% if current_user.is_authenticated and current_user.pin %}
+        localStorage.setItem('offline_user_session', JSON.stringify({
+            id: "{{ current_user.id }}",
+            username: "{{ current_user.username }}",
+            role: "{{ current_user.role }}",
+            pin: "{{ current_user.pin }}"
+        }));
+        {% endif %}
+
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/service-worker.js')
+                    .then(reg => {
+                        console.log('SW Registered', reg);
+                        // Request Background Sync if supported
+                        if ('sync' in reg) {
+                            reg.sync.register('sync-orders').catch(e => console.log('Sync reg failed', e));
+                        }
+                    })
+                    .catch(err => console.log('SW Failed', err));
+            });
+
+            // Listen for messages from Service Worker
+            navigator.serviceWorker.addEventListener('message', event => {
+                if (event.data && event.data.type === 'SYNC_ORDERS') {
+                    if (typeof Terminal !== 'undefined' && Terminal.syncOfflineOrders) {
+                        Terminal.syncOfflineOrders();
+                    }
+                }
+            });
+        }
+
+        // Connection Status Management
+        function updateOnlineStatus() {
+            const statusBox = document.getElementById('connectionStatus');
+            if(!statusBox) return;
+            
+            if (navigator.onLine) {
+                statusBox.style.background = 'rgba(16, 185, 129, 0.1)';
+                statusBox.style.borderColor = 'rgba(16, 185, 129, 0.2)';
+                statusBox.style.color = '#10b981';
+                statusBox.innerHTML = '<span class="status-dot online"></span> <span class="small fw-bold d-none d-lg-inline">ONLINE</span>';
+                
+                // Sync offline data if any
+                if(typeof Terminal !== 'undefined' && Terminal.syncOfflineOrders) {
+                    Terminal.syncOfflineOrders();
+                }
+            } else {
+                statusBox.style.background = 'rgba(239, 68, 68, 0.1)';
+                statusBox.style.borderColor = 'rgba(239, 68, 68, 0.2)';
+                statusBox.style.color = '#f87171';
+                statusBox.innerHTML = '<span class="status-dot offline"></span> <span class="small fw-bold d-none d-lg-inline">OFFLINE</span>';
+                showToast('warning', 'Waxaad ku jirtaa Offline (Internet ma jiro). Dalabyada hada la keydiyo waa la isku xiri doonaa markaad Online noqoto.');
+            }
+        }
+
+        window.addEventListener('online', updateOnlineStatus);
+        window.addEventListener('offline', updateOnlineStatus);
+        document.addEventListener('DOMContentLoaded', updateOnlineStatus);
     </script>
     {% block scripts %}{% endblock %}
 </body>

@@ -225,3 +225,68 @@ body {
     border: 1px solid rgba(59, 130, 246, 0.2);
     color: #93c5fd;
 }
+
+/* Login Method Tabs */
+.login-method-tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.03);
+    padding: 5px;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+}
+
+.method-tab {
+    flex: 1;
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: none;
+    background: transparent;
+    color: #94a3b8;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: 0.3s;
+}
+
+.method-tab i {
+    margin-right: 8px;
+}
+
+.method-tab.active {
+    background: rgba(255, 255, 255, 0.08);
+    color: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.method-tab:hover:not(.active) {
+    color: #cbd5e1;
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Numpad Styling */
+.btn-numpad {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 18px;
+    border: 1px solid var(--border);
+    background: rgba(255, 255, 255, 0.03);
+    color: white;
+    font-size: 1.25rem;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.btn-numpad:hover {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary);
+}
+
+.btn-numpad:active {
+    transform: scale(0.95);
+}
+
+.btn-numpad.action {
+    background: linear-gradient(135deg, var(--primary), var(--accent-purple));
+    border: none;
+}

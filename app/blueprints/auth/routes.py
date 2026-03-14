@@ -16,17 +16,40 @@ def login():
         return redirect(url_for('dashboard.index'))
         
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        user = User.query.filter_by(username=username).first()
+        login_type = request.form.get('login_type', 'password')
         
-        if user and user.check_password(password):
-            login_user(user)
-            AuditLog.log('LOGIN', f'User {username} successfully logged in.')
-            flash(_('You have logged in successfully!'), 'success')
-            return redirect(url_for('dashboard.index'))
+        if login_type == 'pin':
+            pin = request.form.get('pin', '').strip()
+            
+            if not pin:
+                flash(_('Fadlan geli PIN-kaaga!'), 'danger')
+                return render_template('auth/login.html')
+
+            # STRICT QUERY: Only match if PIN is registered and not empty
+            user = User.query.filter(User.pin == pin).filter(User.pin != None).filter(User.pin != '').first()
+            
+            if user:
+                login_user(user)
+                AuditLog.log('PIN_LOGIN_SUCCESS', f'Isticmaalaha {user.username} ayaa PIN ku soo galay.')
+                flash(_('PIN Login Successful!'), 'success')
+                return redirect(url_for('dashboard.index'))
+            else:
+                # Log failed attempt for security audit
+                AuditLog.log('PIN_LOGIN_FAILED', f'Isku day PIN khaldan: {pin}')
+                flash(_('PIN-kan ma diwaangashana! Fadlan hubi PIN-kaaga.'), 'danger')
+                return render_template('auth/login.html')
         else:
-            flash(_('Invalid username or password!'), 'danger')
+            username = request.form.get('username')
+            password = request.form.get('password')
+            user = User.query.filter_by(username=username).first()
+            
+            if user and user.check_password(password):
+                login_user(user)
+                AuditLog.log('LOGIN', f'User {username} successfully logged in.')
+                flash(_('You have logged in successfully!'), 'success')
+                return redirect(url_for('dashboard.index'))
+            else:
+                flash(_('Invalid username or password!'), 'danger')
             
     return render_template('auth/login.html')
 

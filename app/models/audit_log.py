@@ -33,3 +33,13 @@ class AuditLog(db.Model):
         )
         db.session.add(entry)
         db.session.commit()
+
+    @staticmethod
+    def cleanup(days=5):
+        from datetime import timedelta
+        cutoff = datetime.utcnow() - timedelta(days=days)
+        # Delete logs older than 'days'
+        num_deleted = AuditLog.query.filter(AuditLog.timestamp < cutoff).delete()
+        if num_deleted > 0:
+            db.session.commit()
+        return num_deleted

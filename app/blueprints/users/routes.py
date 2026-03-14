@@ -14,7 +14,7 @@ def index():
 
 @users_bp.route('/add', methods=['POST'])
 @login_required
-@admin_required
+@manager_required
 def add_user():
     username = request.form.get('username')
     email = request.form.get('email')
@@ -23,6 +23,11 @@ def add_user():
     evc_number = request.form.get('evc_number')
     edahab_number = request.form.get('edahab_number')
     pin = request.form.get('pin')
+    
+    # Security: Non-admins cannot create Admin accounts
+    if role == 'admin' and not current_user.is_admin:
+        flash('Action Denied: You do not have permission to create Admin accounts.', 'danger')
+        return redirect(url_for('users.index'))
     
     _, error = UserService.create_user(username, email, password, role, evc_number, edahab_number, pin)
     if error:
@@ -34,7 +39,7 @@ def add_user():
 
 @users_bp.route('/delete/<int:id>', methods=['POST'])
 @login_required
-@admin_required
+@manager_required
 def delete_user(id):
     success, error = UserService.delete_user(id, current_user.id)
     if error:

@@ -72,7 +72,10 @@
                         class="badge bg-primary bg-opacity-10 text-primary px-3 py-2 rounded-pill fw-bold border border-primary border-opacity-20">
                         {{ _('LAST 7 DAYS') }}</div>
                 </div>
-                <div style="height: 350px;">
+                <div style="height: 350px;" 
+                     id="chartDataContainer" 
+                     data-labels='{{ chart_days | tojson }}' 
+                     data-revenue='{{ chart_revenue | tojson }}'>
                     <canvas id="mainDashboardChart"></canvas>
                 </div>
             </div>
@@ -88,9 +91,7 @@
                 <div class="feed-container custom-scrollbar" style="max-height: 500px; overflow-y: auto;">
                     {% for order in recent_activity %}
                     <div class="d-flex gap-3 mb-4 ps-3 position-relative py-2 hover-bg-light transition-all rounded-4">
-                        <div class="position-absolute start-0 top-0 h-100 rounded-pill"
-                            style="width: 4px; background: {% if order.status == 'completed' %}#10b981{% else %}#f59e0b{% endif %}; box-shadow: 0 0 10px {% if order.status == 'completed' %}#10b981{% else %}#f59e0b{% endif %};">
-                        </div>
+                        <div class="status-indicator-bar {{ 'completed' if order.status == 'completed' else 'pending' }}"></div>
                         <div class="avatar-mini bg-white bg-opacity-5 text-main rounded-circle d-flex align-items-center justify-content-center shadow-lg"
                             style="width: 44px; height: 44px; border: 1px solid var(--border-glass);">
                             <i
@@ -147,42 +148,46 @@
         gradient.addColorStop(0, 'rgba(79, 70, 229, 0.4)');
         gradient.addColorStop(1, 'rgba(79, 70, 229, 0)');
 
+        const container = document.getElementById('chartDataContainer');
+        const chartLabels = JSON.parse(container.getAttribute('data-labels') || '[]');
+        const chartData = JSON.parse(container.getAttribute('data-revenue') || '[]');
+
         new Chart(ctx, {
             type: 'line',
             data: {
-                labels: {{ chart_days | tojson }},
-        datasets: [{
-            label: 'Iibka (Revenue)',
-            data: {{ chart_revenue | tojson }},
-        borderColor: '#4f46e5',
-        borderWidth: 4,
-        pointBackgroundColor: '#fff',
-        pointBorderColor: '#4f46e5',
-        pointRadius: 6,
-        pointHoverRadius: 8,
-        fill: true,
-        backgroundColor: gradient,
-        tension: 0.4
+                labels: chartLabels,
+                datasets: [{
+                    label: 'Iibka (Revenue)',
+                    data: chartData,
+                    borderColor: '#4f46e5',
+                    borderWidth: 4,
+                    pointBackgroundColor: '#fff',
+                    pointBorderColor: '#4f46e5',
+                    pointRadius: 6,
+                    pointHoverRadius: 8,
+                    fill: true,
+                    backgroundColor: gradient,
+                    tension: 0.4
                 }]
             },
-        options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-            legend: { display: false }
-        },
-        scales: {
-            y: {
-                beginAtZero: true,
-                grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
-                ticks: { color: '#94a3b8', font: { weight: 'bold' } }
-            },
-            x: {
-                grid: { display: false },
-                ticks: { color: '#94a3b8', font: { weight: 'bold' } }
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)', drawBorder: false },
+                        ticks: { color: '#94a3b8', font: { weight: 'bold' } }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#94a3b8', font: { weight: 'bold' } }
+                    }
+                }
             }
-        }
-    }
         });
     });
 </script>

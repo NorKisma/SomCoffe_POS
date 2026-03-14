@@ -1,4 +1,6 @@
-from flask import render_template, request
+from flask import render_template, request, flash, redirect, url_for
+from flask_login import login_required, current_user
+from app.utils.decorators import manager_required
 from . import reports_bp
 from app.models.order import Order
 from app.models.product import Product
@@ -10,18 +12,24 @@ import sqlalchemy
 from datetime import datetime, timedelta
 
 @reports_bp.route('/')
+@login_required
 def index():
     # Date Filtering
     start_date_str = request.args.get('start_date')
     end_date_str = request.args.get('end_date')
-    user_id = request.args.get('user_id', type=int)
-    
     today = datetime.now()
+    
+    # SECURITY: Only 'admin' or 'manager' sees everyone. 
+    # Others ONLY see their own data.
+    if current_user.role not in ('admin', 'manager'):
+        user_id = current_user.id
+    else:
+        user_id = request.args.get('user_id', type=int)
     if start_date_str:
         start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
     else:
-        # Default to first day of the current month
-        start_date = today.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+        # Default to today for a daily view
+        start_date = today.replace(hour=0, minute=0, second=0, microsecond=0)
         
     if end_date_str:
         end_date = datetime.strptime(end_date_str, '%Y-%m-%d')
@@ -116,23 +124,101 @@ def index():
     users = User.query.all()
 
     # 6. Dine-in vs Takeaway breakdown
-    order_type_stats = db.session.query(
+    order_type_stats_query = db.session.query(
         Order.order_type, sqlalchemy.func.count(Order.id), sqlalchemy.func.sum(Order.total_amount)
     ).filter(
         Order.created_at >= start_date,
         Order.created_at <= end_date_filter
-    ).group_by(Order.order_type).all()
+    )
+    if user_id:
+        order_type_stats_query = order_type_stats_query.filter(Order.user_id == user_id)
+        
+    order_type_stats = order_type_stats_query.group_by(Order.order_type).all()
 
     # 7. Top Selling Products in this range
     from app.models.order_item import OrderItem
-    top_selling_products = db.session.query(
+    top_selling_products_query = db.session.query(
         Product.name, sqlalchemy.func.sum(OrderItem.quantity).label('total_qty'), sqlalchemy.func.sum(OrderItem.quantity * OrderItem.price_at_time).label('total_rev')
     ).join(OrderItem, OrderItem.product_id == Product.id)\
      .join(Order, Order.id == OrderItem.order_id)\
-     .filter(Order.created_at >= start_date, Order.created_at <= end_date_filter)\
-     .group_by(Product.name)\
+     .filter(Order.created_at >= start_date, Order.created_at <= end_date_filter)
+     
+    if user_id:
+        top_selling_products_query = top_selling_products_query.filter(Order.user_id == user_id)
+        
+    top_selling_products = top_selling_products_query.group_by(Product.name)\
      .order_by(sqlalchemy.text('total_qty DESC'))\
      .limit(10).all()
+
+    # 8. Waiter/User Performance Breakdown
+    from app.models.payment import Payment
+    from app.models.user import User as UserModel
+
+    # Using aggregation to avoid N+1 slow queries
+    waiter_stats_query = db.session.query(
+        UserModel.username,
+        UserModel.role,
+        sqlalchemy.func.sum(Order.total_amount).label('total'),
+        sqlalchemy.func.sum(Order.amount_due).label('debt')
+    ).join(Order, Order.user_id == UserModel.id)\
+     .filter(Order.created_at >= start_date, Order.created_at <= end_date_filter)
+
+    if current_user.role not in ('admin', 'manager'):
+        waiter_stats_query = waiter_stats_query.filter(UserModel.id == current_user.id)
+    
+    waiter_totals = waiter_stats_query.group_by(UserModel.id).all()
+
+    # Get Payment breakdown for these users in two queries (one for each method)
+    # This is much faster than querying per user
+    payment_breakdown = db.session.query(
+        Order.user_id,
+        Payment.payment_method,
+        sqlalchemy.func.sum(Payment.amount)
+    ).join(Payment, Payment.order_id == Order.id)\
+     .filter(Order.created_at >= start_date, Order.created_at <= end_date_filter)\
+     .group_by(Order.user_id, Payment.payment_method).all()
+
+    # Map payment breakdown to a dictionary for easy access
+    pay_map = {}
+    for uid, method, amt in payment_breakdown:
+        if uid not in pay_map: pay_map[uid] = {}
+        pay_map[uid][method] = float(amt or 0)
+
+    waiter_stats = []
+    # We need to re-fetch active_users to get IDs correctly for mapping
+    # OR we can just use the query above if we include the ID
+    final_query = db.session.query(
+        UserModel.id, UserModel.username, UserModel.role,
+        sqlalchemy.func.sum(Order.total_amount),
+        sqlalchemy.func.sum(Order.amount_due)
+    ).join(Order, Order.user_id == UserModel.id)\
+     .filter(Order.created_at >= start_date, Order.created_at <= end_date_filter)
+    
+    if current_user.role not in ('admin', 'manager'):
+        final_query = final_query.filter(UserModel.id == current_user.id)
+        
+    results = final_query.group_by(UserModel.id).all()
+
+    for uid, username, role, total, debt in results:
+        m_pays = pay_map.get(uid, {})
+        waiter_stats.append({
+            'username': username,
+            'role': role,
+            'evc': m_pays.get('EVC Plus', 0.0),
+            'edahab': m_pays.get('eDahab', 0.0),
+            'cash': m_pays.get('Cash', 0.0),
+            'debt': float(debt or 0),
+            'total': float(total or 0)
+        })
+
+    # Calculate Grand Totals for Waiters
+    waiter_grand_totals = {
+        'evc': sum(s['evc'] for s in waiter_stats),
+        'edahab': sum(s['edahab'] for s in waiter_stats),
+        'cash': sum(s['cash'] for s in waiter_stats),
+        'debt': sum(s['debt'] for s in waiter_stats),
+        'total': sum(s['total'] for s in waiter_stats)
+    }
 
     return render_template('reports/index.html', 
                           total_revenue=total_revenue,
@@ -151,12 +237,18 @@ def index():
                           daily_revenue=daily_revenue,
                           daily_labels=daily_labels,
                           order_type_stats=order_type_stats,
-                          top_selling_products=top_selling_products)
+                          top_selling_products=top_selling_products,
+                          waiter_stats=waiter_stats,
+                          waiter_grand_totals=waiter_grand_totals)
 
 
 @reports_bp.route('/audit')
+@login_required
+@manager_required
 def audit():
     from app.models.audit_log import AuditLog
+    # Automatically cleanup logs older than 5 days
+    AuditLog.cleanup(days=5)
+    
     logs = AuditLog.query.order_by(AuditLog.timestamp.desc()).limit(200).all()
     return render_template('reports/audit.html', logs=logs)
-

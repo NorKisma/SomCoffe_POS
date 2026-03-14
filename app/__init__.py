@@ -109,4 +109,12 @@ def create_app(config_class=Config):
         referrer = flask_request.referrer or url_for('dashboard.index')
         return redirect(referrer)
 
+    @app.route('/manifest.json')
+    def manifest():
+        return app.send_static_file('manifest.json')
+
+    @app.route('/service-worker.js')
+    def sw():
+        return app.send_static_file('js/service-worker.js')
+
     return app

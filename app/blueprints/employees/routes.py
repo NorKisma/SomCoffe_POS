@@ -1,5 +1,6 @@
 from flask import render_template, request, redirect, url_for, flash
-from flask_login import login_required
+from flask_login import login_required, current_user
+from app.utils.decorators import manager_required
 from . import employees_bp
 from app.models.employee import Employee
 from app.models.user import User
@@ -7,6 +8,7 @@ from app.extensions.db import db
 
 @employees_bp.route('/')
 @login_required
+@manager_required
 def index():
     employees = Employee.query.all()
     # Also fetch users to link to (excluding those already linked)
@@ -15,6 +17,7 @@ def index():
 
 @employees_bp.route('/add', methods=['POST'])
 @login_required
+@manager_required
 def add():
     first_name = request.form.get('first_name')
     last_name = request.form.get('last_name')
@@ -39,6 +42,7 @@ def add():
 
 @employees_bp.route('/update/<int:id>', methods=['POST'])
 @login_required
+@manager_required
 def update(id):
     emp = Employee.query.get_or_404(id)
     emp.first_name = request.form.get('first_name')
@@ -54,6 +58,7 @@ def update(id):
 
 @employees_bp.route('/delete/<int:id>', methods=['POST'])
 @login_required
+@manager_required
 def delete(id):
     emp = Employee.query.get_or_404(id)
     db.session.delete(emp)

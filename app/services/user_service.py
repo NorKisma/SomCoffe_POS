@@ -11,6 +11,17 @@ class UserService:
         if User.query.filter_by(username=username).first():
             return None, 'Username already exists!'
         
+        # Validate PIN (Mandatory and must be 4-6 digits)
+        if not pin:
+            return None, 'Fadlan geli PIN-ka shaqaalaha (4-6 lambar)!'
+            
+        pin = str(pin).strip()
+        if not (pin.isdigit() and 4 <= len(pin) <= 6):
+            return None, 'PIN-ku waa inuu ahaadaa 4-6 lambar oo kaliya!'
+        
+        if User.query.filter_by(pin=pin).first():
+            return None, 'PIN-kan waa la isticmaalay! Fadlan dooro mid kale.'
+        
         new_user = User(username=username, email=email, role=role, evc_number=evc_number, edahab_number=edahab_number, pin=pin)
         new_user.set_password(password)
         
@@ -42,6 +53,19 @@ class UserService:
             if User.query.filter_by(username=username).first():
                 return None, 'Username already exists!'
             user.username = username
+
+        # Validate PIN (Mandatory and must be 4-6 digits)
+        if not pin or not str(pin).strip():
+            return None, 'Fadlan geli PIN-ka shaqaalaha (4-6 lambar)!'
+            
+        pin = str(pin).strip()
+        if not (pin.isdigit() and 4 <= len(pin) <= 6):
+            return None, 'PIN-ku waa inuu ahaadaa 4-6 lambar oo kaliya!'
+            
+        # Check uniqueness if PIN is being changed
+        if pin != user.pin:
+            if User.query.filter_by(pin=pin).first():
+                return None, 'PIN-kan waa la isticmaalay! Fadlan dooro mid kale.'
             
         user.email = email
         user.role = role

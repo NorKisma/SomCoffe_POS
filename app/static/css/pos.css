@@ -89,7 +89,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.1s ease;
     color: #94a3b8;
     padding: 8px;
     text-align: center;
@@ -180,7 +180,7 @@
     padding: 14px;
     text-align: center;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    transition: transform 0.15s ease, border-color 0.15s ease, border-radius 0.15s ease;
     position: relative;
     overflow: hidden;
 }
@@ -197,8 +197,8 @@
 
 .product-box:hover {
     border-color: var(--pos-primary);
-    transform: translateY(-6px) scale(1.02);
-    box-shadow: 0 16px 32px var(--pos-primary-glow);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px var(--pos-primary-glow);
 }
 
 .product-box:hover::before {

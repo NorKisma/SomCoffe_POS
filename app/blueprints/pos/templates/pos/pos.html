@@ -63,7 +63,7 @@
 
         <div class="pos-products-grid custom-scrollbar" id="megaProductGrid">
             {% for p in products %}
-            <div class="product-item-wrapper animate__animated animate__fadeIn" data-cat="{{ p.category.name }}">
+            <div class="product-item-wrapper" data-cat="{{ p.category.name }}">
                 <div class="product-box product-item-btn" data-id="{{ p.id }}" data-name="{{ p.name }}"
                     data-price="{{ p.price }}">
                     <div class="product-image">
@@ -390,8 +390,11 @@
 <script>
     window.POS_CONFIG = {
         currency: "{{ sys_currency }}",
-        vatRate: "{{ Setting.get_val('vat_rate', '15') }}",
-        sessionTimeout: parseInt("{{ Setting.get_val('session_timeout', '5') }}")
+        vatRate: "{{ Setting.get_val('vat_rate', '0') }}",
+        sessionTimeout: parseInt("{{ Setting.get_val('session_timeout', '10') }}"),
+        companyName: "{{ Setting.get_val('restaurant_name', 'SomCoffe Roasters') }}",
+        companyAddress: "{{ Setting.get_val('address', 'Mogadishu, Somalia') }}",
+        companyPhone: "{{ Setting.get_val('phone', '') }}"
     };
 </script>
 <script src="{{ url_for('static', filename='js/pos.js') }}"></script>

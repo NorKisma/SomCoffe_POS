@@ -1,5 +1,7 @@
 import os
 from flask import render_template, request, redirect, url_for, flash, current_app
+from flask_login import login_required
+from app.utils.decorators import manager_required
 from . import products_bp
 from app.models.product import Product
 from app.models.category import Category
@@ -8,12 +10,16 @@ from app.services.product_service import ProductService
 from app.services.category_service import CategoryService
 
 @products_bp.route('/')
+@login_required
+@manager_required
 def index():
     products = Product.query.all()
     categories = Category.query.all()
     return render_template('products/products.html', products=products, categories=categories)
 
 @products_bp.route('/add', methods=['POST'])
+@login_required
+@manager_required
 def add_product():
     name = request.form.get('name')
     price = float(request.form.get('price'))
@@ -28,6 +34,8 @@ def add_product():
     return redirect(url_for('products.index'))
 
 @products_bp.route('/edit/<int:id>', methods=['POST'])
+@login_required
+@manager_required
 def edit_product(id):
     name = request.form.get('name')
     price = float(request.form.get('price'))
@@ -42,12 +50,16 @@ def edit_product(id):
     return redirect(url_for('products.index'))
 
 @products_bp.route('/delete/<int:id>', methods=['POST'])
+@login_required
+@manager_required
 def delete_product(id):
     ProductService.delete_product(id)
     flash('Alaabta waa laga saaray!', 'success')
     return redirect(url_for('products.index'))
 
 @products_bp.route('/add-category', methods=['POST'])
+@login_required
+@manager_required
 def add_category():
     name = request.form.get('name')
     icon = request.form.get('icon', 'tag')
@@ -66,6 +78,8 @@ def add_category():
     return redirect(url_for('products.index'))
 
 @products_bp.route('/delete-category/<int:id>', methods=['POST'])
+@login_required
+@manager_required
 def delete_category(id):
     success, error = CategoryService.delete_category(id)
     if error:

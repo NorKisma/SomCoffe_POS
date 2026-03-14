@@ -38,7 +38,11 @@ class User(UserMixin, db.Model):
 
     @property
     def is_waiter_or_above(self):
-        return self.role in ('admin', 'manager', 'cashier', 'waiter')
+        return self.role in ('admin', 'manager', 'cashier', 'waiter', 'kitchen')
+
+    @property
+    def is_kitchen(self):
+        return self.role == 'kitchen'
 
     @property
     def role_label(self):
@@ -47,6 +51,7 @@ class User(UserMixin, db.Model):
             'manager': 'Manager',
             'cashier': 'Cashier',
             'waiter': 'Waiter',
+            'kitchen': 'Kitchen',
         }
         return labels.get(self.role, self.role.capitalize())
 
@@ -57,6 +62,7 @@ class User(UserMixin, db.Model):
             'manager': 'primary',
             'cashier': 'success',
             'waiter': 'warning',
+            'kitchen': 'info',
         }
         return colors.get(self.role, 'secondary')
 

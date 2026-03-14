@@ -12,6 +12,7 @@ $(document).ready(function () {
         pinBuffer: "",
         lockTimer: null,
         isLocked: false,
+        OFFLINE_ORDERS_KEY: 'somcoffe_offline_orders',
 
         // ── Step 2: Add product to cart ──
         add: function (id, name, price) {
@@ -56,6 +57,20 @@ $(document).ready(function () {
             $('#customerLabel').text('Macmiil');
             $('.table-option-card').removeClass('selected');
             this.render();
+        },
+
+        // Internal clear without confirmation for automatic flows
+        clearInternal: function() {
+            this.cart = [];
+            this.tableId = null;
+            this.customerId = null;
+            this.appendingOrderId = null;
+            this._fromPayNow = false;
+            $('#miiskaLabel').text('Dooro Miiska');
+            $('#customerLabel').text('Macmiil');
+            $('.table-option-card').removeClass('selected');
+            this.render();
+            if ($('#invoicePanel').hasClass('show')) toggleCart();
         },
 
         selectCustomer: function (id, name) {
@@ -206,6 +221,14 @@ $(document).ready(function () {
                 order_id: self.appendingOrderId
             };
 
+            if (!navigator.onLine) {
+                self.saveOfflineOrder(payload);
+                self.printOfflineReceipt(); // New offline printing function
+                self.showToast('⚠ Offline: Dalabka waa la keydiyay waana la daabacay. Si toos ah ayaadna u diri doonaa markaad Online noqoto.', 'warning');
+                self.clearInternal(); 
+                return;
+            }
+
             fetch('/pos/checkout', {
                 method: 'POST',
                 headers: {
@@ -319,6 +342,14 @@ $(document).ready(function () {
                 },
                 order_id: self.appendingOrderId
             };
+
+            if (!navigator.onLine) {
+                self.saveOfflineOrder(payload);
+                $('#splitModal').modal('hide');
+                self.showToast('⚠ Offline Split: Dalabka waa la keydiyay!', 'warning');
+                self.clearInternal();
+                return;
+            }
 
             fetch('/pos/checkout', {
                 method: 'POST',
@@ -474,6 +505,170 @@ $(document).ready(function () {
             this.lockTimer = setTimeout(() => {
                 if (!self.isLocked) self.lock();
             }, timeoutMs);
+        },
+
+        // ── Offline Sync Logic ──
+        saveOfflineOrder: function(order) {
+            let orders = JSON.parse(localStorage.getItem(this.OFFLINE_ORDERS_KEY) || "[]");
+            // Add unique ID to avoid duplicates
+            order.offline_id = 'off_' + Date.now() + '_' + Math.floor(Math.random() * 1000);
+            orders.push({
+                ...order,
+                offline_timestamp: new Date().toISOString()
+            });
+            localStorage.setItem(this.OFFLINE_ORDERS_KEY, JSON.stringify(orders));
+            this.updateSyncUI();
+        },
+
+        printOfflineReceipt: function() {
+            const self = this;
+            const config = window.POS_CONFIG;
+            const items = self.cart;
+            const cur = config.currency;
+            
+            let subtotal = 0;
+            items.forEach(i => subtotal += (i.price * i.qty));
+            const tax = subtotal * (parseFloat(config.vatRate) / 100);
+            const total = subtotal + tax;
+
+            const printWindow = window.open('', '_blank', 'width=400,height=600');
+            const date = new Date().toLocaleString();
+
+            const html = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Offline Receipt</title>
+                    <style>
+                        body { font-family: 'Courier New', Courier, monospace; width: 80mm; padding: 10px; margin: 0 auto; color: #000; }
+                        .header { text-align: center; margin-bottom: 20px; border-bottom: 1px dashed #000; padding-bottom: 10px; }
+                        .header h2 { margin: 0; text-transform: uppercase; font-size: 1.2rem; }
+                        .header p { margin: 5px 0; font-size: 0.8rem; }
+                        .items table { width: 100%; border-collapse: collapse; }
+                        .items th { border-bottom: 1px solid #000; text-align: left; font-size: 0.8rem; }
+                        .items td { padding: 5px 0; font-size: 0.8rem; }
+                        .totals { margin-top: 15px; border-top: 1px dashed #000; padding-top: 10px; }
+                        .total-row { display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 5px; }
+                        .footer { text-align: center; margin-top: 30px; border-top: 1px solid #000; padding-top: 10px; font-size: 0.7rem; }
+                        .watermark { color: #ccc; font-size: 0.6rem; text-align: center; margin-bottom: 10px; font-weight: bold; }
+                        @media print { .no-print { display: none; } }
+                    </style>
+                </head>
+                <body>
+                    <div class="watermark text-uppercase">*** OFFLINE RECEIPT - PENDING SYNC ***</div>
+                    <div class="header">
+                        <h2>${config.companyName}</h2>
+                        <p>${config.companyAddress}</p>
+                        <p>Tel: ${config.companyPhone}</p>
+                        <p>${date}</p>
+                    </div>
+                    <div class="items">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Alaabta</th>
+                                    <th>Qty</th>
+                                    <th style="text-align:right">Price</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                ${items.map(i => `
+                                    <tr>
+                                        <td>${i.name}</td>
+                                        <td>${i.qty}</td>
+                                        <td style="text-align:right">${cur}${(i.price * i.qty).toFixed(2)}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="totals">
+                        <div class="total-row"><span>Subtotal:</span> <span>${cur}${subtotal.toFixed(2)}</span></div>
+                        <div class="total-row"><span>Tax:</span> <span>${cur}${tax.toFixed(2)}</span></div>
+                        <div class="total-row" style="font-size:1.1rem; border-top:1px solid #000; padding-top:5px; margin-top:5px;">
+                            <span>TOTAL:</span> <span>${cur}${total.toFixed(2)}</span>
+                        </div>
+                    </div>
+                    <div class="footer">
+                        <p>Mahadsanid! Soo dhowow markale.</p>
+                        <p>Generated by SomCoffe POS Elite (Offline)</p>
+                    </div>
+                    <script>
+                        window.onload = function() { window.print(); window.close(); };
+                    </script>
+                </body>
+                </html>
+            `;
+
+            printWindow.document.write(html);
+            printWindow.document.close();
+        },
+
+        updateSyncUI: function() {
+            let orders = JSON.parse(localStorage.getItem(this.OFFLINE_ORDERS_KEY) || "[]");
+            const $status = $('#connectionStatus');
+            if (orders.length > 0) {
+                const count = orders.length;
+                if (navigator.onLine) {
+                    $status.html(`<span class="spinner-border spinner-border-sm me-1" role="status"></span> SYNCING ${count}...`);
+                    $status.css('background', 'rgba(139, 92, 246, 0.15)').css('color', '#a78bfa').css('border-color', 'rgba(139, 92, 246, 0.3)');
+                } else {
+                    $status.html(`<i class="fas fa-cloud-upload-alt me-1"></i> ${count} PENDING`);
+                    $status.css('background', 'rgba(245, 158, 11, 0.15)').css('color', '#fbbf24').css('border-color', 'rgba(245, 158, 11, 0.3)');
+                }
+            } else if (navigator.onLine) {
+                $status.html('<span class="status-dot online"></span> <span class="small fw-bold d-none d-lg-inline">ONLINE</span>');
+                $status.css('background', 'rgba(16, 185, 129, 0.1)').css('color', '#10b981').css('border-color', 'rgba(16, 185, 129, 0.2)');
+            }
+        },
+
+        syncOfflineOrders: async function() {
+            if (this._isSyncing) return;
+            let orders = JSON.parse(localStorage.getItem(this.OFFLINE_ORDERS_KEY) || "[]");
+            if (orders.length === 0) {
+                this.updateSyncUI();
+                return;
+            }
+
+            this._isSyncing = true;
+            this.updateSyncUI();
+            
+            console.log('SW: Starting professional sync for ' + orders.length + ' orders');
+            
+            let successCount = 0;
+            let currentOrders = [...orders];
+
+            for (let i = 0; i < currentOrders.length; i++) {
+                const order = currentOrders[i];
+                try {
+                    const response = await fetch('/pos/checkout', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': $('meta[name="csrf-token"]').attr('content')
+                        },
+                        body: JSON.stringify(order)
+                    });
+                    const data = await response.json();
+                    if (data.success) {
+                        successCount++;
+                        // Remove specifically this order from the queue
+                        let latestOrders = JSON.parse(localStorage.getItem(this.OFFLINE_ORDERS_KEY) || "[]");
+                        latestOrders = latestOrders.filter(o => o.offline_id !== order.offline_id);
+                        localStorage.setItem(this.OFFLINE_ORDERS_KEY, JSON.stringify(latestOrders));
+                        this.updateSyncUI();
+                    }
+                } catch (err) {
+                    console.error('SW: Sync failed for order', order.offline_id, err);
+                }
+            }
+
+            this._isSyncing = false;
+            this.updateSyncUI();
+
+            if (successCount > 0) {
+                this.showToast(`✓ ${successCount} Dalabood oo offline ahaa waa la diray!`, 'success');
+            }
         }
     };
 
@@ -499,19 +694,33 @@ $(document).ready(function () {
     });
 
     // ── Search filter (works with active category) ──
+    let searchTimeout;
     function applyFilters() {
         const query = $('#megaSearch').val().toLowerCase().trim();
         const activeCat = $('#posCatNav .nav-cat-item.active').data('cat');
-        $('.product-item-wrapper').each(function () {
-            const itemCat = $(this).attr('data-cat');
-            const itemName = $(this).find('.product-title').text().toLowerCase();
+        
+        // Cache products if not already cached to avoid DOM traversal
+        const $products = $('.product-item-wrapper');
+        
+        $products.each(function () {
+            const $item = $(this);
+            const itemCat = $item.attr('data-cat');
+            const itemName = $item.find('.product-title').text().toLowerCase();
             const catOk = (activeCat === '__all__' || itemCat === activeCat);
             const nameOk = (query === '' || itemName.includes(query));
-            $(this).toggle(catOk && nameOk);
+            
+            if (catOk && nameOk) {
+                $item.css('display', 'block');
+            } else {
+                $item.css('display', 'none');
+            }
         });
     }
 
-    $('#megaSearch').on('input', applyFilters);
+    $('#megaSearch').on('input', function() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(applyFilters, 150); // 150ms debounce
+    });
 
     // ── Step 2: Product click ──
     $(document).on('click', '.product-item-btn', function () {
@@ -566,7 +775,15 @@ $(document).ready(function () {
 
     // ── Initial render and Lock Timer ──
     Terminal.render();
+    Terminal.updateSyncUI();
     Terminal.resetLockTimer();
+
+    // Cache core data for offline persistence
+    if (navigator.onLine) {
+        localStorage.setItem('cached_products', JSON.stringify($('#megaProductGrid').html()));
+        localStorage.setItem('cached_tables', JSON.stringify($('#tableModal .modal-body').html()));
+        localStorage.setItem('cached_customers', JSON.stringify($('.customer-list').html()));
+    }
 
     // ── Activity Listeners for Lock Timer ──
     $(document).on('mousedown mousemove keydown scroll touchstart', function () {

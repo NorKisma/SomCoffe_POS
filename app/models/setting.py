@@ -7,13 +7,20 @@ class Setting(db.Model):
     value = db.Column(db.Text, nullable=True)
     description = db.Column(db.String(255), nullable=True)
 
+    _cache = {}
+
     @staticmethod
     def get_val(key, default=None):
+        if key in Setting._cache:
+            return Setting._cache[key]
         setting = Setting.query.filter_by(key=key).first()
-        return setting.value if setting else default
+        val = setting.value if setting else default
+        Setting._cache[key] = val
+        return val
 
     @staticmethod
     def set_val(key, value):
+        Setting._cache[key] = value
         setting = Setting.query.filter_by(key=key).first()
         if setting:
             setting.value = value
