@@ -209,56 +209,56 @@
 
         .receipt-header {
             text-align: center;
-            margin-bottom: 0.8rem;
+            margin-bottom: 0.4rem;
         }
 
         .receipt-header .date-time-row {
             display: flex;
             justify-content: space-between;
-            font-size: 10px;
-            margin-bottom: 0.5rem;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 0.3rem;
+            font-size: 8px;
+            margin-bottom: 0.3rem;
+            border-bottom: 0.5px solid #eee;
+            padding-bottom: 0.2rem;
         }
 
         .restaurant-brand {
-            font-size: 1.4rem;
+            font-size: 1.1rem;
             font-weight: 900;
-            margin: 0.2rem 0;
+            margin: 0.1rem 0;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
             color: #000;
         }
 
         .restaurant-info {
-            font-size: 10.5px;
-            margin-bottom: 0.4rem;
-            font-weight: 800; /* Bold ka dhig */
+            font-size: 9px;
+            margin-bottom: 0.3rem;
+            font-weight: 700; /* Bold ka dhig */
             color: #000;
         }
 
         .merchant-codes {
-            font-size: 10px;
-            margin: 0.6rem 0;
+            font-size: 8.5px;
+            margin: 0.4rem 0;
             color: #000;
             word-break: break-all;
             font-weight: 900; /* Extremely Bold */
-            letter-spacing: 0.5px;
-            line-height: 1.4;
+            letter-spacing: 0.2px;
+            line-height: 1.2;
         }
 
         .info-block {
-            border-top: 1px dashed #000;
-            border-bottom: 1px dashed #000;
-            padding: 0.5rem 0;
-            margin-bottom: 0.5rem;
+            border-top: 0.5px dashed #000;
+            border-bottom: 0.5px dashed #000;
+            padding: 0.3rem 0;
+            margin-bottom: 0.4rem;
         }
 
         .info-row {
             display: flex;
             align-items: center;
-            margin-bottom: 4px;
-            font-size: 10px;
+            margin-bottom: 2px;
+            font-size: 9px;
         }
 
         .info-row span:first-child {
@@ -298,53 +298,60 @@
         .receipt-table th {
             text-align: left;
             border-bottom: 1px solid #000;
-            padding-bottom: 0.3rem;
-            font-size: 10px;
+            padding-bottom: 0.2rem;
+            font-size: 9px;
             text-transform: uppercase;
         }
 
         .receipt-table td {
-            padding: 0.3rem 0;
+            padding: 0.2rem 0;
             vertical-align: top;
+            font-size: 10px;
         }
 
-        .receipt-table .qty-col { width: 35px; text-align: left; font-weight: 700; }
+        .receipt-table .qty-col { width: 30px; text-align: left; font-weight: 700; }
         .receipt-table .desc-col { padding-right: 5px; }
-        .receipt-table .price-col { width: 60px; text-align: right; }
-        .receipt-table .total-col { width: 70px; text-align: right; font-weight: 700; }
+        .receipt-table .price-col { width: 50px; text-align: right; }
+        .receipt-table .total-col { width: 60px; text-align: right; font-weight: 700; }
 
         .receipt-summary {
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
-            border-top: 1px dashed #000;
+            margin-top: 0.4rem;
+            padding-top: 0.4rem;
+            border-top: 0.5px dashed #000;
         }
 
         .summary-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 0.2rem;
-            font-size: 11px;
+            margin-bottom: 0.1rem;
+            font-size: 9px;
         }
 
         .summary-row.grand-total {
-            margin-top: 0.5rem;
-            padding-top: 0.5rem;
+            margin-top: 0.3rem;
+            padding-top: 0.3rem;
             border-top: 1px solid #000;
-            font-size: 1.2rem;
-            font-weight: 800;
+            font-size: 1rem;
+            font-weight: 900;
+        }
+
+        .summary-row {
+            margin-top: 10px;
+            font-size: 9px;
+            opacity: 0.8;
         }
 
         .receipt-footer {
-            margin-top: 1.2rem;
+            margin-top: 0.8rem;
             text-align: center;
         }
 
 
 
         .footer-branding {
-            font-size: 8px;
-            margin-top: 0.6rem;
-            font-weight: 800;
+            font-size: 7.5px;
+            margin-top: 0.4rem;
+            font-weight: 700;
             letter-spacing: 0.2px;
             text-transform: uppercase;
             border-top: 0.5px dashed #ccc;
@@ -355,7 +362,7 @@
         }
 
         .footer-thanks {
-            font-size: 9px;
+            font-size: 8.5px;
             text-transform: uppercase;
             font-weight: 800;
             letter-spacing: 0.3px;
@@ -394,9 +401,9 @@
         }
 
         .kitchen-receipt .receipt-table td {
-            font-size: 0.95rem;
+            font-size: 11px !important;
             font-weight: 700;
-            padding: 0;
+            padding: 1px 0 !important;
             vertical-align: middle;
         }
 
@@ -410,7 +417,7 @@
             color: #fff !important;
             border-radius: 6px;
             text-align: center;
-            width: 45px;
+            width: 35px !important;
         }
 
         .kitchen-receipt th.qty-col {
@@ -421,7 +428,7 @@
         }
 
         .kitchen-receipt td.qty-col {
-            font-size: 1.3rem;
+            font-size: 1.1rem !important;
             font-weight: 900;
             padding: 4px 0;
         }
@@ -430,11 +437,11 @@
             display: none;
             background: #000;
             color: #fff;
-            padding: 0.4rem;
+            padding: 0.3rem;
             text-align: center;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 800;
-            margin-bottom: 0.6rem;
+            margin-bottom: 0.4rem;
             border-radius: 4px;
         }
 
@@ -518,9 +525,9 @@
         <div class="control-group">
             <span class="control-label">Nooca Rasiidka</span>
             <div class="btn-toggle-group">
-                <button class="btn-toggle active" onclick="setMode('customer', this)">Sales Slip</button>
+                <button class="btn-toggle" onclick="setMode('customer', this)">Sales Slip</button>
                 <button class="btn-toggle" onclick="setMode('kitchen', this)">Kitchen Copy</button>
-                <button class="btn-toggle" onclick="setMode('dual', this)">Laba (Dual)</button>
+                <button class="btn-toggle active" onclick="setMode('dual', this)">Laba (Dual)</button>
             </div>
         </div>
 
@@ -640,28 +647,137 @@
     </div>
 
     <script>
-        let currentMode = 'customer';
+        const ORDER_DATA = {{ order | tojson | safe }};
+        let currentMode = 'dual'; // Default to Dual (Laba)
         let currentCopies = 1;
-        const masterTemplate = document.querySelector('.receipt-paper').outerHTML;
 
         function refreshReceipt() {
+            const $area = document.getElementById('receipt-payload');
             let finalHtml = '';
             
-            // Loop for number of copies
             for (let i = 0; i < currentCopies; i++) {
                 if (currentMode === 'dual') {
-                    // In dual mode, one copy is customer, one is kitchen
-                    finalHtml += masterTemplate; // First copy (customer by default)
-                    let kitchenCopy = masterTemplate;
-                    finalHtml += kitchenCopy.replace('receipt-paper', 'receipt-paper kitchen-receipt');
+                    // 1. Render Customer Receipt (Full)
+                    finalHtml += renderReceipt(ORDER_DATA, 'customer');
+                    // 2. Clear Separator for Printing
+                    finalHtml += '<div style="page-break-after: always; border-bottom: 2px dashed #000; margin: 20px 0;" class="no-print-screen"></div>';
+                    // 3. Render Kitchen Receipt(s) (Split)
+                    finalHtml += renderKitchenSplit(ORDER_DATA);
                 } else if (currentMode === 'kitchen') {
-                    finalHtml += masterTemplate.replace('receipt-paper', 'receipt-paper kitchen-receipt');
+                    finalHtml += renderKitchenSplit(ORDER_DATA);
                 } else {
-                    finalHtml += masterTemplate;
+                    finalHtml += renderReceipt(ORDER_DATA, 'customer');
                 }
             }
+            $area.innerHTML = finalHtml;
+        }
+
+        function renderKitchenSplit(order) {
+            // Robust check for drink categories
+            const drinkCats = ['coffee', 'juice', 'tea', 'drinks', 'cabitaan', 'cabitaanka']; 
             
-            document.getElementById('receipt-payload').innerHTML = finalHtml;
+            const drinkItems = order.items.filter(it => {
+                if (!it.category_name) return false;
+                const cat = it.category_name.toLowerCase().trim();
+                return drinkCats.some(dc => cat === dc || cat.includes(dc));
+            });
+            
+            const otherItems = order.items.filter(it => {
+                if (!it.category_name) return true;
+                const cat = it.category_name.toLowerCase().trim();
+                return !drinkCats.some(dc => cat === dc || cat.includes(dc));
+            });
+            
+            console.log('Split Logic:', { drinks: drinkItems.length, others: otherItems.length });
+            
+            let html = '';
+            // Only render if there are items to show
+            if (drinkItems.length > 0) {
+                html += renderReceipt({...order, items: drinkItems, kitchen_label: 'DRINKS COPY (CABITAAN)'}, 'kitchen');
+                // Page break only if we have more
+                if (otherItems.length > 0) {
+                    html += '<div style="page-break-after: always; border-bottom: 2px dashed #000; margin: 10px 0;" class="no-print-screen"></div>';
+                }
+            }
+            if (otherItems.length > 0) {
+                html += renderReceipt({...order, items: otherItems, kitchen_label: 'FOOD COPY (CUNTO)'}, 'kitchen');
+            }
+            return html;
+        }
+
+        function renderReceipt(order, mode) {
+            const isKitchen = mode === 'kitchen';
+            const kClass = isKitchen ? 'kitchen-receipt' : '';
+            const kLabel = order.kitchen_label || 'KITCHEN COPY (DALABKA JIKADA)';
+            
+            let itemsHtml = '';
+            order.items.forEach(item => {
+                itemsHtml += `
+                    <tr>
+                        <td class="desc-col">${item.product_name}</td>
+                        <td class="qty-col">${item.quantity}</td>
+                        <td class="price-col">{{ sys_currency }}${parseFloat(item.price).toFixed(2)}</td>
+                        <td class="total-col">{{ sys_currency }}${parseFloat(item.total).toFixed(2)}</td>
+                    </tr>`;
+            });
+
+            return `
+            <div class="receipt-paper ${kClass}">
+                <div class="kitchen-badge">${kLabel}</div>
+                
+                <div class="receipt-header">
+                    <div class="date-time-row">
+                        <span>${order.date.substring(0, 10)}</span>
+                        <span>${order.date.substring(11)}</span>
+                    </div>
+                    
+                    <div class="restaurant-brand">{{ sys_name }}</div>
+                    <div class="restaurant-info">
+                        {{ sys_address }}<br>
+                        Calling Customer: {{ sys_phone }}
+                    </div>
+                    
+                    <div class="merchant-codes">
+                        ${order.evc_number ? `Merchant: *789*${order.evc_number}*${parseFloat(order.total).toFixed(2)}#<br>` : ''}
+                        ${order.edahab_number ? `eDahab: ${order.edahab_number}` : ''}
+                    </div>
+                </div>
+
+                <div class="info-block">
+                    <div class="info-row"><span>Receipt #</span><span>${String(order.id).padStart(6, '0')}</span></div>
+                    <div class="info-row"><span>Table #</span><span>${order.table}</span></div>
+                    <div class="info-row"><span>Served by</span><span>${order.served_by}</span></div>
+                    <div class="info-row"><span>Customer</span><span>${order.customer}</span></div>
+                </div>
+
+                <table class="receipt-table">
+                    <thead>
+                        <tr>
+                            <th class="desc-col">Description</th>
+                            <th class="qty-col">Qty</th>
+                            <th class="price-col">Price</th>
+                            <th class="total-col">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsHtml}
+                    </tbody>
+                </table>
+
+                <div class="receipt-summary">
+                    <div class="summary-row"><span>Sub Total</span><span>{{ sys_currency }}${parseFloat(order.total).toFixed(2)}</span></div>
+                    <div class="summary-row"><span>Sales Tax @0%</span><span>{{ sys_currency }}0.00</span></div>
+                    <div class="summary-row grand-total"><span>Grand Total</span><span>{{ sys_currency }}${parseFloat(order.total).toFixed(2)}</span></div>
+                    <div class="summary-row" style="margin-top: 10px; font-size: 9px; opacity: 0.8;">
+                        <span>Payment Status:</span><span>${order.payment_status.toUpperCase()}</span>
+                    </div>
+                </div>
+
+                <div class="receipt-footer">
+                    <div class="footer-thanks">★ MAHADSANID, DIB U SOO LABASHO WACAN! ★</div>
+                    <div class="footer-branding">Powered by Rays Tech Center | raystechcenter.online</div>
+                </div>
+            </div>`;
         }
 
         function setMode(mode, btn) {
@@ -680,15 +796,12 @@
 
         function printAndLogout() {
             window.print();
-            // Redirect to logout after the print dialog is closed
             window.location.href = "{{ url_for('auth.logout') }}";
         }
 
-        // Initialize
+        // Initialize display
         document.addEventListener('DOMContentLoaded', () => {
-             // We already have the first one rendered by Jinja2, 
-             // but let's re-run for consistency if needed.
-             // Actually, refreshReceipt() uses masterTemplate which is the first one.
+            refreshReceipt();
         });
     </script>
 </body>

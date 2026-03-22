@@ -127,6 +127,7 @@
             </div>
 
             <div class="row g-2 mt-2">
+                {% if current_user.role == 'admin' %}
                 <div class="col-6">
                     <button class="btn btn-outline-info w-100 fw-bold py-2 payment-btn"
                         onclick="Terminal.complete('EVC Plus')">
@@ -139,26 +140,28 @@
                         <i class="fas fa-sim-card me-1"></i> eDahab
                     </button>
                 </div>
-                <div class="col-6">
-                    <button class="btn btn-outline-success w-100 fw-bold py-2 payment-btn"
-                        onclick="Terminal.complete('Cash')">
-                        <i class="fas fa-money-bill-wave me-1"></i> Cash
-                    </button>
-                </div>
-                <div class="col-6">
-                    <button class="btn btn-outline-danger w-100 fw-bold py-2 payment-btn"
-                        onclick="Terminal.complete('Credit')">
-                        <i class="fas fa-hand-holding-usd me-1"></i> Deyn (Credit)
-                    </button>
-                </div>
-                <div class="col-6 mt-2">
-                    <button class="pay-now-btn pay-order-btn bg-soft-primary" onclick="Terminal.complete('Pending')">
+                {% endif %}
+                <div class="col-12 mt-2">
+                    <button class="pay-now-btn pay-order-btn text-white w-100 py-3" style="font-size: 1.4rem;" onclick="Terminal.complete('Pending')">
                         ORDER <i class="fas fa-clock ms-2"></i>
                     </button>
                 </div>
-                <div class="col-6 mt-2">
-                    <button class="pay-now-btn bg-soft-success" onclick="Terminal.openSplitModal()">
-                        SPLIT <i class="fas fa-columns ms-2"></i>
+
+                <div class="col-4 mt-2">
+                    <button class="btn btn-outline-success text-white w-100 fw-bold py-1 btn-sm"
+                        onclick="Terminal.complete('Cash')">
+                        <i class="fas fa-money-bill-wave d-block mb-1"></i> Cash
+                    </button>
+                </div>
+                <div class="col-4 mt-2">
+                    <button class="btn btn-outline-danger text-white w-100 fw-bold py-1 btn-sm"
+                        onclick="Terminal.complete('Credit')">
+                        <i class="fas fa-hand-holding-usd d-block mb-1"></i> Deyn
+                    </button>
+                </div>
+                <div class="col-4 mt-2">
+                    <button class="btn btn-outline-light text-white w-100 fw-bold py-1 btn-sm" onclick="Terminal.openSplitModal()">
+                        <i class="fas fa-columns d-block mb-1"></i> SPLIT
                     </button>
                 </div>
             </div>

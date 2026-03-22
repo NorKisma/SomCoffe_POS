@@ -19,6 +19,7 @@ class OrderService:
         for item in order.items:
             items.append({
                 'product_name': item.product.name if item.product else 'Lama yaqaan',
+                'category_name': item.product.category.name if (item.product and item.product.category) else 'General',
                 'quantity': item.quantity,
                 'price': item.price_at_time,
                 'total': item.quantity * item.price_at_time

@@ -255,15 +255,15 @@
 /* Right Section: Invoice/Cart */
 .pos-invoice-panel {
     width: 390px;
-    background: var(--pos-invoice-bg);
-    border-left: none;
+    background: linear-gradient(165deg, #050b14 0%, #0f172a 100%);
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
     display: flex;
     flex-direction: column;
     padding: 1.5rem;
-    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
     z-index: 100;
     color: #fff;
-    box-shadow: -10px 0 30px rgba(0,0,0,0.1);
+    box-shadow: -10px 0 40px rgba(0,0,0,0.5);
 }
 
 .invoice-header {
@@ -434,33 +434,33 @@
 
 
 .pay-now-btn {
-    background: linear-gradient(135deg, #6366f1, #4f46e5);
-    color: white;
+    background: linear-gradient(135deg, #4f46e5, #7c3aed);
+    color: #ffffff !important;
     border: none;
-    border-radius: 18px;
-    padding: 0.85rem;
+    border-radius: 16px;
+    padding: 1rem;
     width: 100%;
     font-weight: 900;
-    font-size: 1rem;
+    font-size: 1.2rem;
     margin-top: 0.5rem;
-    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.35);
-    letter-spacing: 0.5px;
+    box-shadow: 0 10px 25px rgba(79, 70, 229, 0.4);
+    letter-spacing: 1px;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    text-transform: uppercase;
+    gap: 12px;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
 
 .pay-now-btn:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 28px rgba(79, 70, 229, 0.5);
-    filter: brightness(1.1);
+    transform: translateY(-4px) scale(1.02);
+    box-shadow: 0 15px 35px rgba(79, 70, 229, 0.6);
+    filter: brightness(1.15);
 }
 
 .pay-now-btn:active {
-    transform: translateY(0);
+    transform: translateY(-1px) scale(0.98);
 }
 
 /* Premium Payment Buttons */

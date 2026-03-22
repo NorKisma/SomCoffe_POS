@@ -338,7 +338,7 @@
         // Restore Sidebar State on load
         if (sidebar && desktopToggle) {
             const savedState = localStorage.getItem('sidebarCollapsed');
-            const isCollapsed = savedState === null ? false : savedState === 'true'; // Default open on desktop
+            const isCollapsed = savedState === null ? true : savedState === 'true'; // Default collapsed
             
             if (isCollapsed && window.innerWidth >= 992) {
                 sidebar.classList.add('collapsed');

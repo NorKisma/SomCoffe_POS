@@ -13,7 +13,8 @@ from datetime import datetime, timedelta
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('dashboard.index'))
+        target = url_for('pos.index') if current_user.role == 'waiter' else url_for('dashboard.index')
+        return redirect(target)
         
     if request.method == 'POST':
         login_type = request.form.get('login_type', 'password')
@@ -32,7 +33,8 @@ def login():
                 login_user(user)
                 AuditLog.log('PIN_LOGIN_SUCCESS', f'Isticmaalaha {user.username} ayaa PIN ku soo galay.')
                 flash(_('PIN Login Successful!'), 'success')
-                return redirect(url_for('dashboard.index'))
+                target = url_for('pos.index') if user.role == 'waiter' else url_for('dashboard.index')
+                return redirect(target)
             else:
                 # Log failed attempt for security audit
                 AuditLog.log('PIN_LOGIN_FAILED', f'Isku day PIN khaldan: {pin}')
@@ -47,7 +49,8 @@ def login():
                 login_user(user)
                 AuditLog.log('LOGIN', f'User {username} successfully logged in.')
                 flash(_('You have logged in successfully!'), 'success')
-                return redirect(url_for('dashboard.index'))
+                target = url_for('pos.index') if user.role == 'waiter' else url_for('dashboard.index')
+                return redirect(target)
             else:
                 flash(_('Invalid username or password!'), 'danger')
             

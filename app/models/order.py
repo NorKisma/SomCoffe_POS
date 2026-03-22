@@ -17,7 +17,7 @@ class Order(db.Model):
 
     
     items = db.relationship('OrderItem', backref='order', lazy=True, cascade="all, delete-orphan")
-    payments = db.relationship('Payment', backref='order', lazy=True)
+    payments = db.relationship('Payment', backref='order', lazy=True, cascade="all, delete-orphan")
     user = db.relationship('User', backref='orders', lazy=True)
 
     def __repr__(self):

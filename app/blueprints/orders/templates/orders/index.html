@@ -11,8 +11,15 @@
             <h5 class="fw-bold mb-0">Dalabyada: <span class="text-primary">{{ orders|length }}</span></h5>
             <p class="text-muted small mb-0">Fiiri dalabyadii hore iyo tafaasiishooda</p>
         </div>
-        <div class="col-md-6 text-md-end text-muted small">
-            <i class="fas fa-info-circle me-1"></i> Kuwa dambe ayaa la muujinayaa horta
+        <div class="col-md-6 text-md-end">
+            {% if current_user.is_manager_or_above %}
+            <button class="btn btn-premium bg-danger border-0 py-2 px-4 rounded-pill shadow-sm" onclick="clearAllOrders()">
+                <i class="fas fa-trash-sweep me-2"></i> WADA TIRTIR (CLEAR ALL)
+            </button>
+            {% endif %}
+            <div class="text-muted small mt-2">
+                <i class="fas fa-info-circle me-1"></i> Kuwa dambe ayaa la muujinayaa horta
+            </div>
         </div>
     </div>
 
@@ -104,6 +111,12 @@
                                     class="btn btn-action bg-soft-success" title="Ku dar dalab kale (Reorder)">
                                     <i class="fas fa-plus"></i>
                                 </a>
+                                {% endif %}
+                                {% if current_user.is_manager_or_above %}
+                                <button class="btn btn-action delete-order-btn bg-soft-danger text-danger" data-id="{{ order.id }}"
+                                    title="Tirtir Dalabka">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                                 {% endif %}
                             </div>
                         </td>
@@ -323,6 +336,105 @@
             // Navigate directly for a better mobile experience
             window.location.href = `/orders/print/${id}`;
         });
+
+        // Delete Order
+        $(document).on('click', '.delete-order-btn', function () {
+            const id = $(this).data('id');
+            const row = $(this).closest('tr');
+
+            Swal.fire({
+                title: 'Ma hubtaa?',
+                text: "Dalabkan si buuxda ayaa loo tirtirayaa, lama soo celin karo!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Haa, tirtir!',
+                cancelButtonText: 'Iska daa',
+                background: '#1e293b',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(`/orders/delete/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'X-CSRFToken': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            return response.json().then(data => {
+                                throw new Error(data.message || 'Server error ' + response.status);
+                            }).catch(() => {
+                                throw new Error('Database error ' + response.status);
+                            });
+                        }
+                        return response.json();
+                    })
+                    .then(res => {
+                        if (res.success) {
+                            Swal.fire('La tirtiray!', res.message, 'success');
+                            $('#ordersTable').DataTable().row(row).remove().draw();
+                        } else {
+                            Swal.fire('Cillad', res.message, 'error');
+                        }
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        Swal.fire('Cillad', 'Ma suurtagelin in la tirtiro dalabka. (Detail: ' + err.message + ')', 'error');
+                    });
+                }
+            });
+        });
+
+        // Clear All Orders
+        window.clearAllOrders = function() {
+            Swal.fire({
+                title: 'DIGNIIN CULUS!',
+                text: "Ma hubtaa inaad tir-tirto DHAMAAN dalabyada nidaamka ku jira? Tallaabadan dib looma soo celin karo!",
+                icon: 'error',
+                showCancelButton: true,
+                confirmButtonColor: '#ef4444',
+                cancelButtonColor: '#64748b',
+                confirmButtonText: 'Haa, Wada Tir-tir!',
+                cancelButtonText: 'Iska daa',
+                background: '#1e293b',
+                color: '#fff'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Double check for safety
+                    Swal.fire({
+                        title: 'Hubi mar kale!',
+                        text: "Ma hubaal baa? Dhamaan xogta dalabyada waa lumaysaa.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Haa, Hubanti weeye!',
+                        cancelButtonText: 'Maya',
+                        background: '#1e293b',
+                        color: '#fff'
+                    }).then((confirm) => {
+                        if (confirm.isConfirmed) {
+                            fetch('/orders/clear-all', {
+                                method: 'POST',
+                                headers: {
+                                    'X-CSRFToken': $('meta[name="csrf-token"]').attr('content')
+                                }
+                            })
+                            .then(res => res.json())
+                            .then(res => {
+                                if (res.success) {
+                                    Swal.fire('Guul!', res.message, 'success').then(() => {
+                                        window.location.reload();
+                                    });
+                                } else {
+                                    Swal.fire('Cillad', res.message, 'error');
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        };
     });
 </script>
 {% endblock %}
